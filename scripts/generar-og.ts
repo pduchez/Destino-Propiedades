@@ -48,8 +48,8 @@ function overlay(opts: {
     </defs>
     ${base}
     <rect width="${W}" height="${H}" fill="url(#shade)"/>
-    <text x="60" y="80" fill="#c9a463" font-family="Georgia, serif" font-size="34" font-weight="bold">${esc(opts.marcaArriba)}</text>
-    <text x="60" y="${H - 150}" fill="#faf7f2" font-family="Georgia, serif" font-size="${tituloSize}" font-weight="bold">${esc(opts.titulo)}</text>
+    <text x="60" y="80" fill="#c9a463" font-family="DejaVu Sans, Arial, sans-serif" font-size="32" font-weight="bold" letter-spacing="-0.5">${esc(opts.marcaArriba)}</text>
+    <text x="60" y="${H - 150}" fill="#faf7f2" font-family="DejaVu Sans, Arial, sans-serif" font-size="${tituloSize}" font-weight="bold" letter-spacing="-1">${esc(opts.titulo)}</text>
     ${opts.subtitulo ? `<text x="60" y="${H - 100}" fill="#faf7f2" font-family="Arial, sans-serif" font-size="32" opacity="0.9">${esc(opts.subtitulo)}</text>` : ""}
     ${opts.precio ? `<text x="60" y="${H - 50}" fill="#c9a463" font-family="Arial, sans-serif" font-size="40" font-weight="bold">${esc(opts.precio)}</text>` : ""}
     ${opts.pie ? `<text x="${W - 60}" y="${H - 40}" text-anchor="end" fill="#faf7f2" font-family="Arial, sans-serif" font-size="24" opacity="0.7">${esc(opts.pie)}</text>` : ""}
