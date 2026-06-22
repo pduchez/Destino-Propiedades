@@ -38,7 +38,10 @@ jobs:
         run: npm run build
         env:
           SITE: https://pduchez.github.io
-          BASE: /destino-propiedades/
+          # OJO: GitHub Pages sirve el proyecto en una ruta que respeta las
+          # mayúsculas del nombre del repo y distingue may/min. Debe coincidir
+          # exactamente con "Destino-Propiedades".
+          BASE: /Destino-Propiedades/
           PUBLIC_NOINDEX: "true"
       - uses: actions/configure-pages@v5
         with:
