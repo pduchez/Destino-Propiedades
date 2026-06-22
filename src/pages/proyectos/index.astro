@@ -34,16 +34,16 @@ const departamentosDisponibles = Array.from(
     </p>
 
     <!-- Barra de filtros -->
-    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 bg-white border border-navy/10 rounded-xl p-4 mb-5">
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 bg-surface border border-line rounded-2xl p-4 mb-5 shadow-[var(--shadow-card)]">
       <div>
         <label for="f-q" class="block text-xs font-semibold uppercase tracking-wide text-navy/50 mb-1">Buscar</label>
         <input id="f-q" type="text" placeholder="Zona, municipio o nombre"
-          class="w-full rounded-lg border border-navy/20 px-3 py-2 text-sm focus:outline-none focus:border-sand" />
+          class="w-full rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:border-sand bg-surface" />
       </div>
 
       <div>
         <label for="f-tipo" class="block text-xs font-semibold uppercase tracking-wide text-navy/50 mb-1">Tipo</label>
-        <select id="f-tipo" class="w-full rounded-lg border border-navy/20 px-3 py-2 text-sm focus:outline-none focus:border-sand">
+        <select id="f-tipo" class="w-full rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:border-sand bg-surface">
           <option value="">Todos</option>
           {tiposDisponibles.map((t) => <option value={t}>{labelTipo[t]}</option>)}
         </select>
@@ -51,7 +51,7 @@ const departamentosDisponibles = Array.from(
 
       <div>
         <label for="f-zona" class="block text-xs font-semibold uppercase tracking-wide text-navy/50 mb-1">Zona</label>
-        <select id="f-zona" class="w-full rounded-lg border border-navy/20 px-3 py-2 text-sm focus:outline-none focus:border-sand">
+        <select id="f-zona" class="w-full rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:border-sand bg-surface">
           <option value="">Todas</option>
           {departamentosDisponibles.map((d) => <option value={d.toLowerCase()}>{d}</option>)}
         </select>
@@ -59,7 +59,7 @@ const departamentosDisponibles = Array.from(
 
       <div>
         <label for="f-precio" class="block text-xs font-semibold uppercase tracking-wide text-navy/50 mb-1">Precio</label>
-        <select id="f-precio" class="w-full rounded-lg border border-navy/20 px-3 py-2 text-sm focus:outline-none focus:border-sand">
+        <select id="f-precio" class="w-full rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:border-sand bg-surface">
           <option value="">Cualquiera</option>
           <option value="0-30000">Hasta $30,000</option>
           <option value="30000-50000">$30,000 – $50,000</option>
@@ -73,7 +73,7 @@ const departamentosDisponibles = Array.from(
       <p id="contador" class="text-sm text-navy/70" aria-live="polite"></p>
       <div class="flex items-center gap-2">
         <label for="f-orden" class="text-sm text-navy/60">Ordenar:</label>
-        <select id="f-orden" class="rounded-lg border border-navy/20 px-3 py-2 text-sm focus:outline-none focus:border-sand">
+        <select id="f-orden" class="rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:border-sand bg-surface">
           <option value="">Destacados</option>
           <option value="precio-asc">Precio: menor a mayor</option>
           <option value="precio-desc">Precio: mayor a menor</option>
@@ -217,7 +217,7 @@ const departamentosDisponibles = Array.from(
       b.textContent = String(i);
       b.className =
         "h-9 w-9 rounded-full text-sm font-semibold transition-colors " +
-        (i === paginaActual ? "bg-navy text-cream" : "bg-white border border-navy/20 hover:bg-navy/5");
+        (i === paginaActual ? "bg-navy text-cream" : "bg-surface border border-line hover:bg-navy/5");
       b.addEventListener("click", () => {
         paginaActual = i;
         render();

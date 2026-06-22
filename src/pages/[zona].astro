@@ -94,7 +94,7 @@ const migas = [
         <h2 class="font-display text-2xl mb-4">Preguntas frecuentes</h2>
         <div class="space-y-3">
           {zona.faq.map((f) => (
-            <details class="group rounded-lg border border-navy/10 bg-white p-4">
+            <details class="group rounded-xl border border-line bg-surface p-4 shadow-[var(--shadow-card)]">
               <summary class="cursor-pointer font-semibold flex items-center justify-between gap-2">
                 {f.pregunta}
                 <span class="text-sand transition-transform group-open:rotate-180">
@@ -111,7 +111,7 @@ const migas = [
     )}
 
     <!-- CTA WhatsApp -->
-    <section class="mt-12 rounded-xl bg-navy text-cream p-6 text-center">
+    <section class="mt-12 rounded-2xl bg-navy text-cream p-8 text-center shadow-[var(--shadow-card)]">
       <p class="font-display text-2xl mb-2">¿Te interesa esta zona?</p>
       <p class="text-cream/80 mb-4 max-w-xl mx-auto">
         Escribinos y un asesor te comparte disponibilidad, precios y formas de
@@ -121,6 +121,7 @@ const migas = [
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
+        data-evento="click_whatsapp"
         class="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-semibold text-white hover:opacity-90 transition-opacity"
       >
         Escribir por WhatsApp
