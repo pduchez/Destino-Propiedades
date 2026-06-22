@@ -436,4 +436,66 @@ export const proyectos: Proyecto[] = [
     },
     whatsappMensaje: mensajeWhatsapp("Highlights", "highlights"),
   },
+
+  // ───────────────────────────────────────────────────────────────────────
+  // PROYECTO REAL — Galveston (Vista al Mar / Suncita II). Parcelación de uso
+  // mixto (vivienda/negocio/logística) en El Suncita, Acajutla, Sonsonate.
+  // Datos de lista de precios (OVC Constructores S.A. de C.V., $121/v²),
+  // ficha de amenidades, plano y PPDS de Grupo Chacón. GUARDRAIL: NO es
+  // "frente al mar" — se vende por ubicación, conectividad y uso mixto, no
+  // como playa. Fotos PENDIENTES: galería vacía → marcador "Fotos en camino".
+  // ───────────────────────────────────────────────────────────────────────
+  {
+    id: "galveston",
+    slug: "galveston",
+    nombre: "Galveston",
+    desarrolladorId: "grupo-chacon",
+    departamento: "Sonsonate",
+    municipio: "Acajutla",
+    tipo: "urbano",
+    estado: "disponible",
+    destacado: true,
+    descripcion:
+      "Galveston — Vista al Mar (Suncita II) es una parcelación de uso mixto " +
+      "en el Cantón El Suncita, Acajutla, Sonsonate. Lotes pensados para " +
+      "vivienda, negocio o inversión, en una zona conectada del occidente " +
+      "del país con vocación logística cercana al puerto de Acajutla. " +
+      "Incluye factibilidad de servicios básicos, calles asfaltadas, cordón " +
+      "cuneta, aceras, áreas verdes jardinizadas, caseta de seguridad y " +
+      "estacionamiento de visitas, con precio por vara cuadrada uniforme y " +
+      "planes de pago directos con el desarrollador.",
+    // Fotos pendientes: el desarrollador las subirá por partes.
+    galeria: [],
+    precioDesde: 36357,
+    etiquetaPrecio: "Desde $36,357 por lote",
+    // Tipos representativos de los 43 lotes listados (polígonos E, F y K;
+    // precio uniforme de US$121 por vara²). La disponibilidad real por lote NO
+    // está confirmada en la lista ("No especificado"): se deja en 0 y se
+    // confirma lote a lote antes de vender.
+    tiposDeLote: [
+      { nombre: "Lote compacto ≈210 m² (≈300 v²)", area: 300, unidad: "v2", precio: 36357, disponibilidad: 0 },
+      { nombre: "Lote estándar ≈306–345 m² (≈438–494 v²)", area: 438, unidad: "v2", precio: 52976, disponibilidad: 0 },
+      { nombre: "Lote amplio hasta ≈462 m² (≈661 v²)", area: 661, unidad: "v2", precio: 80010, disponibilidad: 0 },
+    ],
+    servicios: [
+      "Factibilidad de servicios básicos",
+      "Caseta de seguridad",
+      "Calles asfaltadas",
+      "Cordón cuneta",
+      "Aceras",
+      "Áreas verdes jardinizadas",
+      "Estacionamiento de visitas",
+      "Zona pet-friendly",
+    ],
+    // Ubicación aproximada de El Suncita / Acajutla. PENDIENTE: ajustar al
+    // punto exacto del proyecto (coordenadas marcadas como faltantes en el PPDS).
+    ubicacion: { lat: 13.62, lng: -89.82 },
+    seo: {
+      titulo: "Galveston — Vista al Mar, lotes en Acajutla, Sonsonate | DestinoPropiedades.com",
+      metaDescripcion:
+        "Lotes de uso mixto en Galveston (Vista al Mar), El Suncita, Acajutla, Sonsonate: servicios básicos, calles asfaltadas y áreas verdes. Ideal para vivienda, negocio o inversión. Desde $36,357 por lote. Consultá por WhatsApp.",
+      ogImage: "/assets/og/galveston.jpg",
+    },
+    whatsappMensaje: mensajeWhatsapp("Galveston", "galveston"),
+  },
 ];

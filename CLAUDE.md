@@ -84,17 +84,21 @@ proyectos/contacto en componentes o páginas.
   (placeholder de texto por ahora).
 - Fotos reales de proyectos → `public/assets/proyectos/...`. Reales:
   `condado-del-golfo` (con fotos dron). Reales SIN fotos aún (muestran "Fotos
-  en camino"): `adelaida-city`, `altos-de-las-mercedes`, `highlights` — pegar
-  fotos en `galeria` cuando lleguen.
-- Coordenadas exactas de `adelaida-city`, `altos-de-las-mercedes` y
-  `highlights` (hoy aproximadas, marcadas `// PENDIENTE` en `proyectos.ts`).
+  en camino"): `adelaida-city`, `altos-de-las-mercedes`, `highlights`,
+  `galveston` — pegar fotos en `galeria` cuando lleguen.
+- Coordenadas exactas de `adelaida-city`, `altos-de-las-mercedes`,
+  `highlights` y `galveston` (hoy aproximadas, marcadas `// PENDIENTE` en
+  `proyectos.ts`).
 - Disponibilidad real por lote de `highlights` (la lista de precios no la
   marca; `disponibilidad: 0` por ahora, confirmar lote a lote).
-- Nombre oficial final de `highlights` (las fuentes usan variantes:
-  Highlight/Highlights/El Zapote).
+- Disponibilidad real por lote de `galveston` (la lista no la marca;
+  `disponibilidad: 0` por ahora, confirmar lote a lote).
+- Nombre oficial final de `highlights` (Highlight/Highlights/El Zapote) y de
+  `galveston` (Galveston / Vista al Mar / Suncita II). Guardrail `galveston`:
+  NO venderlo como "frente al mar" — es uso mixto en Acajutla.
 - Correo de contacto real.
 - Proyectos REALES (datos de Grupo Chacón): `condado-del-golfo`,
-  `adelaida-city`, `altos-de-las-mercedes`, `highlights`. Proyectos de EJEMPLO inventados
+  `adelaida-city`, `altos-de-las-mercedes`, `highlights`, `galveston`. Proyectos de EJEMPLO inventados
   (`riviera-del-pacifico`, `altos-de-costa-azul`, `vista-mar-el-zonte`):
   reemplazar o borrar cuando haya más proyectos reales.
 
