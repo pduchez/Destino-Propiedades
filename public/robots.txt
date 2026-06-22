@@ -1,0 +1,6 @@
+# DestinoPropiedades.com — permitimos que los buscadores indexen todo el sitio.
+User-agent: *
+Allow: /
+
+# Mapa del sitio (lo genera Astro automáticamente al construir).
+Sitemap: https://destinopropiedades.com/sitemap-index.xml

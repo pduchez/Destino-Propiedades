@@ -1,5 +1,6 @@
 ---
 import { sitio } from "../data/sitio";
+import { zonas } from "../data/zonas";
 import { linkLlamar, linkWhatsapp } from "../lib/whatsapp";
 
 const mensajeGenerico = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
@@ -14,15 +15,19 @@ const enlaces = [
   { href: "/quienes-somos", label: "¿Quiénes Somos?" },
 ];
 
+// Páginas SEO por zona.
+const enlacesZonas = zonas.map((z) => ({ href: `/${z.slug}`, label: z.nombre }));
+
 // Solo se muestra el ícono de una red social si tiene URL real.
 const redes = [
   { nombre: "Facebook", url: sitio.redes.facebook },
   { nombre: "Instagram", url: sitio.redes.instagram },
+  { nombre: "TikTok", url: sitio.redes.tiktok },
 ].filter((r) => r.url);
 ---
 
 <footer class="bg-navy text-cream mt-16">
-  <div class="mx-auto max-w-6xl px-4 py-10 grid gap-8 sm:grid-cols-3">
+  <div class="mx-auto max-w-6xl px-4 py-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
     <div>
       <p class="font-display text-xl mb-2">{sitio.marcaPlataforma}</p>
       <p class="text-sm text-cream/70">
@@ -36,6 +41,17 @@ const redes = [
       </p>
       <ul class="space-y-1 text-sm">
         {enlaces.map((e) => (
+          <li><a href={e.href} class="hover:text-sand transition-colors">{e.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <p class="font-semibold mb-2 text-sm uppercase tracking-wide text-sand">
+        Zonas
+      </p>
+      <ul class="space-y-1 text-sm">
+        {enlacesZonas.map((e) => (
           <li><a href={e.href} class="hover:text-sand transition-colors">{e.label}</a></li>
         ))}
       </ul>

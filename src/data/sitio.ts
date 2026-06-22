@@ -22,6 +22,7 @@ export interface Sitio {
   redes: {
     facebook: string;
     instagram: string;
+    tiktok: string;
   };
   colores: {
     primario: string;
@@ -49,10 +50,13 @@ export const sitio: Sitio = {
     correo: "contacto@destinopropiedades.com",
   },
   redes: {
-    // Dejar vacío ("") si no existe el perfil. El sitio debe ocultar el
-    // ícono cuando el valor está vacío — nunca enlazar a "#".
+    // Dejar vacío ("") si no existe el perfil. El sitio oculta el ícono
+    // cuando el valor está vacío — nunca enlaza a "#".
+    // PENDIENTE: pegar aquí las URLs reales de las redes (canal principal
+    // de promoción: Instagram, TikTok, Facebook).
     facebook: "",
     instagram: "",
+    tiktok: "",
   },
   colores: {
     primario: "#0f2438", // navy

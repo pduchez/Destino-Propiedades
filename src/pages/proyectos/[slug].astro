@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Galeria from "../../components/Galeria.astro";
 import MigasDePan from "../../components/MigasDePan.astro";
+import JsonLd from "../../components/JsonLd.astro";
 import { proyectos } from "../../data/proyectos";
 import { sitio } from "../../data/sitio";
 import { linkLlamar, linkWhatsapp } from "../../lib/whatsapp";
@@ -11,13 +12,15 @@ import {
   labelTipo,
   labelEstado,
 } from "../../lib/formato";
-import { rangoArea, lotesDisponibles } from "../../lib/relaciones";
+import { rangoArea, lotesDisponibles, zonaDeProyecto } from "../../lib/relaciones";
+import { proyectoJsonLd, breadcrumbJsonLd } from "../../lib/seo";
 
 export function getStaticPaths() {
   return proyectos.map((p) => ({ params: { slug: p.slug }, props: { proyecto: p } }));
 }
 
 const { proyecto } = Astro.props;
+const base = Astro.site!;
 
 const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, proyecto.whatsappMensaje);
 const telUrl = linkLlamar(sitio.contacto.telefono);
@@ -25,12 +28,13 @@ const rango = rangoArea(proyecto);
 const disponibles = lotesDisponibles(proyecto);
 const mapaUrl = `https://www.google.com/maps/search/?api=1&query=${proyecto.ubicacion.lat},${proyecto.ubicacion.lng}`;
 
-// Migas de pan. La zona (departamento) será un enlace cuando existan las
-// páginas de zona (Fase 4); por ahora va como texto.
+// Migas de pan: Inicio / Tipo / Zona / Proyecto. La zona enlaza a su página
+// SEO si existe.
+const zona = zonaDeProyecto(proyecto);
 const migas = [
   { label: "Inicio", href: "/" },
-  { label: "Proyectos", href: "/proyectos" },
   { label: `Lotes de ${labelTipo[proyecto.tipo]}`, href: `/proyectos?tipo=${proyecto.tipo}` },
+  { label: zona ? zona.nombre : proyecto.departamento, href: zona ? `/${zona.slug}` : undefined },
   { label: proyecto.nombre },
 ];
 
@@ -56,7 +60,12 @@ const datosClave = [
   titulo={proyecto.seo.titulo}
   descripcion={proyecto.seo.metaDescripcion}
   ogImage={proyecto.seo.ogImage}
+  ogImageAlt={`${proyecto.nombre}, ${proyecto.municipio}, ${proyecto.departamento}`}
+  ogType="article"
 >
+  <JsonLd slot="head" data={proyectoJsonLd(proyecto, base)} />
+  <JsonLd slot="head" data={breadcrumbJsonLd(migas, base)} />
+
   <div class="mx-auto max-w-6xl px-4 py-6">
     <MigasDePan items={migas} />
   </div>

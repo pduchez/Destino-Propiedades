@@ -77,13 +77,41 @@ proyectos/contacto en componentes o páginas.
   para poblar el sitio mientras llegan los reales — reemplazar o borrar
   cuando haya datos reales.
 
-## Estado del proyecto (fases, ver plan completo en el primer pedido)
-- Fase 0 — Arranque: en curso.
-- Fases siguientes: Diseño base, Proyectos, Búsqueda/listados, SEO,
-  Favoritos/formulario/legal, Revisión local, Publicación.
+## SEO y redes (Fase 4) — es el corazón comercial
+- Canal de promoción: redes sociales (Instagram, TikTok, Facebook) + pauta
+  digital. Por eso el preview al compartir importa tanto como Google.
+- `Layout.astro` emite: title/description únicos, Open Graph completo
+  (con og:image absoluta 1200x630, og:locale es_SV, og:site_name), Twitter
+  Card (summary_large_image), canonical, theme-color y robots.
+- Imágenes de compartir "de marca" (1200x630, JPG para compatibilidad con
+  WhatsApp/Facebook) en `public/assets/og/`. Se generan con `npm run og`
+  (script `scripts/generar-og.ts`, usa sharp). Regenerar tras cambiar fotos,
+  nombres o precios.
+- Datos estructurados (JSON-LD) vía `src/lib/seo.ts` + `JsonLd.astro`:
+  - Inicio: WebSite (con SearchAction) + Organization (sameAs = redes).
+  - Ficha de proyecto: Product + AggregateOffer (precio) + BreadcrumbList.
+  - Zona: CollectionPage + FAQPage + BreadcrumbList.
+- `sitemap.xml` automático (@astrojs/sitemap) + `public/robots.txt` (no
+  bloquea nada, apunta al sitemap). `site` configurado en `astro.config.mjs`.
+- Páginas SEO de zona: `src/pages/[zona].astro`, datos en `src/data/zonas.ts`
+  (descripcion + contexto + ventajas + faq + titulo/metaDescripcion).
+
+## Estado del proyecto (fases)
+- Fase 0 — Arranque: hecho.
+- Fase 1 — Diseño base: hecho.
+- Fase 2 — Fichas de proyecto (galería, datos, WhatsApp): hecho.
+- Fase 3 — Búsqueda/listados (buscador, filtros, burbujas): hecho.
+- Fase 4 — SEO + redes: hecho.
+- Fases siguientes: Favoritos/formulario/legal (5), Revisión local (6),
+  Publicación (7).
 
 ## Cómo correr el sitio localmente
 ```
 npm install
 npm run dev
+```
+
+## Regenerar imágenes sociales (al cambiar fotos/precios/nombres)
+```
+npm run og
 ```

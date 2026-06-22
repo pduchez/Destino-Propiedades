@@ -1,10 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import JsonLd from "../components/JsonLd.astro";
 import { sitio } from "../data/sitio";
 import { proyectos } from "../data/proyectos";
 import { linkWhatsapp } from "../lib/whatsapp";
 import { labelTipo } from "../lib/formato";
+import { websiteJsonLd, organizationJsonLd } from "../lib/seo";
 
+const base = Astro.site!;
 const mensaje = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
 const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensaje);
 
@@ -40,6 +43,8 @@ const burbujas: Burbuja[] = [
   titulo={`${sitio.marcaPlataforma} — Lotes en El Salvador para la diáspora salvadoreña`}
   descripcion="Encontrá lotes en lotificaciones confiables en El Salvador. Confianza, datos claros y contacto directo por WhatsApp."
 >
+  <JsonLd slot="head" data={websiteJsonLd(base)} />
+  <JsonLd slot="head" data={organizationJsonLd(base)} />
   <!-- PENDIENTE: reemplazar el fondo por una foto real de proyecto en alta calidad -->
   <section class="bg-gradient-to-br from-navy to-navy-light text-cream">
     <div class="mx-auto max-w-6xl px-4 py-20 sm:py-28 text-center">

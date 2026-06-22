@@ -85,7 +85,8 @@ export const proyectos: Proyecto[] = [
       titulo: "Riviera del Pacífico — Lotes frente al mar en Acajutla, Sonsonate",
       metaDescripcion:
         "Lotes de playa en Acajutla, Sonsonate, con acceso controlado y servicios completos. Desde $28,000. Consultá disponibilidad por WhatsApp.",
-      ogImage: "/assets/proyectos/riviera-del-pacifico/1.webp",
+      // Imagen de marca para compartir (1200x630). Se regenera con _gen-og.ts.
+      ogImage: "/assets/og/riviera-del-pacifico.jpg",
     },
     whatsappMensaje: mensajeWhatsapp("Riviera del Pacífico", "riviera-del-pacifico"),
   },
@@ -121,7 +122,7 @@ export const proyectos: Proyecto[] = [
       titulo: "Altos de Costa Azul — Lotes en preventa en Costa del Sol, La Libertad",
       metaDescripcion:
         "Lotes en preventa con vista al mar en Costa del Sol, La Libertad. Acceso controlado y alta plusvalía. Consultá precios por WhatsApp.",
-      ogImage: "/assets/proyectos/altos-de-costa-azul/1.webp",
+      ogImage: "/assets/og/altos-de-costa-azul.jpg",
     },
     whatsappMensaje: mensajeWhatsapp("Altos de Costa Azul", "altos-de-costa-azul"),
   },
@@ -157,7 +158,7 @@ export const proyectos: Proyecto[] = [
       titulo: "Vista Mar El Zonte — Lotes cerca de la playa en La Libertad",
       metaDescripcion:
         "Lotes listos para construir cerca de El Zonte, La Libertad. Zona turística y surfera en crecimiento. Desde $35,000.",
-      ogImage: "/assets/proyectos/vista-mar-el-zonte/1.webp",
+      ogImage: "/assets/og/vista-mar-el-zonte.jpg",
     },
     whatsappMensaje: mensajeWhatsapp("Vista Mar El Zonte", "vista-mar-el-zonte"),
   },

@@ -3,33 +3,66 @@ import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import BotonWhatsappFlotante from "../components/BotonWhatsappFlotante.astro";
+import { sitio } from "../data/sitio";
 
 interface Props {
   titulo: string;
   descripcion: string;
+  /** Imagen para compartir en redes (1200x630). Si no se pasa, usa la del sitio. */
   ogImage?: string;
+  /** Texto alternativo de la imagen social. */
+  ogImageAlt?: string;
+  /** Tipo Open Graph: "website" (por defecto) o "article". */
+  ogType?: "website" | "article";
 }
 
-const { titulo, descripcion, ogImage } = Astro.props;
-const urlCanonica = new URL(Astro.url.pathname, Astro.site ?? "https://destinopropiedades.com");
+const {
+  titulo,
+  descripcion,
+  ogImage = "/assets/og/default.jpg",
+  ogImageAlt,
+  ogType = "website",
+} = Astro.props;
+
+const base = Astro.site ?? new URL("https://destinopropiedades.com");
+const urlCanonica = new URL(Astro.url.pathname, base);
+const ogImageAbs = new URL(ogImage, base);
+const altFinal = ogImageAlt ?? titulo;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es-SV">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={urlCanonica} />
+    <meta name="theme-color" content="#0f2438" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
 
     <title>{titulo}</title>
     <meta name="description" content={descripcion} />
 
-    <meta property="og:type" content="website" />
+    <!-- Open Graph (Facebook, WhatsApp, Instagram, LinkedIn) -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={sitio.marcaPlataforma} />
+    <meta property="og:locale" content="es_SV" />
     <meta property="og:title" content={titulo} />
     <meta property="og:description" content={descripcion} />
     <meta property="og:url" content={urlCanonica} />
-    {ogImage && <meta property="og:image" content={new URL(ogImage, urlCanonica)} />}
+    <meta property="og:image" content={ogImageAbs} />
+    <meta property="og:image:secure_url" content={ogImageAbs} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={altFinal} />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descripcion} />
+    <meta name="twitter:image" content={ogImageAbs} />
+    <meta name="twitter:image:alt" content={altFinal} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,6 +70,9 @@ const urlCanonica = new URL(Astro.url.pathname, Astro.site ?? "https://destinopr
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Datos estructurados y meta extra por página -->
+    <slot name="head" />
   </head>
   <body class="bg-cream text-navy font-sans flex min-h-screen flex-col">
     <Header />

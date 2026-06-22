@@ -3,6 +3,13 @@
 // precio/tipo/zona + orden + contador + paginación. El filtrado ocurre en el
 // navegador (sitio estático) y lee los parámetros de la URL, incluido el
 // ?q= que envía el buscador del inicio (F1).
+//
+// FUTURO (F9, documentado, sin construir): cuando entren más desarrolladores
+// a la plataforma, agregar aquí (o en una página /desarrolladores) una sección
+// "Desarrolladores aliados" que liste cada tenant. El modelo ya lo soporta:
+// cada proyecto tiene `desarrolladorId`, y `sitio.desarrolladorActual` se puede
+// convertir en una lista de desarrolladores. No requiere rehacer el diseño,
+// solo añadir datos y un filtro por desarrollador.
 import Layout from "../../layouts/Layout.astro";
 import TarjetaProyecto from "../../components/TarjetaProyecto.astro";
 import { proyectos } from "../../data/proyectos";
