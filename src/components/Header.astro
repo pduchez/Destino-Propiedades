@@ -2,6 +2,7 @@
 import { sitio } from "../data/sitio";
 import { linkLlamar, linkWhatsapp } from "../lib/whatsapp";
 import { withBase } from "../lib/rutas";
+import Logo from "./Logo.astro";
 
 const navLinks = [
   { href: "/", label: "Inicio" },
@@ -16,8 +17,8 @@ const telUrl = linkLlamar(sitio.contacto.telefono);
 
 <header class="bg-navy text-cream sticky top-0 z-40 shadow-md">
   <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-4">
-    <a href={withBase("/")} class="font-display text-xl sm:text-2xl tracking-wide shrink-0">
-      {sitio.marcaPlataforma}
+    <a href={withBase("/")} class="shrink-0" aria-label={sitio.marcaPlataforma}>
+      <Logo tono="claro" size={34} />
     </a>
 
     <nav class="hidden md:flex items-center gap-6 text-sm">

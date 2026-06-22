@@ -5,6 +5,7 @@ import { proyectos } from "../data/proyectos";
 import { labelLotesDe } from "../lib/formato";
 import { linkLlamar, linkWhatsapp } from "../lib/whatsapp";
 import { withBase } from "../lib/rutas";
+import Logo from "./Logo.astro";
 
 const mensajeGenerico = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
 const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensajeGenerico);
@@ -46,7 +47,7 @@ const redes = [
   <div class="mx-auto max-w-6xl px-4 py-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
     <!-- Marca + contacto -->
     <div>
-      <p class="font-display text-xl mb-2">{sitio.marcaPlataforma}</p>
+      <Logo tono="claro" size={32} class="mb-3" />
       <p class="text-sm text-cream/70 mb-4">
         En alianza con {sitio.desarrolladorActual.nombre}.
       </p>
