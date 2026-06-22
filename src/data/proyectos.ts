@@ -188,12 +188,12 @@ export const proyectos: Proyecto[] = [
       "y construir patrimonio familiar en una zona en crecimiento, cerca de " +
       "servicios como el Hospital Nacional de La Unión.",
     galeria: [
-      "/assets/proyectos/condado-del-golfo/1.webp",
-      "/assets/proyectos/condado-del-golfo/2.webp",
+      "/assets/proyectos/condado-del-golfo/1.webp", // foto aérea real (calles y lotes)
+      "/assets/proyectos/condado-del-golfo/2.webp", // foto aérea real (entrada y casas terminadas)
       "/assets/proyectos/condado-del-golfo/plano.webp", // plano real de distribución
       "/assets/proyectos/condado-del-golfo/3.webp",
       "/assets/proyectos/condado-del-golfo/4.webp",
-    ], // PENDIENTE: reemplazar 1-4 con fotos reales (entrada, caseta, calles, casa club)
+    ], // PENDIENTE: reemplazar 3-4 con más fotos reales (caseta, casa club)
     precioDesde: 24693,
     etiquetaPrecio: "Desde $24,693 por lote",
     // Tipos representativos calculados desde el inventario real (261 lotes).
