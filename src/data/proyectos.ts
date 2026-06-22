@@ -83,43 +83,69 @@ function mensajeWhatsapp(nombre: string, slug: string): string {
 }
 
 export const proyectos: Proyecto[] = [
+  // ───────────────────────────────────────────────────────────────────────
+  // PROYECTO REAL — Riviera del Pacífico (Sunsita #1). Lotificación costera
+  // en Cantón Sunza, Acajutla, Sonsonate. Datos de lista de precios
+  // (Parceladora Salvadoreña S.A. de C.V., $165/v², prima 20%), ficha de
+  // amenidades, plano y PPDS de Grupo Chacón. 46 lotes (polígonos A-D).
+  // Reemplaza la versión de EJEMPLO previa. Fotos PENDIENTES: galería vacía
+  // → marcador "Fotos en camino".
+  // ───────────────────────────────────────────────────────────────────────
   {
     id: "riviera-del-pacifico",
     slug: "riviera-del-pacifico",
-    nombre: "Riviera del Pacífico", // EJEMPLO
+    nombre: "Riviera del Pacífico",
     desarrolladorId: "grupo-chacon",
     departamento: "Sonsonate",
     municipio: "Acajutla",
     tipo: "playa",
     estado: "disponible",
+    destacado: true,
     descripcion:
-      "Lotificación frente al Pacífico con acceso directo a playa, pensada " +
-      "para quienes buscan construir su casa de descanso o invertir en la " +
-      "costa salvadoreña. Lotes amplios, calles internas pavimentadas y " +
-      "acceso controlado las 24 horas.",
-    galeria: [
-      "/assets/proyectos/riviera-del-pacifico/1.webp",
-      "/assets/proyectos/riviera-del-pacifico/2.webp",
-      "/assets/proyectos/riviera-del-pacifico/3.webp",
-      "/assets/proyectos/riviera-del-pacifico/4.webp",
-      "/assets/proyectos/riviera-del-pacifico/5.webp",
-      "/assets/proyectos/riviera-del-pacifico/6.webp",
-      "/assets/proyectos/riviera-del-pacifico/7.webp",
-      "/assets/proyectos/riviera-del-pacifico/8.webp",
-    ], // PENDIENTE: reemplazar con fotos reales (8-15 fotos)
-    precioDesde: 28000,
-    etiquetaPrecio: "Desde $28,000 por lote",
+      "Riviera del Pacífico (Sunsita #1) es una lotificación costera en el " +
+      "Cantón Sunza, Acajutla, Sonsonate. Ofrece lotes amplios —de unas 515 " +
+      "a más de 1,300 varas²— con acceso controlado, caseta de seguridad, " +
+      "muro perimetral, calles adoquinadas, áreas verdes jardinizadas y un " +
+      "conjunto de amenidades premium (piscina, gimnasio, casa club, " +
+      "ciclovía). Pensada para la familia salvadoreña que busca tierra cerca " +
+      "del mar como patrimonio, segunda vivienda o inversión turística, con " +
+      "planes de pago directos: prima del 20% y saldo financiado con el " +
+      "desarrollador.",
+    // Fotos pendientes: el desarrollador las subirá por partes.
+    galeria: [],
+    precioDesde: 85066,
+    etiquetaPrecio: "Desde $85,066 por lote",
+    // Tipos representativos de los 46 lotes (polígonos A-D; precio uniforme de
+    // US$165 por vara², prima 20%). La disponibilidad real por lote NO está
+    // confirmada en la lista ("No especificado"): se deja en 0 y se confirma
+    // lote a lote antes de vender.
     tiposDeLote: [
-      { nombre: "Lote estándar", area: 300, unidad: "v2", precio: 28000, disponibilidad: 12 },
-      { nombre: "Lote frente a playa", area: 450, unidad: "v2", precio: 52000, disponibilidad: 4 },
+      { nombre: "Lote estándar ≈515–750 v²", area: 515, unidad: "v2", precio: 85066, disponibilidad: 0 },
+      { nombre: "Lote amplio ≈800–1,050 v²", area: 800, unidad: "v2", precio: 133290, disponibilidad: 0 },
+      { nombre: "Lote premium hasta ≈1,300 v²", area: 1300, unidad: "v2", precio: 214635, disponibilidad: 0 },
     ],
-    servicios: ["Acceso controlado", "Agua potable", "Energía eléctrica", "Acceso a playa", "Calles pavimentadas"],
-    ubicacion: { lat: 13.5928, lng: -89.8275 },
+    servicios: [
+      "Acceso controlado",
+      "Caseta de seguridad",
+      "Factibilidad de servicios básicos",
+      "Muro perimetral",
+      "Calles adoquinadas",
+      "Cordón cuneta",
+      "Aceras",
+      "Áreas verdes jardinizadas",
+      "Piscina",
+      "Gimnasio",
+      "Casa club",
+      "Ciclovía",
+      "Estacionamiento de visitas",
+    ],
+    // Ubicación aproximada del Cantón Sunza, Acajutla. PENDIENTE: ajustar al
+    // punto exacto del proyecto (coordenadas marcadas como faltantes en el PPDS).
+    ubicacion: { lat: 13.575, lng: -89.8 },
     seo: {
-      titulo: "Riviera del Pacífico — Lotes frente al mar en Acajutla, Sonsonate",
+      titulo: "Riviera del Pacífico — Lotes frente al mar en Acajutla, Sonsonate | DestinoPropiedades.com",
       metaDescripcion:
-        "Lotes de playa en Acajutla, Sonsonate, con acceso controlado y servicios completos. Desde $28,000. Consultá disponibilidad por WhatsApp.",
-      // Imagen de marca para compartir (1200x630). Se regenera con _gen-og.ts.
+        "Lotes de playa en Riviera del Pacífico, Cantón Sunza, Acajutla, Sonsonate: acceso controlado, piscina, casa club y amenidades premium. Desde $85,066 por lote, prima 20%. Consultá por WhatsApp.",
       ogImage: "/assets/og/riviera-del-pacifico.jpg",
     },
     whatsappMensaje: mensajeWhatsapp("Riviera del Pacífico", "riviera-del-pacifico"),
