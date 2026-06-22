@@ -3,6 +3,7 @@ import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import BotonWhatsappFlotante from "../components/BotonWhatsappFlotante.astro";
+import FavoritosScript from "../components/FavoritosScript.astro";
 import { sitio } from "../data/sitio";
 
 interface Props {
@@ -81,5 +82,6 @@ const altFinal = ogImageAlt ?? titulo;
     </main>
     <Footer />
     <BotonWhatsappFlotante />
+    <FavoritosScript />
   </body>
 </html>

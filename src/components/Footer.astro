@@ -1,22 +1,37 @@
 ---
 import { sitio } from "../data/sitio";
 import { zonas } from "../data/zonas";
+import { proyectos } from "../data/proyectos";
+import { labelTipo } from "../lib/formato";
 import { linkLlamar, linkWhatsapp } from "../lib/whatsapp";
 
 const mensajeGenerico = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
 const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensajeGenerico);
 const telUrl = linkLlamar(sitio.contacto.telefono);
 
-// Enlaces que ya tienen página real en el sitio. Privacidad y Términos se
-// agregan en la Fase 5 — no se enlazan antes para no dejar links rotos.
-const enlaces = [
+// Columna "Explorar": navegación + buscar por tipo (nuestro equivalente de
+// "categorías"). Los tipos se generan desde los proyectos existentes.
+const tiposPresentes = Array.from(new Set(proyectos.map((p) => p.tipo)));
+const enlacesExplorar = [
   { href: "/", label: "Inicio" },
-  { href: "/proyectos", label: "Proyectos" },
+  { href: "/proyectos", label: "Todos los proyectos" },
+  ...tiposPresentes.map((t) => ({
+    href: `/proyectos?tipo=${t}`,
+    label: `Lotes de ${labelTipo[t].toLowerCase()}`,
+  })),
   { href: "/quienes-somos", label: "¿Quiénes Somos?" },
+  { href: "/contacto", label: "Contacto" },
 ];
 
-// Páginas SEO por zona.
+// Columna "Zonas": páginas SEO por zona.
 const enlacesZonas = zonas.map((z) => ({ href: `/${z.slug}`, label: z.nombre }));
+
+// Columna "Proyectos": acceso directo a cada lotificación (enlazado interno
+// útil para SEO y para el visitante).
+const enlacesProyectos = proyectos.map((p) => ({
+  href: `/proyectos/${p.slug}`,
+  label: p.nombre,
+}));
 
 // Solo se muestra el ícono de una red social si tiene URL real.
 const redes = [
@@ -27,39 +42,12 @@ const redes = [
 ---
 
 <footer class="bg-navy text-cream mt-16">
-  <div class="mx-auto max-w-6xl px-4 py-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+  <div class="mx-auto max-w-6xl px-4 py-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <!-- Marca + contacto -->
     <div>
       <p class="font-display text-xl mb-2">{sitio.marcaPlataforma}</p>
-      <p class="text-sm text-cream/70">
+      <p class="text-sm text-cream/70 mb-4">
         En alianza con {sitio.desarrolladorActual.nombre}.
-      </p>
-    </div>
-
-    <div>
-      <p class="font-semibold mb-2 text-sm uppercase tracking-wide text-sand">
-        Enlaces
-      </p>
-      <ul class="space-y-1 text-sm">
-        {enlaces.map((e) => (
-          <li><a href={e.href} class="hover:text-sand transition-colors">{e.label}</a></li>
-        ))}
-      </ul>
-    </div>
-
-    <div>
-      <p class="font-semibold mb-2 text-sm uppercase tracking-wide text-sand">
-        Zonas
-      </p>
-      <ul class="space-y-1 text-sm">
-        {enlacesZonas.map((e) => (
-          <li><a href={e.href} class="hover:text-sand transition-colors">{e.label}</a></li>
-        ))}
-      </ul>
-    </div>
-
-    <div>
-      <p class="font-semibold mb-2 text-sm uppercase tracking-wide text-sand">
-        Contacto
       </p>
       <ul class="space-y-1 text-sm">
         <li><a href={telUrl} class="hover:text-sand transition-colors">{sitio.contacto.telefono}</a></li>
@@ -76,9 +64,52 @@ const redes = [
         </div>
       )}
     </div>
+
+    <!-- Explorar -->
+    <div>
+      <p class="font-semibold mb-2 text-sm uppercase tracking-wide text-sand">
+        Explorar
+      </p>
+      <ul class="space-y-1 text-sm">
+        {enlacesExplorar.map((e) => (
+          <li><a href={e.href} class="hover:text-sand transition-colors">{e.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Zonas -->
+    <div>
+      <p class="font-semibold mb-2 text-sm uppercase tracking-wide text-sand">
+        Zonas
+      </p>
+      <ul class="space-y-1 text-sm">
+        {enlacesZonas.map((e) => (
+          <li><a href={e.href} class="hover:text-sand transition-colors">{e.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Proyectos -->
+    <div>
+      <p class="font-semibold mb-2 text-sm uppercase tracking-wide text-sand">
+        Proyectos
+      </p>
+      <ul class="space-y-1 text-sm">
+        {enlacesProyectos.map((e) => (
+          <li><a href={e.href} class="hover:text-sand transition-colors">{e.label}</a></li>
+        ))}
+      </ul>
+    </div>
   </div>
 
-  <div class="border-t border-navy-light px-4 py-4 text-center text-xs text-cream/60">
-    © {new Date().getFullYear()} {sitio.marcaPlataforma}. Todos los derechos reservados.
+  <!-- Barra inferior: copyright + legales -->
+  <div class="border-t border-navy-light px-4 py-4">
+    <div class="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-cream/60">
+      <p>© {new Date().getFullYear()} {sitio.marcaPlataforma}. Todos los derechos reservados.</p>
+      <div class="flex gap-4">
+        <a href="/terminos" class="hover:text-sand transition-colors">Términos</a>
+        <a href="/privacidad" class="hover:text-sand transition-colors">Privacidad</a>
+      </div>
+    </div>
   </div>
 </footer>

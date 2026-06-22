@@ -106,8 +106,16 @@ proyectos/contacto en componentes o páginas.
 - Fase 2 — Fichas de proyecto (galería, datos, WhatsApp): hecho.
 - Fase 3 — Búsqueda/listados (buscador, filtros, burbujas): hecho.
 - Fase 4 — SEO + redes: hecho.
-- Fases siguientes: Favoritos/formulario/legal (5), Revisión local (6),
-  Publicación (7).
+- Fase 5 — Favoritos/formulario/legal: hecho.
+  - Favoritos ❤️ con localStorage (`FavoritosScript.astro`, sin backend):
+    corazón en tarjetas y fichas, contador en el menú, página `/favoritos`.
+  - Formulario de contacto `/contacto`: estático, compone el mensaje y abre
+    WhatsApp (canal de conversión), con casilla de consentimiento obligatoria.
+  - Páginas legales `/privacidad` y `/terminos` (BORRADOR — revisión legal
+    pendiente). Se enlazan desde la barra inferior del footer, no como
+    secciones. Footer reorganizado a 4 columnas data-driven (Marca+contacto /
+    Explorar / Zonas / Proyectos).
+- Fases siguientes: Revisión local (6), Publicación (7).
 
 ## Cómo correr el sitio localmente
 ```
