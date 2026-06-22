@@ -85,20 +85,23 @@ proyectos/contacto en componentes o páginas.
 - Fotos reales de proyectos → `public/assets/proyectos/...`. Reales:
   `condado-del-golfo` (con fotos dron). Reales SIN fotos aún (muestran "Fotos
   en camino"): `adelaida-city`, `altos-de-las-mercedes`, `highlights`,
-  `galveston`, `riviera-del-pacifico` — pegar fotos en `galeria` cuando lleguen.
+  `galveston`, `riviera-del-pacifico`, `villa-lourdes` — pegar fotos en
+  `galeria` cuando lleguen.
 - Coordenadas exactas de `adelaida-city`, `altos-de-las-mercedes`,
-  `highlights`, `galveston` y `riviera-del-pacifico` (hoy aproximadas,
-  marcadas `// PENDIENTE` en `proyectos.ts`).
-- Disponibilidad real por lote de `highlights`, `galveston` y
-  `riviera-del-pacifico` (las listas no la marcan; `disponibilidad: 0` por
-  ahora, confirmar lote a lote).
+  `highlights`, `galveston`, `riviera-del-pacifico` y `villa-lourdes` (hoy
+  aproximadas, marcadas `// PENDIENTE` en `proyectos.ts`).
+- Disponibilidad real por lote de `highlights`, `galveston`,
+  `riviera-del-pacifico` y `villa-lourdes` (las listas no la marcan;
+  `disponibilidad: 0` por ahora, confirmar lote a lote). En `villa-lourdes`
+  hay lotes "marcados en amarillo" (posible reserva): no publicar como
+  disponibles sin confirmación humana.
 - Nombre oficial final de `highlights` (Highlight/Highlights/El Zapote) y de
   `galveston` (Galveston / Vista al Mar / Suncita II). Guardrail `galveston`:
   NO venderlo como "frente al mar" — es uso mixto en Acajutla.
 - Correo de contacto real.
 - Proyectos REALES (datos de Grupo Chacón): `condado-del-golfo`,
   `adelaida-city`, `altos-de-las-mercedes`, `highlights`, `galveston`,
-  `riviera-del-pacifico`. Proyectos de EJEMPLO inventados restantes
+  `riviera-del-pacifico`, `villa-lourdes`. Proyectos de EJEMPLO inventados restantes
   (`altos-de-costa-azul`, `vista-mar-el-zonte`): reemplazar o borrar cuando
   haya más proyectos reales.
 

@@ -524,4 +524,68 @@ export const proyectos: Proyecto[] = [
     },
     whatsappMensaje: mensajeWhatsapp("Galveston", "galveston"),
   },
+
+  // ───────────────────────────────────────────────────────────────────────
+  // PROYECTO REAL — Villa Lourdes (Condado Villa Lourdes). Urbanización
+  // residencial en Lourdes Colón, La Libertad. Datos de lista de precios
+  // (GESCOSAL S.A. de C.V.), ficha de amenidades, plano y PPDS de Grupo
+  // Chacón. 389 lotes (polígonos F, G, I, J). GUARDRAIL: hay lotes "marcados
+  // en amarillo" (posible reserva) — no afirmar disponibilidad sin confirmar.
+  // Fotos PENDIENTES: galería vacía → marcador "Fotos en camino".
+  // ───────────────────────────────────────────────────────────────────────
+  {
+    id: "villa-lourdes",
+    slug: "villa-lourdes",
+    nombre: "Villa Lourdes",
+    desarrolladorId: "grupo-chacon",
+    departamento: "La Libertad",
+    municipio: "Lourdes Colón",
+    tipo: "residencial",
+    estado: "disponible",
+    destacado: true,
+    descripcion:
+      "Urbanización Villa Lourdes (Condado Villa Lourdes) es un proyecto " +
+      "residencial en la Hacienda Agua Fría, Cantón El Capulín, Lourdes " +
+      "Colón, La Libertad — una zona céntrica y bien conectada del occidente " +
+      "del Gran San Salvador. Ofrece lotes para vivienda o inversión con " +
+      "factibilidad de servicios básicos, calles asfaltadas, aceras, cordón " +
+      "cuneta, caseta de seguridad, áreas verdes jardinizadas, planta de " +
+      "tratamiento y equipamiento social. Una opción accesible para la " +
+      "familia salvadoreña que quiere construir o invertir en tierra urbana, " +
+      "con planes de pago directos con el desarrollador.",
+    // Fotos pendientes: el desarrollador las subirá por partes.
+    galeria: [],
+    precioDesde: 25182,
+    etiquetaPrecio: "Desde $25,182 por lote",
+    // Tipos representativos de los 389 lotes (polígonos F, G, I, J; precio por
+    // vara² entre ≈US$286 y US$367). Hay lotes "marcados en amarillo" (posible
+    // reserva): la disponibilidad real por lote NO está confirmada, se deja en
+    // 0 y se confirma lote a lote antes de vender.
+    tiposDeLote: [
+      { nombre: "Lote compacto ≈50–85 m² (≈72–120 v²)", area: 72, unidad: "v2", precio: 25182, disponibilidad: 0 },
+      { nombre: "Lote estándar ≈90–140 m² (≈130–200 v²)", area: 130, unidad: "v2", precio: 44216, disponibilidad: 0 },
+      { nombre: "Lote amplio hasta ≈200 m² (≈287 v²)", area: 287, unidad: "v2", precio: 105247, disponibilidad: 0 },
+    ],
+    servicios: [
+      "Factibilidad de servicios básicos",
+      "Caseta de seguridad",
+      "Calles asfaltadas",
+      "Cordón cuneta",
+      "Aceras",
+      "Áreas verdes jardinizadas",
+      "Estacionamiento de visitas",
+      "Planta de tratamiento",
+      "Equipamiento social",
+    ],
+    // Ubicación aproximada de Lourdes Colón. PENDIENTE: ajustar al punto exacto
+    // del proyecto (coordenadas marcadas como faltantes en el PPDS).
+    ubicacion: { lat: 13.708, lng: -89.357 },
+    seo: {
+      titulo: "Villa Lourdes — Lotes residenciales en Lourdes Colón, La Libertad | DestinoPropiedades.com",
+      metaDescripcion:
+        "Lotes residenciales en Urbanización Villa Lourdes, Lourdes Colón, La Libertad: calles asfaltadas, servicios básicos, seguridad y áreas verdes. Desde $25,182 por lote. Consultá por WhatsApp.",
+      ogImage: "/assets/og/villa-lourdes.jpg",
+    },
+    whatsappMensaje: mensajeWhatsapp("Villa Lourdes", "villa-lourdes"),
+  },
 ];
