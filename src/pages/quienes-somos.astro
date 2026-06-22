@@ -1,0 +1,45 @@
+---
+// Contenido base de doble marca. El pulido SEO (schema, metas finales) se
+// completa en la Fase 4.
+import Layout from "../layouts/Layout.astro";
+import { sitio } from "../data/sitio";
+---
+
+<Layout
+  titulo={`¿Quiénes Somos? — ${sitio.marcaPlataforma}`}
+  descripcion="DestinoPropiedades.com es la plataforma tecnológica que conecta a la diáspora salvadoreña con proyectos confiables, en alianza con Grupo Inmobiliario Chacón."
+>
+  <section class="mx-auto max-w-3xl px-4 py-14">
+    <h1 class="font-display text-3xl sm:text-4xl mb-6">¿Quiénes Somos?</h1>
+
+    <h2 class="font-display text-xl mb-2">{sitio.marcaPlataforma}</h2>
+    <p class="text-navy/80 mb-6">
+      DestinoPropiedades.com es la plataforma tecnológica y comercial pensada
+      para salvadoreños en Estados Unidos que quieren invertir en un lote en
+      su país de origen. Nuestro objetivo es simple: que comprar a distancia
+      sea tan confiable como hacerlo en persona. Por eso mostramos información
+      clara y verificada de cada proyecto, y te conectamos directo por
+      WhatsApp con un asesor real, sin formularios que no llevan a ninguna
+      parte.
+    </p>
+
+    <h2 class="font-display text-xl mb-2">{sitio.desarrolladorActual.nombre}</h2>
+    <p class="text-navy/80 mb-6">
+      {sitio.desarrolladorActual.nombre} es nuestro desarrollador aliado
+      actual: la empresa responsable de construir y entregar los proyectos
+      que encontrás en este sitio. DestinoPropiedades.com es la plataforma;{" "}
+      {sitio.desarrolladorActual.nombre} es quien desarrolla los lotes. Esta
+      alianza está pensada para crecer — en el futuro, otros desarrolladores
+      podrán sumar sus proyectos a la plataforma bajo el mismo estándar de
+      confianza y transparencia.
+    </p>
+
+    <h2 class="font-display text-xl mb-2">Cómo trabajamos</h2>
+    <ul class="list-disc pl-5 space-y-2 text-navy/80">
+      <li>Información de cada proyecto verificada antes de publicarse.</li>
+      <li>Precios y disponibilidad actualizados, sin datos inventados.</li>
+      <li>Contacto directo por WhatsApp con un asesor, no con un bot.</li>
+      <li>Sin pagos ni reservas en línea: toda compra se formaliza con el desarrollador, con respaldo legal salvadoreño.</li>
+    </ul>
+  </section>
+</Layout>

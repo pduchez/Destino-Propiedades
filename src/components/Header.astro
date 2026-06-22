@@ -1,0 +1,95 @@
+---
+import { sitio } from "../data/sitio";
+import { linkLlamar, linkWhatsapp } from "../lib/whatsapp";
+
+const navLinks = [
+  { href: "/", label: "Inicio" },
+  { href: "/proyectos", label: "Proyectos" },
+  { href: "/quienes-somos", label: "¿Quiénes Somos?" },
+];
+
+const mensajeGenerico = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
+const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensajeGenerico);
+const telUrl = linkLlamar(sitio.contacto.telefono);
+---
+
+<header class="bg-navy text-cream sticky top-0 z-40 shadow-md">
+  <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-4">
+    <a href="/" class="font-display text-xl sm:text-2xl tracking-wide shrink-0">
+      {sitio.marcaPlataforma}
+    </a>
+
+    <nav class="hidden md:flex items-center gap-6 text-sm">
+      {navLinks.map((link) => (
+        <a href={link.href} class="hover:text-sand transition-colors">
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="hidden md:flex items-center gap-3 text-sm shrink-0">
+      <a href={telUrl} class="hover:text-sand transition-colors">
+        {sitio.contacto.telefono}
+      </a>
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="bg-sand text-navy font-semibold px-4 py-2 rounded-full hover:bg-sand-light transition-colors"
+      >
+        WhatsApp
+      </a>
+    </div>
+
+    <button
+      id="menu-toggle"
+      type="button"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+      class="md:hidden p-2 -mr-2"
+    >
+      <svg id="icon-abrir" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+      <svg id="icon-cerrar" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <nav id="menu-movil" class="md:hidden hidden border-t border-navy-light px-4 py-3 space-y-3">
+    {navLinks.map((link) => (
+      <a href={link.href} class="block text-sm hover:text-sand transition-colors">
+        {link.label}
+      </a>
+    ))}
+    <div class="flex items-center gap-3 pt-2">
+      <a href={telUrl} class="text-sm hover:text-sand transition-colors">
+        {sitio.contacto.telefono}
+      </a>
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="bg-sand text-navy font-semibold px-4 py-2 rounded-full text-sm hover:bg-sand-light transition-colors"
+      >
+        WhatsApp
+      </a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const boton = document.getElementById("menu-toggle");
+  const menu = document.getElementById("menu-movil");
+  const iconoAbrir = document.getElementById("icon-abrir");
+  const iconoCerrar = document.getElementById("icon-cerrar");
+
+  boton?.addEventListener("click", () => {
+    const abierto = menu?.classList.contains("hidden") === false;
+    menu?.classList.toggle("hidden");
+    iconoAbrir?.classList.toggle("hidden");
+    iconoCerrar?.classList.toggle("hidden");
+    boton.setAttribute("aria-expanded", String(!abierto));
+  });
+</script>

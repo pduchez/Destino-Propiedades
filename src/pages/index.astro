@@ -1,31 +1,81 @@
 ---
-import "../styles/global.css";
+import Layout from "../layouts/Layout.astro";
 import { sitio } from "../data/sitio";
-import { proyectos } from "../data/proyectos";
+import { linkWhatsapp } from "../lib/whatsapp";
 
-// Página temporal de Fase 0: solo confirma que el modelo de datos carga
-// correctamente. El diseño real se construye en la Fase 1.
+const mensaje = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
+const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensaje);
 ---
 
-<html lang="es">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>{sitio.marcaPlataforma} (en construcción)</title>
-	</head>
-	<body class="bg-cream text-navy p-8 font-sans">
-		<h1 class="text-3xl mb-2">{sitio.marcaPlataforma}</h1>
-		<p class="mb-6">
-			Página temporal de Fase 0 — el diseño definitivo llega en la Fase 1.
-			Desarrollador actual: {sitio.desarrolladorActual.nombre}.
-		</p>
-		<ul class="space-y-2">
-			{proyectos.map((p) => (
-				<li>
-					<strong>{p.nombre}</strong> — {p.municipio}, {p.departamento} —{" "}
-					{p.etiquetaPrecio}
-				</li>
-			))}
-		</ul>
-	</body>
-</html>
+<Layout
+  titulo={`${sitio.marcaPlataforma} — Lotes en El Salvador para la diáspora salvadoreña`}
+  descripcion="Encontrá lotes en lotificaciones confiables en El Salvador. Confianza, datos claros y contacto directo por WhatsApp."
+>
+  <!-- PENDIENTE: reemplazar el fondo por una foto real de proyecto en alta calidad -->
+  <section class="bg-gradient-to-br from-navy to-navy-light text-cream">
+    <div class="mx-auto max-w-6xl px-4 py-20 sm:py-28 text-center">
+      <h1 class="font-display text-3xl sm:text-5xl leading-tight max-w-3xl mx-auto">
+        Tu lote en El Salvador, a un mensaje de distancia
+      </h1>
+      <p class="mt-5 text-base sm:text-lg text-cream/80 max-w-2xl mx-auto">
+        Lotes en lotificaciones confiables, pensados para salvadoreños que
+        construyen su futuro desde Estados Unidos. Información clara, sin
+        sorpresas, y contacto directo con un asesor real.
+      </p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <a
+          href="/proyectos"
+          class="bg-sand text-navy font-semibold px-6 py-3 rounded-full hover:bg-sand-light transition-colors"
+        >
+          Ver proyectos disponibles
+        </a>
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="border border-cream/40 px-6 py-3 rounded-full hover:bg-cream/10 transition-colors"
+        >
+          Escribir por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-14 grid gap-8 sm:grid-cols-3 text-center">
+    <div>
+      <p class="font-display text-xl mb-1">Confianza primero</p>
+      <p class="text-sm text-navy/70">
+        Información clara y verificada de cada proyecto, sin promesas vacías.
+      </p>
+    </div>
+    <div>
+      <p class="font-display text-xl mb-1">Proyectos verificados</p>
+      <p class="text-sm text-navy/70">
+        Trabajamos con desarrolladores establecidos, comenzando con Grupo
+        Inmobiliario Chacón.
+      </p>
+    </div>
+    <div>
+      <p class="font-display text-xl mb-1">Atención directa</p>
+      <p class="text-sm text-navy/70">
+        Hablás por WhatsApp con una persona real, no con un formulario sin
+        respuesta.
+      </p>
+    </div>
+  </section>
+
+  <section class="bg-navy/5 py-14">
+    <div class="mx-auto max-w-6xl px-4 text-center">
+      <p class="font-display text-2xl mb-3">
+        En alianza con {sitio.desarrolladorActual.nombre}
+      </p>
+      <p class="text-navy/70 max-w-2xl mx-auto mb-5">
+        DestinoPropiedades.com es la plataforma; {sitio.desarrolladorActual.nombre}{" "}
+        es nuestro desarrollador aliado actual para los proyectos en venta.
+      </p>
+      <a href="/quienes-somos" class="text-navy font-semibold underline hover:text-sand transition-colors">
+        Conocé más sobre quiénes somos
+      </a>
+    </div>
+  </section>
+</Layout>

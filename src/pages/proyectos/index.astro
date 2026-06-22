@@ -1,0 +1,46 @@
+---
+// Listado básico de proyectos. Los filtros, orden, contador y paginación
+// (F2) se agregan en la Fase 3. Las fichas de cada proyecto (clic en cada
+// tarjeta) se agregan en la Fase 2.
+import Layout from "../../layouts/Layout.astro";
+import { proyectos } from "../../data/proyectos";
+import { sitio } from "../../data/sitio";
+
+const estadoLabel: Record<string, string> = {
+  disponible: "Disponible",
+  preventa: "Preventa",
+  agotado: "Agotado",
+};
+---
+
+<Layout
+  titulo={`Proyectos — ${sitio.marcaPlataforma}`}
+  descripcion="Conocé los proyectos de lotificaciones disponibles en El Salvador: ubicación, precios y servicios de cada uno."
+>
+  <section class="mx-auto max-w-6xl px-4 py-12">
+    <h1 class="font-display text-3xl sm:text-4xl mb-2">Proyectos</h1>
+    <p class="text-navy/70 mb-8">
+      Lotificaciones disponibles en El Salvador, en alianza con{" "}
+      {sitio.desarrolladorActual.nombre}.
+    </p>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {proyectos.map((p) => (
+        <article class="bg-white rounded-xl overflow-hidden shadow-sm border border-navy/10">
+          <!-- PENDIENTE: foto real del proyecto -->
+          <div class="h-40 bg-gradient-to-br from-navy-light to-navy flex items-center justify-center text-cream/70 text-sm">
+            Foto pendiente
+          </div>
+          <div class="p-4">
+            <span class="inline-block text-xs font-semibold uppercase tracking-wide text-sand bg-navy px-2 py-1 rounded">
+              {estadoLabel[p.estado]}
+            </span>
+            <h2 class="font-display text-lg mt-2">{p.nombre}</h2>
+            <p class="text-sm text-navy/60">{p.municipio}, {p.departamento}</p>
+            <p class="text-sand font-semibold mt-2">{p.etiquetaPrecio}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</Layout>
