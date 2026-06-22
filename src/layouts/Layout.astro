@@ -4,6 +4,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import BotonWhatsappFlotante from "../components/BotonWhatsappFlotante.astro";
 import FavoritosScript from "../components/FavoritosScript.astro";
+import Medicion from "../components/Medicion.astro";
 import { sitio } from "../data/sitio";
 
 interface Props {
@@ -74,6 +75,7 @@ const altFinal = ogImageAlt ?? titulo;
 
     <!-- Datos estructurados y meta extra por página -->
     <slot name="head" />
+    <Medicion />
   </head>
   <body class="bg-cream text-navy font-sans flex min-h-screen flex-col">
     <Header />

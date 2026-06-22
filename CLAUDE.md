@@ -124,6 +124,31 @@ proyectos/contacto en componentes o páginas.
 - Páginas SEO de zona: `src/pages/[zona].astro`, datos en `src/data/zonas.ts`
   (descripcion + contexto + ventajas + faq + titulo/metaDescripcion).
 
+## Medición (a partir de "Estrategia Social-First + SEO + Medición v1.0")
+El dueño compartió un documento de estrategia (GA4/GTM, Meta Pixel+CAPI,
+TikTok Pixel+Events API, CRM, webhooks de WhatsApp, taxonomía de eventos de
+conversión). Dado que el sitio es estático y sin backend (regla de este
+documento) y que aún no hay cuentas/credenciales reales, se implementó solo
+la capa de bajo riesgo y sin secretos, dejando el resto explícitamente
+pendiente en vez de inventar IDs o levantar infraestructura no autorizada:
+
+- **Hecho**: `src/components/Medicion.astro` (cargado desde `Layout.astro`)
+  activa GTM o GA4 *solo* si `PUBLIC_GTM_CONTAINER_ID` o
+  `PUBLIC_GA4_MEASUREMENT_ID` están definidas como variables de entorno (ver
+  `.env.example`). Sin esas variables, no se carga ningún script de terceros.
+  También agrega un listener global de clics: cualquier elemento con
+  `data-evento="nombre_evento"` (y opcionalmente `data-proyecto="slug"`)
+  empuja el evento a `dataLayer`. Ya está puesto en los botones de WhatsApp
+  (flotante y de ficha de proyecto) como `click_whatsapp`.
+- **PENDIENTE / fuera de alcance hasta tener decisiones humanas y
+  credenciales reales** (condiciones de parada del documento): Meta CAPI,
+  TikTok Events API, integración de CRM y webhooks de WhatsApp (requieren
+  backend, tokens server-side y validación de firmas — incompatibles con
+  "sin backend en v1" hasta que se decida lo contrario); IDs reales de
+  GA4/GTM/Meta Pixel/TikTok Pixel; páginas de ruta por audiencia ("Comprar
+  desde Estados Unidos" vs. "Proyectos en El Salvador") y campañas pagadas,
+  que implican decisiones de contenido/negocio que debe validar el dueño.
+
 ## Estado del proyecto (fases)
 - Fase 0 — Arranque: hecho.
 - Fase 1 — Diseño base: hecho.
