@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+/*
+  Paleta e identidad de DestinoPropiedades.com.
+  Provisional hasta tener el logo real de Grupo Chacón — ver CLAUDE.md.
+*/
+@theme {
+  --font-display: "Playfair Display", serif;
+  --font-sans: "Hanken Grotesk", sans-serif;
+
+  --color-navy: #0f2438;
+  --color-navy-light: #1c3b59;
+  --color-sand: #c9a463;
+  --color-sand-light: #e7d6b3;
+  --color-cream: #faf7f2;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+}

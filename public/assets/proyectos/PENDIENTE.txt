@@ -1,0 +1,3 @@
+PENDIENTE: estas carpetas deben llenarse con fotos reales en formato .webp
+(8-15 fotos por proyecto). Las rutas ya están referenciadas en
+src/data/proyectos.ts — solo hay que colocar los archivos con esos nombres.

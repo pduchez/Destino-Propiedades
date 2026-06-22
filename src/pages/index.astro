@@ -1,0 +1,31 @@
+---
+import "../styles/global.css";
+import { sitio } from "../data/sitio";
+import { proyectos } from "../data/proyectos";
+
+// Página temporal de Fase 0: solo confirma que el modelo de datos carga
+// correctamente. El diseño real se construye en la Fase 1.
+---
+
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>{sitio.marcaPlataforma} (en construcción)</title>
+	</head>
+	<body class="bg-cream text-navy p-8 font-sans">
+		<h1 class="text-3xl mb-2">{sitio.marcaPlataforma}</h1>
+		<p class="mb-6">
+			Página temporal de Fase 0 — el diseño definitivo llega en la Fase 1.
+			Desarrollador actual: {sitio.desarrolladorActual.nombre}.
+		</p>
+		<ul class="space-y-2">
+			{proyectos.map((p) => (
+				<li>
+					<strong>{p.nombre}</strong> — {p.municipio}, {p.departamento} —{" "}
+					{p.etiquetaPrecio}
+				</li>
+			))}
+		</ul>
+	</body>
+</html>
