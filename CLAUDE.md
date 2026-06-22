@@ -101,9 +101,9 @@ proyectos/contacto en componentes o páginas.
 - Correo de contacto real.
 - Proyectos REALES (datos de Grupo Chacón): `condado-del-golfo`,
   `adelaida-city`, `altos-de-las-mercedes`, `highlights`, `galveston`,
-  `riviera-del-pacifico`, `villa-lourdes`. Proyectos de EJEMPLO inventados restantes
-  (`altos-de-costa-azul`, `vista-mar-el-zonte`): reemplazar o borrar cuando
-  haya más proyectos reales.
+  `riviera-del-pacifico`, `villa-lourdes`. Los proyectos de ejemplo inventados
+  (`altos-de-costa-azul`, `vista-mar-el-zonte`) ya fueron eliminados; todos los
+  proyectos del sitio son reales.
 
 ## SEO y redes (Fase 4) — es el corazón comercial
 - Canal de promoción: redes sociales (Instagram, TikTok, Facebook) + pauta
