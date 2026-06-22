@@ -165,9 +165,8 @@ export const proyectos: Proyecto[] = [
 
   // ───────────────────────────────────────────────────────────────────────
   // PROYECTO REAL — datos tomados de los documentos de Grupo Chacón / GESCOSAL
-  // (presentación, lista de precios, ficha de amenidades y plano). Las FOTOS
-  // siguen pendientes (las de marketing están en la "Presentación general"
-  // que no se incluyó); por ahora hay placeholders + el plano real.
+  // (presentación, lista de precios, ficha de amenidades y plano) y fotos
+  // aéreas reales (dron) provistas por el desarrollador.
   // ───────────────────────────────────────────────────────────────────────
   {
     id: "condado-del-golfo",
@@ -184,16 +183,20 @@ export const proyectos: Proyecto[] = [
       "La Unión. Es un proyecto amplio y pensado como comunidad: calles " +
       "asfaltadas, cordón cuneta, aceras, áreas verdes jardinizadas, casa " +
       "club, ciclovía y zona pet-friendly, con caseta de seguridad y " +
-      "factibilidades de servicios básicos. Una opción para volver, invertir " +
-      "y construir patrimonio familiar en una zona en crecimiento, cerca de " +
-      "servicios como el Hospital Nacional de La Unión.",
+      "factibilidades de servicios básicos. Desde el proyecto se aprecia la " +
+      "vista al Golfo de Fonseca y a los volcanes de la zona. Una opción para " +
+      "volver, invertir y construir patrimonio familiar en una zona en " +
+      "crecimiento, cerca de servicios como el Hospital Nacional de La Unión.",
+    // Fotos aéreas reales del proyecto (dron). Portada: panorámica con el
+    // Golfo de Fonseca y los volcanes al fondo.
     galeria: [
-      "/assets/proyectos/condado-del-golfo/1.webp", // foto aérea real (calles y lotes)
-      "/assets/proyectos/condado-del-golfo/2.webp", // foto aérea real (entrada y casas terminadas)
+      "/assets/proyectos/condado-del-golfo/panoramica-golfo.webp", // vista al Golfo de Fonseca
+      "/assets/proyectos/condado-del-golfo/vista-aerea.webp", // calles internas y lotes
+      "/assets/proyectos/condado-del-golfo/entrada-casas.webp", // entrada y casas terminadas
+      "/assets/proyectos/condado-del-golfo/calles.webp", // calles con cordón cuneta
+      "/assets/proyectos/condado-del-golfo/obra.webp", // obra en avance (maquinaria)
       "/assets/proyectos/condado-del-golfo/plano.webp", // plano real de distribución
-      "/assets/proyectos/condado-del-golfo/3.webp",
-      "/assets/proyectos/condado-del-golfo/4.webp",
-    ], // PENDIENTE: reemplazar 3-4 con más fotos reales (caseta, casa club)
+    ],
     precioDesde: 24693,
     etiquetaPrecio: "Desde $24,693 por lote",
     // Tipos representativos calculados desde el inventario real (261 lotes).
