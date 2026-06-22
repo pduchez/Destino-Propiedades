@@ -1,10 +1,16 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { sitio } from "../data/sitio";
+import { proyectos } from "../data/proyectos";
 import { linkWhatsapp } from "../lib/whatsapp";
 
 const mensaje = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
 const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensaje);
+
+// Sugerencias para el buscador: municipios y departamentos presentes en los datos.
+const sugerencias = Array.from(
+  new Set(proyectos.flatMap((p) => [p.municipio, p.departamento]))
+).sort();
 ---
 
 <Layout
@@ -22,20 +28,44 @@ const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensaje);
         construyen su futuro desde Estados Unidos. Información clara, sin
         sorpresas, y contacto directo con un asesor real.
       </p>
-      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-        <a
-          href="/proyectos"
+      <!-- Buscador protagonista (F1): lleva a resultados filtrados en /proyectos -->
+      <form
+        action="/proyectos"
+        method="get"
+        class="mt-8 mx-auto max-w-xl flex flex-col sm:flex-row gap-2 bg-white/95 rounded-2xl sm:rounded-full p-2 shadow-lg"
+      >
+        <label for="buscar-zona" class="sr-only">Buscar por zona o municipio</label>
+        <input
+          id="buscar-zona"
+          type="text"
+          name="q"
+          list="sugerencias-zona"
+          placeholder="¿En qué zona buscás? Ej. Sonsonate, El Zonte..."
+          class="flex-1 bg-transparent text-navy placeholder:text-navy/50 px-4 py-3 focus:outline-none"
+        />
+        <datalist id="sugerencias-zona">
+          {sugerencias.map((s) => <option value={s}></option>)}
+        </datalist>
+        <button
+          type="submit"
           class="bg-sand text-navy font-semibold px-6 py-3 rounded-full hover:bg-sand-light transition-colors"
         >
-          Ver proyectos disponibles
+          Buscar
+        </button>
+      </form>
+
+      <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center text-sm">
+        <a href="/proyectos" class="underline hover:text-sand transition-colors">
+          Ver todos los proyectos
         </a>
+        <span class="hidden sm:inline text-cream/40">·</span>
         <a
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="border border-cream/40 px-6 py-3 rounded-full hover:bg-cream/10 transition-colors"
+          class="underline hover:text-sand transition-colors"
         >
-          Escribir por WhatsApp
+          O escribinos por WhatsApp
         </a>
       </div>
     </div>
