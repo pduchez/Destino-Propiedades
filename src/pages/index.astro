@@ -7,6 +7,7 @@ import { proyectos } from "../data/proyectos";
 import { linkWhatsapp } from "../lib/whatsapp";
 import { labelTipo } from "../lib/formato";
 import { websiteJsonLd, organizationJsonLd } from "../lib/seo";
+import { withBase } from "../lib/rutas";
 
 const base = Astro.site!;
 const mensaje = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
@@ -67,7 +68,7 @@ const destacados = (
       </p>
       <!-- Buscador protagonista (F1): lleva a resultados filtrados en /proyectos -->
       <form
-        action="/proyectos"
+        action={withBase("/proyectos")}
         method="get"
         class="mt-8 mx-auto max-w-xl flex flex-col sm:flex-row gap-2 bg-white/95 rounded-2xl sm:rounded-full p-2 shadow-lg"
       >
@@ -95,7 +96,7 @@ const destacados = (
       <div class="mt-5 flex flex-wrap justify-center gap-2">
         {burbujas.map((b) => (
           <a
-            href={b.href}
+            href={withBase(b.href)}
             class="inline-flex items-center gap-2 rounded-full border border-cream/30 bg-cream/5 px-4 py-2 text-sm text-cream hover:bg-cream/15 hover:border-sand transition-colors"
           >
             {b.icono === "zona" && (
@@ -126,7 +127,7 @@ const destacados = (
       </div>
 
       <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center text-sm">
-        <a href="/proyectos" class="underline hover:text-sand transition-colors">
+        <a href={withBase("/proyectos")} class="underline hover:text-sand transition-colors">
           Ver todos los proyectos
         </a>
         <span class="hidden sm:inline text-cream/40">·</span>
@@ -152,7 +153,7 @@ const destacados = (
             Una selección de lotificaciones para conocer hoy.
           </p>
         </div>
-        <a href="/proyectos" class="text-navy font-semibold underline hover:text-sand transition-colors whitespace-nowrap">
+        <a href={withBase("/proyectos")} class="text-navy font-semibold underline hover:text-sand transition-colors whitespace-nowrap">
           Ver todos los proyectos
         </a>
       </div>
@@ -194,7 +195,7 @@ const destacados = (
         DestinoPropiedades.com es la plataforma; {sitio.desarrolladorActual.nombre}{" "}
         es nuestro desarrollador aliado actual para los proyectos en venta.
       </p>
-      <a href="/quienes-somos" class="text-navy font-semibold underline hover:text-sand transition-colors">
+      <a href={withBase("/quienes-somos")} class="text-navy font-semibold underline hover:text-sand transition-colors">
         Conocé más sobre quiénes somos
       </a>
     </div>

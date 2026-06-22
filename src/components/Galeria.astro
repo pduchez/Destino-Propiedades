@@ -2,11 +2,14 @@
 // Galería de fotos de la ficha de proyecto (F4): imagen grande, miniaturas,
 // contador "1/N" y vista a pantalla completa (lightbox).
 // Isla de interactividad con JavaScript del navegador, sin dependencias.
+import { withBase } from "../lib/rutas";
 interface Props {
   fotos: string[];
   nombreProyecto: string;
 }
-const { fotos, nombreProyecto } = Astro.props;
+const { fotos: fotosRaw, nombreProyecto } = Astro.props;
+// Prefija con la base del despliegue para que no se rompan bajo subcarpeta.
+const fotos = fotosRaw.map((f) => withBase(f));
 ---
 
 <div class="galeria" data-galeria>

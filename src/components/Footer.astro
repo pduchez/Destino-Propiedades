@@ -4,6 +4,7 @@ import { zonas } from "../data/zonas";
 import { proyectos } from "../data/proyectos";
 import { labelLotesDe } from "../lib/formato";
 import { linkLlamar, linkWhatsapp } from "../lib/whatsapp";
+import { withBase } from "../lib/rutas";
 
 const mensajeGenerico = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
 const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensajeGenerico);
@@ -72,7 +73,7 @@ const redes = [
       </p>
       <ul class="space-y-1 text-sm">
         {enlacesExplorar.map((e) => (
-          <li><a href={e.href} class="hover:text-sand transition-colors">{e.label}</a></li>
+          <li><a href={withBase(e.href)} class="hover:text-sand transition-colors">{e.label}</a></li>
         ))}
       </ul>
     </div>
@@ -84,7 +85,7 @@ const redes = [
       </p>
       <ul class="space-y-1 text-sm">
         {enlacesZonas.map((e) => (
-          <li><a href={e.href} class="hover:text-sand transition-colors">{e.label}</a></li>
+          <li><a href={withBase(e.href)} class="hover:text-sand transition-colors">{e.label}</a></li>
         ))}
       </ul>
     </div>
@@ -96,7 +97,7 @@ const redes = [
       </p>
       <ul class="space-y-1 text-sm">
         {enlacesProyectos.map((e) => (
-          <li><a href={e.href} class="hover:text-sand transition-colors">{e.label}</a></li>
+          <li><a href={withBase(e.href)} class="hover:text-sand transition-colors">{e.label}</a></li>
         ))}
       </ul>
     </div>
@@ -107,8 +108,8 @@ const redes = [
     <div class="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-cream/60">
       <p>© {new Date().getFullYear()} {sitio.marcaPlataforma}. Todos los derechos reservados.</p>
       <div class="flex gap-4">
-        <a href="/terminos" class="hover:text-sand transition-colors">Términos</a>
-        <a href="/privacidad" class="hover:text-sand transition-colors">Privacidad</a>
+        <a href={withBase("/terminos")} class="hover:text-sand transition-colors">Términos</a>
+        <a href={withBase("/privacidad")} class="hover:text-sand transition-colors">Privacidad</a>
       </div>
     </div>
   </div>

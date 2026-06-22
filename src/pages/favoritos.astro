@@ -6,6 +6,7 @@ import Layout from "../layouts/Layout.astro";
 import TarjetaProyecto from "../components/TarjetaProyecto.astro";
 import { proyectos } from "../data/proyectos";
 import { sitio } from "../data/sitio";
+import { withBase } from "../lib/rutas";
 ---
 
 <Layout
@@ -30,7 +31,7 @@ import { sitio } from "../data/sitio";
       <p class="text-navy/50 text-sm mt-1">
         Tocá el corazón ❤️ en cualquier proyecto para guardarlo aquí.
       </p>
-      <a href="/proyectos" class="mt-6 inline-block rounded-full bg-navy text-cream px-6 py-3 font-semibold hover:bg-navy-light transition-colors">
+      <a href={withBase("/proyectos")} class="mt-6 inline-block rounded-full bg-navy text-cream px-6 py-3 font-semibold hover:bg-navy-light transition-colors">
         Ver proyectos
       </a>
     </div>

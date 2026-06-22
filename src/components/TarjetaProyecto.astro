@@ -7,6 +7,7 @@ import PlaceholderFoto from "./PlaceholderFoto.astro";
 import { labelTipo, labelEstado } from "../lib/formato";
 import { rangoArea, lotesDisponibles } from "../lib/relaciones";
 import { etiquetaUnidad } from "../lib/formato";
+import { withBase } from "../lib/rutas";
 
 interface Props {
   proyecto: Proyecto;
@@ -35,10 +36,10 @@ const areaTexto = rango
   data-disp={disponibles}
 >
   <div class="relative h-44 overflow-hidden">
-    <a href={`/proyectos/${proyecto.slug}`} class="block h-full">
+    <a href={withBase(`/proyectos/${proyecto.slug}`)} class="block h-full">
       {proyecto.galeria.length > 0 ? (
         <img
-          src={proyecto.galeria[0]}
+          src={withBase(proyecto.galeria[0])}
           alt={`${proyecto.nombre}, ${proyecto.municipio}, ${proyecto.departamento}`}
           class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
@@ -72,7 +73,7 @@ const areaTexto = rango
   </div>
 
   <div class="flex flex-1 flex-col p-4">
-    <a href={`/proyectos/${proyecto.slug}`} class="block">
+    <a href={withBase(`/proyectos/${proyecto.slug}`)} class="block">
       <h3 class="font-display text-lg leading-tight">{proyecto.nombre}</h3>
       <p class="text-sm text-navy/60 mt-0.5">{proyecto.municipio}, {proyecto.departamento}</p>
     </a>

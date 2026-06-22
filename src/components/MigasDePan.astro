@@ -9,6 +9,7 @@ interface Miga {
 interface Props {
   items: Miga[];
 }
+import { withBase } from "../lib/rutas";
 const { items } = Astro.props;
 ---
 
@@ -17,7 +18,7 @@ const { items } = Astro.props;
     {items.map((item, i) => (
       <li class="flex items-center gap-1">
         {item.href ? (
-          <a href={item.href} class="hover:text-sand transition-colors">{item.label}</a>
+          <a href={withBase(item.href)} class="hover:text-sand transition-colors">{item.label}</a>
         ) : (
           <span class="text-navy/90" aria-current="page">{item.label}</span>
         )}

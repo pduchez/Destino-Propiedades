@@ -6,6 +6,7 @@ import BotonWhatsappFlotante from "../components/BotonWhatsappFlotante.astro";
 import FavoritosScript from "../components/FavoritosScript.astro";
 import Medicion from "../components/Medicion.astro";
 import { sitio } from "../data/sitio";
+import { withBase } from "../lib/rutas";
 
 interface Props {
   titulo: string;
@@ -28,8 +29,12 @@ const {
 
 const base = Astro.site ?? new URL("https://destinopropiedades.com");
 const urlCanonica = new URL(Astro.url.pathname, base);
-const ogImageAbs = new URL(ogImage, base);
+const ogImageAbs = new URL(withBase(ogImage), base);
 const altFinal = ogImageAlt ?? titulo;
+
+// Preview oculto a buscadores: si PUBLIC_NOINDEX está definida (lo usa el
+// despliegue de preview en GitHub Pages), se emite noindex en vez de index.
+const noindex = import.meta.env.PUBLIC_NOINDEX === "true";
 ---
 
 <!doctype html>
@@ -37,10 +42,13 @@ const altFinal = ogImageAlt ?? titulo;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={withBase("/favicon.svg")} />
     <link rel="canonical" href={urlCanonica} />
     <meta name="theme-color" content="#0f2438" />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta
+      name="robots"
+      content={noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large"}
+    />
 
     <title>{titulo}</title>
     <meta name="description" content={descripcion} />
