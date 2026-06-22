@@ -41,6 +41,10 @@ jobs:
           BASE: /destino-propiedades/
           PUBLIC_NOINDEX: "true"
       - uses: actions/configure-pages@v5
+        with:
+          # Crea/habilita el sitio de Pages (fuente: GitHub Actions) si aún no
+          # está habilitado en el repo, sin tener que tocar Settings a mano.
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
