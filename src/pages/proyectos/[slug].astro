@@ -84,6 +84,34 @@ const datosClave = [
 
       <Galeria fotos={proyecto.galeria} nombreProyecto={proyecto.nombre} />
 
+      <!-- Vistas 360° / recorrido virtual. PREVISTO: aparece solo si el
+           proyecto tiene `vistas360`. Los videos 360 se están generando;
+           cuando estén, basta con llenar ese campo en proyectos.ts. -->
+      {proyecto.vistas360 && proyecto.vistas360.length > 0 && (
+        <section class="mt-8">
+          <h2 class="font-display text-2xl mb-3">Recorrido 360°</h2>
+          <div class="grid gap-4 sm:grid-cols-2">
+            {proyecto.vistas360.map((v) => (
+              <figure class="rounded-xl overflow-hidden border border-navy/10 bg-black">
+                <div class="aspect-video">
+                  <iframe
+                    src={v.url}
+                    title={`Vista 360° de ${proyecto.nombre}: ${v.titulo}`}
+                    loading="lazy"
+                    allow="accelerometer; gyroscope; fullscreen; xr-spatial-tracking"
+                    allowfullscreen
+                    class="h-full w-full border-0"
+                  ></iframe>
+                </div>
+                <figcaption class="bg-white px-3 py-2 text-sm font-semibold text-navy">
+                  {v.titulo}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
+
       <!-- Datos clave -->
       <section class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
         {datosClave.map((d) => (

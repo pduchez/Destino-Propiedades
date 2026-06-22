@@ -17,6 +17,22 @@ export interface TipoDeLote {
   disponibilidad: number;
 }
 
+/**
+ * Vista 360° / recorrido virtual de un proyecto. PREVISTO para la estrategia
+ * de marketing visual: los videos 360 se están generando. Cuando estén,
+ * basta con agregar entradas aquí (no requiere rediseño).
+ * - `tipo`: de dónde viene el embed (YouTube 360, Kuula, Matterport, etc.).
+ * - `url`: enlace al recorrido o al embed.
+ * - `titulo`: rótulo corto ("Entrada", "Casa club", "Vista al Golfo"…).
+ * - `miniatura`: imagen de previsualización opcional.
+ */
+export interface Vista360 {
+  tipo: "youtube" | "kuula" | "matterport" | "iframe";
+  url: string;
+  titulo: string;
+  miniatura?: string;
+}
+
 export interface Proyecto {
   id: string;
   slug: string;
@@ -34,6 +50,12 @@ export interface Proyecto {
   etiquetaPrecio: string;
   tiposDeLote: TipoDeLote[];
   servicios: string[];
+  /**
+   * Vistas 360° / recorridos virtuales. PREVISTO (opcional): se llenará
+   * cuando estén listos los videos 360. Si está vacío o ausente, la sección
+   * simplemente no aparece en la ficha.
+   */
+  vistas360?: Vista360[];
   ubicacion: { lat: number; lng: number };
   seo: {
     titulo: string;

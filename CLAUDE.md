@@ -45,7 +45,11 @@ Todo el contenido vive en datos editables, no en el diseño/lógica.
   actual, contacto, redes, colores, jurisdicción legal.
 - `src/data/proyectos.ts` — lista de proyectos (lotificaciones). Cada uno con
   galería, precio, tipos de lote, servicios, ubicación, SEO propio y plantilla
-  de mensaje de WhatsApp.
+  de mensaje de WhatsApp. Campo opcional `vistas360` (interfaz `Vista360`)
+  PREVISTO para recorridos 360° por proyecto — parte de la estrategia de
+  marketing visual. La sección "Recorrido 360°" ya está cableada en la ficha
+  (`src/pages/proyectos/[slug].astro`) y aparece sola cuando hay datos; los
+  videos 360 se están generando, solo falta pegar el enlace/embed cuando lleguen.
 - `src/data/zonas.ts` — zonas (departamento/municipio) para páginas SEO con
   FAQ y proyectos relacionados.
 
