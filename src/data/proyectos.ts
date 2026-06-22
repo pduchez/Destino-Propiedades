@@ -373,4 +373,67 @@ export const proyectos: Proyecto[] = [
     },
     whatsappMensaje: mensajeWhatsapp("Altos de las Mercedes", "altos-de-las-mercedes"),
   },
+
+  // ───────────────────────────────────────────────────────────────────────
+  // PROYECTO REAL — Highlights (El Zapote). Lotificación frente al mar en
+  // Punta Zapote, San Francisco Menéndez, Ahuachapán. Datos tomados de la
+  // lista de precios (PARSAL S.A. de C.V., 21/09/2025), ficha de amenidades,
+  // plano y PPDS de Grupo Chacón. 139 lotes en polígonos A-F. Fotos
+  // PENDIENTES: galería vacía → marcador "Fotos en camino".
+  // ───────────────────────────────────────────────────────────────────────
+  {
+    id: "highlights",
+    slug: "highlights",
+    nombre: "Highlights",
+    desarrolladorId: "grupo-chacon",
+    departamento: "Ahuachapán",
+    municipio: "San Francisco Menéndez",
+    tipo: "playa",
+    estado: "disponible",
+    destacado: true,
+    descripcion:
+      "Highlights (El Zapote) es una lotificación frente al mar en el Cantón " +
+      "Punta Zapote, San Francisco Menéndez, Ahuachapán, en la costa del " +
+      "occidente salvadoreño. Ofrece lotes amplios —desde poco más de 350 " +
+      "hasta más de 1,600 varas²— con factibilidad de agua y luz, caseta de " +
+      "seguridad, áreas verdes jardinizadas, piscina y casa club. Pensado " +
+      "para quien busca tierra frente al mar como patrimonio familiar, " +
+      "segunda casa o inversión turística-residencial, con planes de pago " +
+      "directos con el desarrollador.",
+    // Fotos pendientes: el desarrollador las subirá por partes.
+    galeria: [],
+    precioDesde: 64930,
+    etiquetaPrecio: "Desde $64,930 por lote",
+    // Tipos representativos de los 139 lotes en polígonos A-F (lista de precios
+    // real). El precio por vara² varía por polígono. La disponibilidad real por
+    // lote NO está confirmada en la lista (se marca "No especificado"): se deja
+    // en 0 y se confirma lote a lote con el desarrollador antes de vender.
+    tiposDeLote: [
+      { nombre: "Lote estándar ≈360–635 v²", area: 360, unidad: "v2", precio: 64930, disponibilidad: 0 },
+      { nombre: "Lote amplio ≈677–992 v²", area: 677, unidad: "v2", precio: 124023, disponibilidad: 0 },
+      { nombre: "Lote frente al mar ≈1,140–1,612 v²", area: 1140, unidad: "v2", precio: 219995, disponibilidad: 0 },
+    ],
+    servicios: [
+      "Factibilidad de servicios básicos (agua y luz)",
+      "Caseta de seguridad",
+      "Cordón cuneta",
+      "Aceras",
+      "Áreas verdes jardinizadas",
+      "Piscina",
+      "Casa club",
+      "Estacionamiento de visitas",
+      "Zona pet-friendly",
+    ],
+    // Ubicación aproximada de Punta Zapote / Barra de Santiago (costa de
+    // Ahuachapán). PENDIENTE: ajustar al punto exacto del proyecto cuando lo
+    // confirme el desarrollador (coordenadas marcadas como faltantes en el PPDS).
+    ubicacion: { lat: 13.701, lng: -90.027 },
+    seo: {
+      titulo: "Highlights — Lotes frente al mar en Ahuachapán | DestinoPropiedades.com",
+      metaDescripcion:
+        "Lotes frente al mar en Highlights (El Zapote), Punta Zapote, San Francisco Menéndez, Ahuachapán: factibilidad de agua y luz, caseta, piscina y casa club. Desde $64,930 por lote. Consultá por WhatsApp.",
+      ogImage: "/assets/og/highlights.jpg",
+    },
+    whatsappMensaje: mensajeWhatsapp("Highlights", "highlights"),
+  },
 ];

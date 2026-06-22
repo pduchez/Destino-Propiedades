@@ -144,4 +144,62 @@ export const zonas: Zona[] = [
       },
     ],
   },
+  {
+    slug: "lotes-de-playa-ahuachapan",
+    nombre: "Lotes de playa en Ahuachapán",
+    departamento: "Ahuachapán",
+    municipio: null,
+    tipo: "playa",
+    descripcion:
+      "La costa de Ahuachapán, en el extremo occidente de El Salvador, " +
+      "incluye zonas como Barra de Santiago y Punta Zapote: playas amplias, " +
+      "manglares protegidos y un entorno todavía tranquilo, con lotes frente " +
+      "al mar de mayor tamaño y precios competitivos frente a otras costas " +
+      "del país.",
+    contexto:
+      "Para la familia salvadoreña en el exterior, un lote frente al mar en " +
+      "Ahuachapán es la posibilidad de tener tierra propia en la costa como " +
+      "patrimonio familiar, segunda casa o inversión turística-residencial. " +
+      "Es una de las zonas costeras con mayor proyección a futuro por su " +
+      "naturaleza y la disponibilidad de terrenos amplios.",
+    ventajas: [
+      "Lotes frente al mar de mayor tamaño que en otras costas del país",
+      "Zonas naturales como Barra de Santiago y sus manglares",
+      "Precios competitivos frente a La Libertad y la costa central",
+      "Alta proyección de plusvalía por desarrollo turístico incipiente",
+    ],
+    titulo: "Lotes de playa en Ahuachapán — Barra de Santiago y Punta Zapote | DestinoPropiedades.com",
+    metaDescripcion:
+      "Lotes de playa frente al mar en Ahuachapán, El Salvador: Punta Zapote y Barra de Santiago. Lotes amplios con servicios. Precios y disponibilidad por WhatsApp.",
+    faq: [
+      {
+        pregunta: "¿Cuál es el precio típico de un lote de playa en Ahuachapán?",
+        respuesta:
+          "Los lotes frente al mar en esta zona suelen ser más amplios, por " +
+          "lo que el precio total varía según el tamaño; los proyectos con " +
+          "amenidades inician alrededor de $65,000. Consultá el precio exacto " +
+          "de cada lote por WhatsApp.",
+      },
+      {
+        pregunta: "¿Se puede financiar la compra de un lote?",
+        respuesta:
+          "Algunos proyectos ofrecen planes de pago directo con el " +
+          "desarrollador. Consultá las condiciones específicas de cada " +
+          "proyecto por WhatsApp.",
+      },
+      {
+        pregunta: "¿Qué papeles debo revisar antes de comprar?",
+        respuesta:
+          "Verificá la escritura matriz, el permiso de lotificación y que el " +
+          "lote quede segregado a tu nombre en la escritura final.",
+      },
+      {
+        pregunta: "¿Por qué invertir en esta zona?",
+        respuesta:
+          "La costa de Ahuachapán conserva terrenos amplios frente al mar a " +
+          "precios competitivos, con una proyección de plusvalía impulsada " +
+          "por el creciente interés turístico en el occidente del país.",
+      },
+    ],
+  },
 ];
