@@ -42,6 +42,12 @@ export interface Proyecto {
   municipio: string;
   tipo: TipoProyecto;
   estado: EstadoProyecto;
+  /**
+   * Marca el proyecto como destacado para promocionarlo en la portada
+   * (sección "Proyectos destacados"). Opcional: si ningún proyecto lo tiene,
+   * la portada muestra los primeros por defecto.
+   */
+  destacado?: boolean;
   descripcion: string;
   galeria: string[];
   /** Número en USD, o null si el precio es solo "Consultar". */
@@ -80,6 +86,7 @@ export const proyectos: Proyecto[] = [
     municipio: "Acajutla",
     tipo: "playa",
     estado: "disponible",
+    destacado: true,
     descripcion:
       "Lotificación frente al Pacífico con acceso directo a playa, pensada " +
       "para quienes buscan construir su casa de descanso o invertir en la " +
@@ -157,6 +164,7 @@ export const proyectos: Proyecto[] = [
     municipio: "El Zonte",
     tipo: "playa",
     estado: "disponible",
+    destacado: true,
     descripcion:
       "Lotificación cercana a El Zonte, una de las zonas de playa más " +
       "buscadas por su ambiente surfero y crecimiento turístico. Lotes " +
@@ -199,6 +207,7 @@ export const proyectos: Proyecto[] = [
     municipio: "Conchagua",
     tipo: "residencial",
     estado: "disponible",
+    destacado: true,
     descripcion:
       "Lotificación residencial Bella Vista “Condado del Golfo”, ubicada en " +
       "Conchagua, sobre el bulevar a apenas medio kilómetro de la ciudad de " +

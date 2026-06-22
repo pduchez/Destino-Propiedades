@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import JsonLd from "../components/JsonLd.astro";
+import TarjetaProyecto from "../components/TarjetaProyecto.astro";
 import { sitio } from "../data/sitio";
 import { proyectos } from "../data/proyectos";
 import { linkWhatsapp } from "../lib/whatsapp";
@@ -37,6 +38,14 @@ const burbujas: Burbuja[] = [
     icono: "zona" as const,
   })),
 ];
+
+// Proyectos destacados para la portada (call to action). Se eligen por el
+// campo `destacado`; si ninguno lo tiene, se muestran los primeros. Máximo 3.
+const destacados = (
+  proyectos.some((p) => p.destacado)
+    ? proyectos.filter((p) => p.destacado)
+    : proyectos
+).slice(0, 3);
 ---
 
 <Layout
@@ -132,6 +141,26 @@ const burbujas: Burbuja[] = [
       </div>
     </div>
   </section>
+
+  <!-- Proyectos destacados: call to action visual hacia las fichas -->
+  {destacados.length > 0 && (
+    <section class="mx-auto max-w-6xl px-4 py-14">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-6">
+        <div>
+          <h2 class="font-display text-2xl sm:text-3xl">Proyectos destacados</h2>
+          <p class="text-navy/70 mt-1">
+            Una selección de lotificaciones para conocer hoy.
+          </p>
+        </div>
+        <a href="/proyectos" class="text-navy font-semibold underline hover:text-sand transition-colors whitespace-nowrap">
+          Ver todos los proyectos
+        </a>
+      </div>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {destacados.map((p) => <TarjetaProyecto proyecto={p} />)}
+      </div>
+    </section>
+  )}
 
   <section class="mx-auto max-w-6xl px-4 py-14 grid gap-8 sm:grid-cols-3 text-center">
     <div>
