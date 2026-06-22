@@ -1,9 +1,15 @@
 // Proyectos (lotificaciones). Esta es la lista que arma casi todo el sitio:
 // listados, fichas, buscador, páginas de zona.
 //
-// Los proyectos de este archivo son EJEMPLOS INVENTADOS para poblar el sitio
-// mientras llegan los datos reales de Grupo Inmobiliario Chacón. Reemplazar
-// o borrar cuando haya información real (nombres, fotos, precios, ubicación).
+// Esta lista mezcla:
+//  - PROYECTOS REALES (datos tomados de los documentos de Grupo Inmobiliario
+//    Chacón: lista de precios, amenidades, plano y PPDS): Condado del Golfo,
+//    Adelaida City y Altos de las Mercedes. Algunos aún no tienen fotos
+//    (`galeria: []`): se muestran con el marcador "Fotos en camino" hasta que
+//    el desarrollador suba las tomas. Las fotos llegan por partes.
+//  - EJEMPLOS INVENTADOS para poblar el sitio (Riviera del Pacífico, Altos de
+//    Costa Azul, Vista Mar El Zonte). Reemplazar o borrar cuando haya más
+//    proyectos reales.
 
 export type TipoProyecto = "playa" | "urbano" | "residencial";
 export type EstadoProyecto = "disponible" | "preventa" | "agotado";
@@ -86,7 +92,6 @@ export const proyectos: Proyecto[] = [
     municipio: "Acajutla",
     tipo: "playa",
     estado: "disponible",
-    destacado: true,
     descripcion:
       "Lotificación frente al Pacífico con acceso directo a playa, pensada " +
       "para quienes buscan construir su casa de descanso o invertir en la " +
@@ -164,7 +169,6 @@ export const proyectos: Proyecto[] = [
     municipio: "El Zonte",
     tipo: "playa",
     estado: "disponible",
-    destacado: true,
     descripcion:
       "Lotificación cercana a El Zonte, una de las zonas de playa más " +
       "buscadas por su ambiente surfero y crecimiento turístico. Lotes " +
@@ -260,5 +264,113 @@ export const proyectos: Proyecto[] = [
       ogImage: "/assets/og/condado-del-golfo.jpg",
     },
     whatsappMensaje: mensajeWhatsapp("Condado del Golfo", "condado-del-golfo"),
+  },
+
+  // ───────────────────────────────────────────────────────────────────────
+  // PROYECTO REAL — Adelaida City. Datos tomados de la lista de precios,
+  // ficha de amenidades, plano y PPDS de Grupo Chacón / GESCOSAL S.A. de C.V.
+  // Fotos PENDIENTES (las sube el desarrollador): galería vacía → se muestra
+  // el marcador "Fotos en camino".
+  // ───────────────────────────────────────────────────────────────────────
+  {
+    id: "adelaida-city",
+    slug: "adelaida-city",
+    nombre: "Adelaida City",
+    desarrolladorId: "grupo-chacon",
+    departamento: "Sonsonate",
+    municipio: "Izalco",
+    tipo: "residencial",
+    estado: "disponible",
+    destacado: true,
+    descripcion:
+      "Lotificación residencial Adelaida City, ubicada en el Cantón Cután, " +
+      "Izalco, departamento de Sonsonate. Lotes residenciales con " +
+      "factibilidad de servicios básicos, cordón cuneta, calles balastreadas " +
+      "y áreas verdes jardinizadas, en una zona del occidente del país con " +
+      "acceso a carretera y en crecimiento. Una opción accesible para la " +
+      "familia salvadoreña que quiere invertir en un terreno propio en El " +
+      "Salvador, con precio por vara cuadrada uniforme y planes de pago " +
+      "directo con el desarrollador.",
+    // Fotos pendientes: el desarrollador las subirá por partes.
+    galeria: [],
+    precioDesde: 22034,
+    etiquetaPrecio: "Desde $22,034 por lote",
+    // Tipos representativos calculados desde la lista de precios real (41 lotes
+    // listados, precio uniforme de US$77 por vara²). Disponibilidad según la
+    // lista; confirmar disponibilidad real lote a lote antes de vender.
+    tiposDeLote: [
+      { nombre: "Lote desde ≈200 m²", area: 286, unidad: "v2", precio: 22034, disponibilidad: 22 },
+      { nombre: "Lote intermedio ≈230 m²", area: 330, unidad: "v2", precio: 25410, disponibilidad: 12 },
+      { nombre: "Lote amplio hasta ≈317 m²", area: 453, unidad: "v2", precio: 34879, disponibilidad: 7 },
+    ],
+    servicios: [
+      "Factibilidad de servicios básicos",
+      "Cordón cuneta",
+      "Calles balastreadas",
+      "Áreas verdes jardinizadas",
+    ],
+    // Ubicación aproximada de Izalco / Cantón Cután. PENDIENTE: ajustar al
+    // punto exacto del proyecto cuando lo confirme el desarrollador.
+    ubicacion: { lat: 13.7458, lng: -89.6775 },
+    seo: {
+      titulo: "Adelaida City — Lotes residenciales en Izalco, Sonsonate | DestinoPropiedades.com",
+      metaDescripcion:
+        "Lotes residenciales en Adelaida City, Izalco, Sonsonate, El Salvador: servicios básicos, calles y áreas verdes. Desde $22,034 por lote, con pago directo. Consultá por WhatsApp.",
+      ogImage: "/assets/og/adelaida-city.jpg",
+    },
+    whatsappMensaje: mensajeWhatsapp("Adelaida City", "adelaida-city"),
+  },
+
+  // ───────────────────────────────────────────────────────────────────────
+  // PROYECTO REAL — Altos de las Mercedes. Datos tomados de la lista de
+  // precios, ficha de amenidades, plano y PPDS de Grupo Chacón / PARSAL
+  // S.A. de C.V. Fotos PENDIENTES: galería vacía → marcador "Fotos en camino".
+  // ───────────────────────────────────────────────────────────────────────
+  {
+    id: "altos-de-las-mercedes",
+    slug: "altos-de-las-mercedes",
+    nombre: "Altos de las Mercedes",
+    desarrolladorId: "grupo-chacon",
+    departamento: "La Libertad",
+    municipio: "Quezaltepeque",
+    tipo: "residencial",
+    estado: "disponible",
+    destacado: true,
+    descripcion:
+      "Lotificación residencial Altos de las Mercedes, sobre la calle hacia " +
+      "el volcán, en Quezaltepeque, La Libertad — a corta distancia de San " +
+      "Salvador. Proyecto residencial desarrollado por etapas, con " +
+      "factibilidad de servicios básicos, áreas verdes jardinizadas, " +
+      "estacionamiento de visitas y zona pet-friendly. Pensado para quienes " +
+      "buscan un lote para construir o invertir en una zona de crecimiento del " +
+      "Gran San Salvador, con financiamiento directo del desarrollador.",
+    // Fotos pendientes: el desarrollador las subirá por partes.
+    galeria: [],
+    precioDesde: 29023,
+    etiquetaPrecio: "Desde $29,023 por lote",
+    // Tipos representativos desde la lista de precios real (precio uniforme de
+    // US$110 por vara²; etapas 1 y 2). Algunos lotes figuran como
+    // reservados/vendidos: confirmar disponibilidad real antes de vender.
+    tiposDeLote: [
+      { nombre: "Lote compacto desde ≈184 m²", area: 264, unidad: "v2", precio: 29023, disponibilidad: 4 },
+      { nombre: "Lote estándar ≈200 m²", area: 286, unidad: "v2", precio: 31460, disponibilidad: 20 },
+      { nombre: "Lote amplio hasta ≈354 m²", area: 506, unidad: "v2", precio: 55660, disponibilidad: 6 },
+    ],
+    servicios: [
+      "Factibilidad de servicios básicos",
+      "Áreas verdes jardinizadas",
+      "Estacionamiento de visitas",
+      "Zona pet-friendly",
+    ],
+    // Ubicación aproximada de Quezaltepeque (calle hacia el volcán).
+    // PENDIENTE: ajustar al punto exacto del proyecto.
+    ubicacion: { lat: 13.834, lng: -89.289 },
+    seo: {
+      titulo: "Altos de las Mercedes — Lotes residenciales en Quezaltepeque, La Libertad | DestinoPropiedades.com",
+      metaDescripcion:
+        "Lotes residenciales en Altos de las Mercedes, Quezaltepeque, La Libertad, cerca de San Salvador: áreas verdes y zona pet-friendly. Desde $29,023 por lote. Consultá por WhatsApp.",
+      ogImage: "/assets/og/altos-de-las-mercedes.jpg",
+    },
+    whatsappMensaje: mensajeWhatsapp("Altos de las Mercedes", "altos-de-las-mercedes"),
   },
 ];

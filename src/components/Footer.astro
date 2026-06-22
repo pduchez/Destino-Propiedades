@@ -2,7 +2,7 @@
 import { sitio } from "../data/sitio";
 import { zonas } from "../data/zonas";
 import { proyectos } from "../data/proyectos";
-import { labelTipo } from "../lib/formato";
+import { labelLotesDe } from "../lib/formato";
 import { linkLlamar, linkWhatsapp } from "../lib/whatsapp";
 
 const mensajeGenerico = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
@@ -17,7 +17,7 @@ const enlacesExplorar = [
   { href: "/proyectos", label: "Todos los proyectos" },
   ...tiposPresentes.map((t) => ({
     href: `/proyectos?tipo=${t}`,
-    label: `Lotes de ${labelTipo[t].toLowerCase()}`,
+    label: labelLotesDe[t],
   })),
   { href: "/quienes-somos", label: "¿Quiénes Somos?" },
   { href: "/contacto", label: "Contacto" },

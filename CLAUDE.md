@@ -50,8 +50,16 @@ Todo el contenido vive en datos editables, no en el diseño/lógica.
   marketing visual. La sección "Recorrido 360°" ya está cableada en la ficha
   (`src/pages/proyectos/[slug].astro`) y aparece sola cuando hay datos; los
   videos 360 se están generando, solo falta pegar el enlace/embed cuando lleguen.
+  Un proyecto puede tener datos reales pero `galeria: []` (fotos pendientes):
+  en ese caso el sitio muestra el marcador de marca "Fotos en camino"
+  (`src/components/PlaceholderFoto.astro`) en tarjetas y ficha, en vez de una
+  imagen rota. Las fotos llegan por partes; al pegarlas, llenar `galeria` y
+  regenerar OG (`npm run og`).
 - `src/data/zonas.ts` — zonas (departamento/municipio) para páginas SEO con
-  FAQ y proyectos relacionados.
+  FAQ y proyectos relacionados. Campo opcional `tipo` ("playa"/"residencial"/
+  "urbano"): si se define, la zona solo agrupa proyectos de ese tipo (p. ej.
+  "Lotes de playa en X" no captura residenciales). El filtro vive en
+  `src/lib/relaciones.ts` (`proyectosDeZona`, `zonaDeProyecto`).
 
 Regla: cambiar un dato = cambiar el sitio. Nunca hardcodear contenido de
 proyectos/contacto en componentes o páginas.
@@ -74,12 +82,17 @@ proyectos/contacto en componentes o páginas.
   `// PENDIENTE: reemplazar con número real`.
 - Logo de Grupo Inmobiliario Chacón → `public/assets/chacon-logo.webp`
   (placeholder de texto por ahora).
-- Fotos reales de proyectos → `public/assets/proyectos/...` (placeholders
-  por ahora).
+- Fotos reales de proyectos → `public/assets/proyectos/...`. Reales:
+  `condado-del-golfo` (con fotos dron). Reales SIN fotos aún (muestran "Fotos
+  en camino"): `adelaida-city`, `altos-de-las-mercedes` — pegar fotos en
+  `galeria` cuando lleguen.
+- Coordenadas exactas de `adelaida-city` y `altos-de-las-mercedes` (hoy
+  aproximadas, marcadas `// PENDIENTE` en `proyectos.ts`).
 - Correo de contacto real.
-- Los 2-3 proyectos de ejemplo (`riviera-del-pacifico`, etc.) son inventados
-  para poblar el sitio mientras llegan los reales — reemplazar o borrar
-  cuando haya datos reales.
+- Proyectos REALES (datos de Grupo Chacón): `condado-del-golfo`,
+  `adelaida-city`, `altos-de-las-mercedes`. Proyectos de EJEMPLO inventados
+  (`riviera-del-pacifico`, `altos-de-costa-azul`, `vista-mar-el-zonte`):
+  reemplazar o borrar cuando haya más proyectos reales.
 
 ## SEO y redes (Fase 4) — es el corazón comercial
 - Canal de promoción: redes sociales (Instagram, TikTok, Facebook) + pauta

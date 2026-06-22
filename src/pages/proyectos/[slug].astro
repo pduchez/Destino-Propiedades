@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Galeria from "../../components/Galeria.astro";
+import PlaceholderFoto from "../../components/PlaceholderFoto.astro";
 import MigasDePan from "../../components/MigasDePan.astro";
 import JsonLd from "../../components/JsonLd.astro";
 import { proyectos } from "../../data/proyectos";
@@ -10,6 +11,7 @@ import {
   formatoPrecio,
   formatoArea,
   labelTipo,
+  labelLotesDe,
   labelEstado,
 } from "../../lib/formato";
 import { rangoArea, lotesDisponibles, zonaDeProyecto } from "../../lib/relaciones";
@@ -33,7 +35,7 @@ const mapaUrl = `https://www.google.com/maps/search/?api=1&query=${proyecto.ubic
 const zona = zonaDeProyecto(proyecto);
 const migas = [
   { label: "Inicio", href: "/" },
-  { label: `Lotes de ${labelTipo[proyecto.tipo]}`, href: `/proyectos?tipo=${proyecto.tipo}` },
+  { label: labelLotesDe[proyecto.tipo], href: `/proyectos?tipo=${proyecto.tipo}` },
   { label: zona ? zona.nombre : proyecto.departamento, href: zona ? `/${zona.slug}` : undefined },
   { label: proyecto.nombre },
 ];
@@ -82,7 +84,13 @@ const datosClave = [
         <p class="text-2xl font-semibold text-sand mt-3">{proyecto.etiquetaPrecio}</p>
       </header>
 
-      <Galeria fotos={proyecto.galeria} nombreProyecto={proyecto.nombre} />
+      {proyecto.galeria.length > 0 ? (
+        <Galeria fotos={proyecto.galeria} nombreProyecto={proyecto.nombre} />
+      ) : (
+        <div class="aspect-[3/2] w-full overflow-hidden rounded-xl">
+          <PlaceholderFoto nombre={proyecto.nombre} detalle />
+        </div>
+      )}
 
       <!-- Vistas 360° / recorrido virtual. PREVISTO: aparece solo si el
            proyecto tiene `vistas360`. Los videos 360 se están generando;

@@ -88,7 +88,12 @@ for (const p of proyectos) {
 
 // Por zona
 for (const z of zonas) {
-  const proyZona = proyectos.find((p) => p.departamento === z.departamento);
+  const proyZona = proyectos.find(
+    (p) =>
+      p.departamento === z.departamento &&
+      (!z.municipio || p.municipio === z.municipio) &&
+      (!z.tipo || p.tipo === z.tipo)
+  );
   await generar(`zona-${z.slug}.jpg`, proyZona?.galeria[0] ?? null, {
     marcaArriba: "DestinoPropiedades.com",
     titulo: z.nombre,

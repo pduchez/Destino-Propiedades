@@ -6,10 +6,10 @@ import TarjetaProyecto from "../components/TarjetaProyecto.astro";
 import MigasDePan from "../components/MigasDePan.astro";
 import JsonLd from "../components/JsonLd.astro";
 import { zonas } from "../data/zonas";
-import { proyectos } from "../data/proyectos";
 import { sitio } from "../data/sitio";
 import { linkWhatsapp } from "../lib/whatsapp";
 import { faqJsonLd, breadcrumbJsonLd, zonaJsonLd } from "../lib/seo";
+import { proyectosDeZona } from "../lib/relaciones";
 
 export function getStaticPaths() {
   return zonas.map((z) => ({ params: { zona: z.slug }, props: { zona: z } }));
@@ -18,7 +18,7 @@ export function getStaticPaths() {
 const { zona } = Astro.props;
 const base = Astro.site!;
 
-const proyectosZona = proyectos.filter((p) => p.departamento === zona.departamento);
+const proyectosZona = proyectosDeZona(zona);
 
 const mensaje = `Hola, me interesan los lotes en ${zona.departamento} que vi en ${sitio.marcaPlataforma}.`;
 const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensaje);

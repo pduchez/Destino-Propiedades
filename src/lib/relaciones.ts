@@ -1,11 +1,25 @@
 // Relaciones entre datos (proyectos <-> zonas <-> desarrolladores).
 // Mantener esta lógica acá evita repetir búsquedas en las páginas.
 import { zonas, type Zona } from "../data/zonas";
-import type { Proyecto } from "../data/proyectos";
+import { proyectos, type Proyecto } from "../data/proyectos";
 
-/** Devuelve la zona SEO que corresponde al departamento de un proyecto. */
+/** ¿Este proyecto pertenece a esta zona? (departamento + municipio + tipo). */
+function proyectoEnZona(proyecto: Proyecto, zona: Zona): boolean {
+  return (
+    proyecto.departamento === zona.departamento &&
+    (!zona.municipio || proyecto.municipio === zona.municipio) &&
+    (!zona.tipo || proyecto.tipo === zona.tipo)
+  );
+}
+
+/** Proyectos que pertenecen a una zona SEO. */
+export function proyectosDeZona(zona: Zona): Proyecto[] {
+  return proyectos.filter((p) => proyectoEnZona(p, zona));
+}
+
+/** Devuelve la zona SEO que corresponde a un proyecto (si existe alguna). */
 export function zonaDeProyecto(proyecto: Proyecto): Zona | undefined {
-  return zonas.find((z) => z.departamento === proyecto.departamento);
+  return zonas.find((z) => proyectoEnZona(proyecto, z));
 }
 
 /** Rango de área (min-max) de los tipos de lote de un proyecto. */

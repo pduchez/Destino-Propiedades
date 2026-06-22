@@ -23,6 +23,13 @@ export const labelTipo: Record<string, string> = {
   residencial: "Residencial",
 };
 
+/** Frase "tipo de lote" con gramática correcta (migas de pan, footer, filtros). */
+export const labelLotesDe: Record<string, string> = {
+  playa: "Lotes de playa",
+  urbano: "Lotes urbanos",
+  residencial: "Lotes residenciales",
+};
+
 export const labelEstado: Record<string, string> = {
   disponible: "Disponible",
   preventa: "Preventa",

@@ -12,6 +12,13 @@ export interface Zona {
   nombre: string;
   departamento: string;
   municipio: string | null;
+  /**
+   * Filtro opcional por tipo de proyecto. Si se define (p. ej. "playa"), la
+   * zona solo agrupa proyectos de ese tipo dentro del departamento; así una
+   * página "Lotes de playa en X" no captura proyectos residenciales de la
+   * misma zona. Si se omite, agrupa todos los del departamento/municipio.
+   */
+  tipo?: "playa" | "urbano" | "residencial";
   descripcion: string;
   /** Segundo párrafo descriptivo (contexto/inversión) para SEO. */
   contexto: string;
@@ -29,6 +36,7 @@ export const zonas: Zona[] = [
     nombre: "Lotes de playa en Sonsonate",
     departamento: "Sonsonate",
     municipio: null,
+    tipo: "playa",
     descripcion:
       "Sonsonate es uno de los departamentos costeros más buscados de El " +
       "Salvador, con playas como Los Cóbanos y Acajutla. La zona combina " +
@@ -87,6 +95,7 @@ export const zonas: Zona[] = [
     nombre: "Lotes de playa en La Libertad",
     departamento: "La Libertad",
     municipio: null,
+    tipo: "playa",
     descripcion:
       "La Libertad concentra algunas de las playas más reconocidas del " +
       "país, como El Zonte y Costa del Sol, con fuerte presencia de " +

@@ -3,6 +3,7 @@
 // listado, resultados de búsqueda, páginas de zona y favoritos.
 // Lleva atributos data-* para que el filtro/orden del listado funcione.
 import type { Proyecto } from "../data/proyectos";
+import PlaceholderFoto from "./PlaceholderFoto.astro";
 import { labelTipo, labelEstado } from "../lib/formato";
 import { rangoArea, lotesDisponibles } from "../lib/relaciones";
 import { etiquetaUnidad } from "../lib/formato";
@@ -35,14 +36,18 @@ const areaTexto = rango
 >
   <div class="relative h-44 overflow-hidden">
     <a href={`/proyectos/${proyecto.slug}`} class="block h-full">
-      <img
-        src={proyecto.galeria[0]}
-        alt={`${proyecto.nombre}, ${proyecto.municipio}, ${proyecto.departamento}`}
-        class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-        loading="lazy"
-        width="400"
-        height="267"
-      />
+      {proyecto.galeria.length > 0 ? (
+        <img
+          src={proyecto.galeria[0]}
+          alt={`${proyecto.nombre}, ${proyecto.municipio}, ${proyecto.departamento}`}
+          class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+          loading="lazy"
+          width="400"
+          height="267"
+        />
+      ) : (
+        <PlaceholderFoto nombre={proyecto.nombre} />
+      )}
     </a>
     <div class="absolute top-2 left-2 flex flex-col items-start gap-1">
       <span class="text-xs font-semibold uppercase tracking-wide text-navy bg-sand px-2 py-1 rounded">
