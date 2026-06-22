@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import { sitio } from "../data/sitio";
 import { proyectos } from "../data/proyectos";
 import { linkWhatsapp } from "../lib/whatsapp";
+import { labelTipo } from "../lib/formato";
 
 const mensaje = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
 const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensaje);
@@ -11,6 +12,28 @@ const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensaje);
 const sugerencias = Array.from(
   new Set(proyectos.flatMap((p) => [p.municipio, p.departamento]))
 ).sort();
+
+// Burbujas de acceso rápido (estilo portal): se arman solas con los datos.
+// Primero los tipos presentes, luego los departamentos con proyectos. Cada
+// una lleva a /proyectos ya filtrado.
+const tiposPresentes = Array.from(new Set(proyectos.map((p) => p.tipo)));
+const departamentosPresentes = Array.from(
+  new Set(proyectos.map((p) => p.departamento))
+).sort();
+
+type Burbuja = { label: string; href: string; icono: "playa" | "urbano" | "residencial" | "zona" };
+const burbujas: Burbuja[] = [
+  ...tiposPresentes.map((t) => ({
+    label: labelTipo[t],
+    href: `/proyectos?tipo=${t}`,
+    icono: t as Burbuja["icono"],
+  })),
+  ...departamentosPresentes.map((d) => ({
+    label: d,
+    href: `/proyectos?zona=${encodeURIComponent(d.toLowerCase())}`,
+    icono: "zona" as const,
+  })),
+];
 ---
 
 <Layout
@@ -53,6 +76,40 @@ const sugerencias = Array.from(
           Buscar
         </button>
       </form>
+
+      <!-- Burbujas de acceso rápido: tipos y departamentos con proyectos -->
+      <div class="mt-5 flex flex-wrap justify-center gap-2">
+        {burbujas.map((b) => (
+          <a
+            href={b.href}
+            class="inline-flex items-center gap-2 rounded-full border border-cream/30 bg-cream/5 px-4 py-2 text-sm text-cream hover:bg-cream/15 hover:border-sand transition-colors"
+          >
+            {b.icono === "zona" && (
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-sand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" />
+              </svg>
+            )}
+            {b.icono === "playa" && (
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-sand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2 13c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v4" />
+              </svg>
+            )}
+            {b.icono === "urbano" && (
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-sand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M6 21V5a1 1 0 011-1h6a1 1 0 011 1v16M14 21V9h4v12M9 8h2M9 12h2" />
+              </svg>
+            )}
+            {b.icono === "residencial" && (
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-sand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10h14V10" />
+              </svg>
+            )}
+            {b.label}
+          </a>
+        ))}
+      </div>
 
       <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center text-sm">
         <a href="/proyectos" class="underline hover:text-sand transition-colors">
