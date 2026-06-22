@@ -26,20 +26,29 @@ const estadoLabel: Record<string, string> = {
 
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {proyectos.map((p) => (
-        <article class="bg-white rounded-xl overflow-hidden shadow-sm border border-navy/10">
-          <!-- PENDIENTE: foto real del proyecto -->
-          <div class="h-40 bg-gradient-to-br from-navy-light to-navy flex items-center justify-center text-cream/70 text-sm">
-            Foto pendiente
-          </div>
-          <div class="p-4">
-            <span class="inline-block text-xs font-semibold uppercase tracking-wide text-sand bg-navy px-2 py-1 rounded">
+        <a
+          href={`/proyectos/${p.slug}`}
+          class="group bg-white rounded-xl overflow-hidden shadow-sm border border-navy/10 hover:shadow-md transition-shadow block"
+        >
+          <div class="relative h-44 overflow-hidden">
+            <img
+              src={p.galeria[0]}
+              alt={`${p.nombre}, ${p.municipio}, ${p.departamento}`}
+              class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
+              width="400"
+              height="267"
+            />
+            <span class="absolute top-2 left-2 text-xs font-semibold uppercase tracking-wide text-sand bg-navy/90 px-2 py-1 rounded">
               {estadoLabel[p.estado]}
             </span>
-            <h2 class="font-display text-lg mt-2">{p.nombre}</h2>
+          </div>
+          <div class="p-4">
+            <h2 class="font-display text-lg">{p.nombre}</h2>
             <p class="text-sm text-navy/60">{p.municipio}, {p.departamento}</p>
             <p class="text-sand font-semibold mt-2">{p.etiquetaPrecio}</p>
           </div>
-        </article>
+        </a>
       ))}
     </div>
   </section>

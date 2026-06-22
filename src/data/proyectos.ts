@@ -67,6 +67,11 @@ export const proyectos: Proyecto[] = [
       "/assets/proyectos/riviera-del-pacifico/1.webp",
       "/assets/proyectos/riviera-del-pacifico/2.webp",
       "/assets/proyectos/riviera-del-pacifico/3.webp",
+      "/assets/proyectos/riviera-del-pacifico/4.webp",
+      "/assets/proyectos/riviera-del-pacifico/5.webp",
+      "/assets/proyectos/riviera-del-pacifico/6.webp",
+      "/assets/proyectos/riviera-del-pacifico/7.webp",
+      "/assets/proyectos/riviera-del-pacifico/8.webp",
     ], // PENDIENTE: reemplazar con fotos reales (8-15 fotos)
     precioDesde: 28000,
     etiquetaPrecio: "Desde $28,000 por lote",
@@ -100,6 +105,10 @@ export const proyectos: Proyecto[] = [
     galeria: [
       "/assets/proyectos/altos-de-costa-azul/1.webp",
       "/assets/proyectos/altos-de-costa-azul/2.webp",
+      "/assets/proyectos/altos-de-costa-azul/3.webp",
+      "/assets/proyectos/altos-de-costa-azul/4.webp",
+      "/assets/proyectos/altos-de-costa-azul/5.webp",
+      "/assets/proyectos/altos-de-costa-azul/6.webp",
     ], // PENDIENTE: reemplazar con fotos reales (8-15 fotos)
     precioDesde: null,
     etiquetaPrecio: "Consultar",
@@ -132,6 +141,10 @@ export const proyectos: Proyecto[] = [
     galeria: [
       "/assets/proyectos/vista-mar-el-zonte/1.webp",
       "/assets/proyectos/vista-mar-el-zonte/2.webp",
+      "/assets/proyectos/vista-mar-el-zonte/3.webp",
+      "/assets/proyectos/vista-mar-el-zonte/4.webp",
+      "/assets/proyectos/vista-mar-el-zonte/5.webp",
+      "/assets/proyectos/vista-mar-el-zonte/6.webp",
     ], // PENDIENTE: reemplazar con fotos reales (8-15 fotos)
     precioDesde: 35000,
     etiquetaPrecio: "Desde $35,000 por lote",
