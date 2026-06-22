@@ -55,9 +55,18 @@ const destacados = (
 >
   <JsonLd slot="head" data={websiteJsonLd(base)} />
   <JsonLd slot="head" data={organizationJsonLd(base)} />
-  <!-- PENDIENTE: reemplazar el fondo por una foto real de proyecto en alta calidad -->
-  <section class="bg-gradient-to-br from-navy to-navy-light text-cream">
-    <div class="mx-auto max-w-6xl px-4 py-20 sm:py-28 text-center">
+  <!-- Foto real de Condado del Golfo (vista aérea, golfo de Fonseca): da el
+       tono aspiracional de costa/horizonte de El Salvador con una imagen
+       100% propia, sin recurrir a stock de terceros. -->
+  <section class="relative text-cream overflow-hidden">
+    <img
+      src={withBase("/assets/proyectos/condado-del-golfo/panoramica-golfo.webp")}
+      alt="Vista aérea de la costa de El Salvador"
+      class="absolute inset-0 h-full w-full object-cover"
+      loading="eager"
+    />
+    <div class="absolute inset-0 bg-gradient-to-b from-navy/85 via-navy/75 to-navy-deep/90"></div>
+    <div class="relative mx-auto max-w-6xl px-4 py-20 sm:py-28 text-center">
       <h1 class="font-display text-3xl sm:text-5xl leading-tight max-w-3xl mx-auto">
         Tu lote en El Salvador, a un mensaje de distancia
       </h1>
