@@ -162,4 +162,69 @@ export const proyectos: Proyecto[] = [
     },
     whatsappMensaje: mensajeWhatsapp("Vista Mar El Zonte", "vista-mar-el-zonte"),
   },
+
+  // ───────────────────────────────────────────────────────────────────────
+  // PROYECTO REAL — datos tomados de los documentos de Grupo Chacón / GESCOSAL
+  // (presentación, lista de precios, ficha de amenidades y plano). Las FOTOS
+  // siguen pendientes (las de marketing están en la "Presentación general"
+  // que no se incluyó); por ahora hay placeholders + el plano real.
+  // ───────────────────────────────────────────────────────────────────────
+  {
+    id: "condado-del-golfo",
+    slug: "condado-del-golfo",
+    nombre: "Condado del Golfo",
+    desarrolladorId: "grupo-chacon",
+    departamento: "La Unión",
+    municipio: "Conchagua",
+    tipo: "residencial",
+    estado: "disponible",
+    descripcion:
+      "Lotificación residencial Bella Vista “Condado del Golfo”, ubicada en " +
+      "Conchagua, sobre el bulevar a apenas medio kilómetro de la ciudad de " +
+      "La Unión. Es un proyecto amplio y pensado como comunidad: calles " +
+      "asfaltadas, cordón cuneta, aceras, áreas verdes jardinizadas, casa " +
+      "club, ciclovía y zona pet-friendly, con caseta de seguridad y " +
+      "factibilidades de servicios básicos. Una opción para volver, invertir " +
+      "y construir patrimonio familiar en una zona en crecimiento, cerca de " +
+      "servicios como el Hospital Nacional de La Unión.",
+    galeria: [
+      "/assets/proyectos/condado-del-golfo/1.webp",
+      "/assets/proyectos/condado-del-golfo/2.webp",
+      "/assets/proyectos/condado-del-golfo/plano.webp", // plano real de distribución
+      "/assets/proyectos/condado-del-golfo/3.webp",
+      "/assets/proyectos/condado-del-golfo/4.webp",
+    ], // PENDIENTE: reemplazar 1-4 con fotos reales (entrada, caseta, calles, casa club)
+    precioDesde: 24693,
+    etiquetaPrecio: "Desde $24,693 por lote",
+    // Tipos representativos calculados desde el inventario real (261 lotes).
+    // El precio es el "desde" de cada rango; validar lote a lote antes de vender.
+    tiposDeLote: [
+      { nombre: "Lote compacto (157–170 m²)", area: 224, unidad: "v2", precio: 24693, disponibilidad: 90 },
+      { nombre: "Lote estándar (187–228 m²)", area: 293, unidad: "v2", precio: 29420, disponibilidad: 106 },
+      { nombre: "Lote amplio (233–316 m²)", area: 380, unidad: "v2", precio: 36717, disponibilidad: 53 },
+      { nombre: "Lote gran formato (322–470 m²)", area: 460, unidad: "v2", precio: 50726, disponibilidad: 11 },
+    ],
+    servicios: [
+      "Caseta de seguridad",
+      "Factibilidades de servicios básicos",
+      "Calles asfaltadas",
+      "Cordón cuneta",
+      "Aceras",
+      "Áreas verdes jardinizadas",
+      "Casa club",
+      "Ciclovía",
+      "Estacionamiento de visitas",
+      "Zona pet-friendly",
+    ],
+    // Ubicación aproximada de Conchagua / La Unión. PENDIENTE: ajustar al
+    // punto exacto del proyecto sobre el bulevar antes de La Unión.
+    ubicacion: { lat: 13.33, lng: -87.852 },
+    seo: {
+      titulo: "Condado del Golfo — Lotes residenciales en Conchagua, La Unión | DestinoPropiedades.com",
+      metaDescripcion:
+        "Lotes residenciales en Condado del Golfo, Conchagua, La Unión: calles asfaltadas, casa club, ciclovía y áreas verdes. Desde $24,693 por lote. Consultá por WhatsApp.",
+      ogImage: "/assets/og/condado-del-golfo.jpg",
+    },
+    whatsappMensaje: mensajeWhatsapp("Condado del Golfo", "condado-del-golfo"),
+  },
 ];

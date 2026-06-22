@@ -42,10 +42,10 @@ export const sitio: Sitio = {
     intercambiable: true,
   },
   contacto: {
-    // PENDIENTE: reemplazar con número real de WhatsApp (formato +503XXXXXXXX)
-    whatsapp: "+50300000000",
-    // PENDIENTE: reemplazar con número real de teléfono
-    telefono: "+50300000000",
+    // Confirmados en los documentos de Grupo Chacón / GESCOSAL (carta de
+    // reservación y presentación). Verificar con el dueño antes de publicar.
+    whatsapp: "+50378023333",
+    telefono: "+50324390900",
     // PENDIENTE: reemplazar con correo real
     correo: "contacto@destinopropiedades.com",
   },
