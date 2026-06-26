@@ -13,6 +13,11 @@ const navLinks = [
 const mensajeGenerico = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
 const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensajeGenerico);
 const telUrl = linkLlamar(sitio.contacto.telefono);
+
+// Acceso al backend administrativo / CRM para la fuerza de ventas. Es una
+// app externa (con login propio), no parte del sitio estático. PENDIENTE:
+// reemplazar por la URL final cuando el CRM se publique bajo el dominio.
+const crmUrl = "https://api.pedrovende.lat/admin/";
 ---
 
 <header class="bg-navy text-cream sticky top-0 z-40 shadow-md">
@@ -39,6 +44,16 @@ const telUrl = linkLlamar(sitio.contacto.telefono);
       </a>
       <a href={telUrl} class="hover:text-sand transition-colors">
         {sitio.contacto.telefono}
+      </a>
+      <a
+        href={crmUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-1.5 text-cream/80 hover:text-sand transition-colors"
+        title="Acceso para la fuerza de ventas"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 0h10.5a1.5 1.5 0 0 1 1.5 1.5v6a1.5 1.5 0 0 1-1.5 1.5H6.75a1.5 1.5 0 0 1-1.5-1.5v-6a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
+        Acceso ventas
       </a>
       <a
         href={whatsappUrl}
@@ -78,6 +93,15 @@ const telUrl = linkLlamar(sitio.contacto.telefono);
       </svg>
       <span>Favoritos</span>
       <span data-fav-count class="hidden min-w-5 px-1.5 text-center rounded-full bg-sand text-navy text-xs font-bold leading-5">0</span>
+    </a>
+    <a
+      href={crmUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex items-center gap-1.5 text-sm text-cream/80 hover:text-sand transition-colors"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 0h10.5a1.5 1.5 0 0 1 1.5 1.5v6a1.5 1.5 0 0 1-1.5 1.5H6.75a1.5 1.5 0 0 1-1.5-1.5v-6a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
+      Acceso ventas
     </a>
     <div class="flex items-center gap-3 pt-2">
       <a href={telUrl} class="text-sm hover:text-sand transition-colors">

@@ -198,36 +198,51 @@ const destacados = (
     </section>
   )}
 
-  <!-- Bloques de audiencia (Paso 4): habla directo a los dos perfiles de
-       comprador. Cada uno lleva al mismo listado, pero con el mensaje y el
-       encuadre que le corresponde. -->
+  <!-- Bloques de audiencia: la distinción de origen aporta valor porque cada
+       perfil tiene necesidades y retos distintos. Cada tarjeta muestra las
+       soluciones que coordinamos para ese perfil (one-stop-shop), con marco
+       "coordinamos/orientamos con nuestra red de aliados" (sin sobreprometer). -->
   <section class="bg-surface-soft py-16">
     <div class="mx-auto max-w-6xl px-4">
       <div class="text-center max-w-2xl mx-auto mb-10">
         <h2 class="font-display text-2xl sm:text-3xl">¿Desde dónde comprás?</h2>
         <p class="text-navy/70 mt-2">
-          Te acompañamos igual de cerca, estés donde estés.
+          Cada situación es distinta. Te armamos una solución a la medida y
+          coordinamos cada gestión con nuestra red de aliados en El Salvador.
         </p>
       </div>
       <div class="grid gap-6 md:grid-cols-2">
-        <!-- Diáspora en EE.UU. -->
+        <!-- Comprador desde el exterior (diáspora) -->
         <div class="group relative overflow-hidden rounded-2xl bg-navy text-cream p-8 shadow-[var(--shadow-card)] flex flex-col">
           <span class="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-sand/10"></span>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 text-sand mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 0 0 0 18M12.5 3a17 17 0 0 1 0 18" />
             <circle cx="12" cy="12" r="9" />
           </svg>
-          <h3 class="font-display text-xl mb-2">Comprás desde Estados Unidos</h3>
-          <p class="text-sm text-cream/75 flex-1">
-            Invertí en tu tierra sin tener que viajar para empezar. Te enviamos
-            fotos, ubicación exacta, precios y disponibilidad por WhatsApp, y
-            coordinamos cada paso con tu familia en El Salvador.
+          <h3 class="font-display text-xl mb-1">Comprás desde el exterior</h3>
+          <p class="text-sm text-cream/70 mb-4">
+            Invertí en tu tierra sin tener que viajar para empezar, con respaldo
+            en cada paso.
           </p>
+          <ul class="space-y-2.5 text-sm text-cream/85 flex-1">
+            <li class="flex gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sand shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 1.5 1.5 3-3.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+              <span>Compra a distancia: te orientamos con el poder legalizado/apostillado o la compra a nombre de un familiar de confianza.</span>
+            </li>
+            <li class="flex gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sand shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 1.5 1.5 3-3.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+              <span>Verificación legal del lote (estudio registral y linderos) antes de que pongás un dólar.</span>
+            </li>
+            <li class="flex gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sand shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 1.5 1.5 3-3.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+              <span>Fotos, recorrido y un asesor real que te representa en El Salvador.</span>
+            </li>
+          </ul>
           <a
             href={withBase("/proyectos")}
             class="mt-6 inline-flex items-center gap-2 text-sand font-semibold hover:gap-3 transition-all"
           >
-            Ver proyectos para la diáspora
+            Ver proyectos
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" /></svg>
           </a>
         </div>
@@ -238,21 +253,71 @@ const destacados = (
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10h14V10" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 21v-6h6v6" />
           </svg>
-          <h3 class="font-display text-xl mb-2 text-navy">Comprás en El Salvador</h3>
-          <p class="text-sm text-navy/70 flex-1">
-            Conocé el lote en persona, recorré la lotificación y resolvé tus
-            dudas con un asesor real. Lotificaciones con servicios, escritura y
-            planes de pago claros.
+          <h3 class="font-display text-xl mb-1 text-navy">Comprás en El Salvador</h3>
+          <p class="text-sm text-navy/60 mb-4">
+            Conocé el lote en persona y avanzá con agilidad y respaldo.
           </p>
+          <ul class="space-y-2.5 text-sm text-navy/75 flex-1">
+            <li class="flex gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sand-dark shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 1.5 1.5 3-3.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+              <span>Coordinamos tu visita y recorrido al lote cuando te quede mejor.</span>
+            </li>
+            <li class="flex gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sand-dark shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 1.5 1.5 3-3.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+              <span>Te orientamos en las opciones de financiamiento: plan directo del desarrollador o crédito.</span>
+            </li>
+            <li class="flex gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sand-dark shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 1.5 1.5 3-3.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+              <span>Acompañamos la escrituración y los trámites hasta que el lote quede a tu nombre.</span>
+            </li>
+          </ul>
           <a
             href={withBase("/proyectos")}
             class="mt-6 inline-flex items-center gap-2 text-navy font-semibold hover:gap-3 transition-all"
           >
-            Ver proyectos disponibles
+            Ver proyectos
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" /></svg>
           </a>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Cadena de valor (one-stop-shop): apoyo visual a "te acompañamos de
+       principio a fin". Derivada del análisis de necesidades de cada perfil.
+       Marco honesto: coordinamos/orientamos con nuestra red de aliados. -->
+  <section class="bg-navy-deep text-cream py-16">
+    <div class="mx-auto max-w-6xl px-4">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <p class="text-sand font-semibold uppercase tracking-wider text-sm mb-2">Un solo lugar</p>
+        <h2 class="font-display text-2xl sm:text-3xl text-cream">Te acompañamos de principio a fin</h2>
+        <p class="text-cream/70 mt-2">
+          No solo te mostramos el lote: coordinamos y orientamos cada paso del
+          proceso con nuestra red de aliados en El Salvador.
+        </p>
+      </div>
+
+      {/* Pasos de la cadena de valor. Data-driven para mantenerlos en un solo lugar. */}
+      <ol class="relative grid gap-8 sm:grid-cols-2 lg:grid-cols-6 lg:gap-4">
+        {[
+          { t: "Asesoría", d: "Entendemos tu objetivo y tu situación." },
+          { t: "Verificación legal", d: "Estudio registral y linderos del lote." },
+          { t: "Estructura de compra", d: "Poder, titularidad o financiamiento." },
+          { t: "Pago", d: "Te guiamos en prima y cuotas, con comprobantes." },
+          { t: "Escrituración", d: "Trámites hasta dejar el lote a tu nombre." },
+          { t: "Post-venta", d: "Impuestos, construcción y cuido del lote." },
+        ].map((paso, i) => (
+          <li class="relative flex flex-col items-center text-center lg:items-start lg:text-left">
+            <span class="grid h-11 w-11 place-items-center rounded-full bg-sand text-navy font-display font-bold text-lg shadow-[var(--shadow-float)] z-10">
+              {i + 1}
+            </span>
+            <p class="font-semibold mt-3">{paso.t}</p>
+            <p class="text-xs text-cream/65 mt-1 max-w-[22ch]">{paso.d}</p>
+          </li>
+        ))}
+        <!-- Línea conectora (solo escritorio) -->
+        <span class="hidden lg:block absolute top-[22px] left-[8%] right-[8%] h-px bg-cream/15"></span>
+      </ol>
     </div>
   </section>
 
