@@ -2,7 +2,7 @@
 // con el logo sol+costa y la foto hero como estándar de marca.
 // Herramienta de desarrollo (no es parte del sitio). Correr con:
 //   node --experimental-strip-types scripts/generar-social.ts
-import sharp from "sharp";
+import sharp, { type Sharp } from "sharp";
 import { mkdir } from "node:fs/promises";
 
 const OUT = "public/assets/social";
@@ -23,7 +23,6 @@ function icono(cx: number, cy: number, size: number): string {
   const s = size / 48;
   const tx = cx - size / 2;
   const ty = cy - size / 2;
-  const w = (2.6 * s).toFixed(2);
   return `<g transform="translate(${tx},${ty}) scale(${s})">
     <circle cx="24" cy="20" r="6.5" fill="none" stroke="${SAND}" stroke-width="${(2.6).toFixed(2)}"/>
     <line x1="24" y1="7" x2="24" y2="10.5" stroke="${SAND}" stroke-width="2.6" stroke-linecap="round"/>
@@ -47,7 +46,7 @@ async function pieza(name: string, w: number, h: number, svg: string, conFoto: b
   const overlay = Buffer.from(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">${svg}</svg>`
   );
-  let base: sharp.Sharp;
+  let base: Sharp;
   if (conFoto) {
     base = sharp(await fondoFoto(w, h));
   } else {

@@ -88,22 +88,33 @@ proyectos/contacto en componentes o páginas.
   `galveston`, `riviera-del-pacifico`, `villa-lourdes` — pegar fotos en
   `galeria` cuando lleguen.
 - Coordenadas exactas de `adelaida-city`, `altos-de-las-mercedes`,
-  `highlights`, `galveston`, `riviera-del-pacifico` y `villa-lourdes` (hoy
-  aproximadas, marcadas `// PENDIENTE` en `proyectos.ts`).
+  `highlights`, `galveston`, `riviera-del-pacifico`, `villa-lourdes`,
+  `portal-las-luces`, `condado-del-triunfo`, `nuevo-san-vicente` y
+  `bypass-la-poza` (hoy aproximadas, marcadas `// PENDIENTE` en `proyectos.ts`).
 - Disponibilidad real por lote de `highlights`, `galveston`,
-  `riviera-del-pacifico` y `villa-lourdes` (las listas no la marcan;
-  `disponibilidad: 0` por ahora, confirmar lote a lote). En `villa-lourdes`
-  hay lotes "marcados en amarillo" (posible reserva): no publicar como
-  disponibles sin confirmación humana.
-- Nombre oficial final de `highlights` (Highlight/Highlights/El Zapote) y de
-  `galveston` (Galveston / Vista al Mar / Suncita II). Guardrail `galveston`:
-  NO venderlo como "frente al mar" — es uso mixto en Acajutla.
+  `riviera-del-pacifico`, `villa-lourdes`, `portal-las-luces`,
+  `condado-del-triunfo`, `nuevo-san-vicente` y `bypass-la-poza` (las listas no
+  la marcan; `disponibilidad: 0` por ahora, confirmar lote a lote). En
+  `villa-lourdes` y `condado-del-triunfo` hay lotes "marcados en amarillo"
+  (posible reserva): no publicar como disponibles sin confirmación humana.
+- Nombre oficial final de `highlights` (Highlight/Highlights/El Zapote), de
+  `galveston` (Galveston / Vista al Mar / Suncita II), de `portal-las-luces`
+  (Portal Las Luces / Portal Las Luces Chalatenango) y de `bypass-la-poza`
+  (Bypass La Poza / Poza de Agua). Guardrails de uso mixto / no costero:
+  `galveston` NO venderlo como "frente al mar" (uso mixto en Acajutla);
+  `condado-del-triunfo` es residencial, NO "frente al mar" (aunque esté en
+  Jiquilisco); `bypass-la-poza` es uso mixto BÁSICO (solo factibilidad de
+  servicios + calles balastreadas): no atribuirle amenidades que no tiene.
+- Validar el precio contado del polígono B de `portal-las-luces` (una fila
+  del PPDS tiene precio inconsistente respecto a v² × precio/v²).
 - Correo de contacto real.
 - Proyectos REALES (datos de Grupo Chacón): `condado-del-golfo`,
   `adelaida-city`, `altos-de-las-mercedes`, `highlights`, `galveston`,
-  `riviera-del-pacifico`, `villa-lourdes`. Los proyectos de ejemplo inventados
-  (`altos-de-costa-azul`, `vista-mar-el-zonte`) ya fueron eliminados; todos los
-  proyectos del sitio son reales.
+  `riviera-del-pacifico`, `villa-lourdes`, `portal-las-luces`,
+  `condado-del-triunfo`, `nuevo-san-vicente`, `bypass-la-poza`. Los proyectos
+  de ejemplo inventados (`altos-de-costa-azul`, `vista-mar-el-zonte`) ya fueron
+  eliminados; todos los proyectos del sitio son reales. Bypass La Poza se
+  transcribió leyendo los PDF escaneados (su PPDS venía sin transcribir).
 
 ## SEO y redes (Fase 4) — es el corazón comercial
 - Canal de promoción: redes sociales (Instagram, TikTok, Facebook) + pauta

@@ -515,4 +515,251 @@ export const proyectos: Proyecto[] = [
     },
     whatsappMensaje: mensajeWhatsapp("Villa Lourdes", "villa-lourdes"),
   },
+
+  // ───────────────────────────────────────────────────────────────────────
+  // PROYECTO REAL — Portal Las Luces (Portal Las Luces Chalatenango).
+  // Lotificación residencial en Carretera Longitudinal del Norte km 73,
+  // Cantón Upatoro, Chalatenango. Datos de lista de precios (GESCOSAL S.A.
+  // de C.V.; plano de ARA Constructores), ficha de amenidades, plano y PPDS
+  // de Grupo Chacón. 63 registros transcritos (polígonos A-G; US$159.50 y
+  // US$165.00 por v²). GUARDRAIL: al menos una fila del polígono B tiene
+  // precio contado inconsistente — validar antes de vender. Nombre oficial
+  // final por confirmar (Portal Las Luces / Portal Las Luces Chalatenango).
+  // Fotos PENDIENTES: galería vacía → marcador "Fotos en camino".
+  // ───────────────────────────────────────────────────────────────────────
+  {
+    id: "portal-las-luces",
+    slug: "portal-las-luces",
+    nombre: "Portal Las Luces",
+    desarrolladorId: "grupo-chacon",
+    departamento: "Chalatenango",
+    municipio: "Chalatenango",
+    tipo: "residencial",
+    estado: "disponible",
+    descripcion:
+      "Portal Las Luces es una lotificación residencial sobre la Carretera " +
+      "Longitudinal del Norte, km 73, Caserío Plan de Las Mesas, Cantón " +
+      "Upatoro, jurisdicción de Chalatenango. Ofrece lotes accesibles para " +
+      "vivienda o inversión, con factibilidad de servicios básicos, calles " +
+      "asfaltadas, aceras, cordón cuneta, áreas verdes jardinizadas, caseta " +
+      "de seguridad, estacionamiento de visitas y zona pet-friendly. Una " +
+      "opción para que la familia salvadoreña construya patrimonio en " +
+      "Chalatenango, con planes de pago directos con el desarrollador.",
+    // Fotos pendientes: el desarrollador las subirá por partes.
+    galeria: [],
+    precioDesde: 22250,
+    etiquetaPrecio: "Desde $22,250 por lote",
+    // Tipos representativos de los 63 registros transcritos (polígonos A-G;
+    // precio por vara² de US$159.50 y US$165.00). La disponibilidad real por
+    // lote NO está confirmada en la lista ("No especificado"): se deja en 0 y
+    // se confirma lote a lote antes de vender.
+    tiposDeLote: [
+      { nombre: "Lote compacto ≈141–172 v²", area: 141, unidad: "v2", precio: 22250, disponibilidad: 0 },
+      { nombre: "Lote estándar ≈172–189 v²", area: 172, unidad: "v2", precio: 27386, disponibilidad: 0 },
+      { nombre: "Lote amplio hasta ≈268 v²", area: 268, unidad: "v2", precio: 42742, disponibilidad: 0 },
+    ],
+    servicios: [
+      "Factibilidad de servicios básicos",
+      "Caseta de seguridad",
+      "Calles asfaltadas",
+      "Cordón cuneta",
+      "Aceras",
+      "Áreas verdes jardinizadas",
+      "Estacionamiento de visitas",
+      "Zona pet-friendly",
+    ],
+    // Ubicación aproximada de Chalatenango (Cantón Upatoro, km 73 Longitudinal
+    // del Norte). PENDIENTE: ajustar al punto exacto del proyecto.
+    ubicacion: { lat: 14.04, lng: -88.94 },
+    seo: {
+      titulo: "Portal Las Luces — Lotes residenciales en Chalatenango | DestinoPropiedades.com",
+      metaDescripcion:
+        "Lotes residenciales en Portal Las Luces, Carretera Longitudinal del Norte km 73, Chalatenango: servicios básicos, calles asfaltadas, aceras y áreas verdes. Desde $22,250 por lote. Consultá por WhatsApp.",
+      ogImage: "/assets/og/portal-las-luces.jpg",
+    },
+    whatsappMensaje: mensajeWhatsapp("Portal Las Luces", "portal-las-luces"),
+  },
+
+  // ───────────────────────────────────────────────────────────────────────
+  // PROYECTO REAL — Condado del Triunfo (Condado El Triunfo). Lotificación
+  // residencial / de inversión en Jiquilisco, Usulután, km 103 Carretera
+  // Litoral. Datos de lista de precios (Atlantic Seguridad S.A. de C.V.),
+  // ficha de amenidades, plano y PPDS de Grupo Chacón (US$121.00 a US$137.50
+  // por v²). GUARDRAIL: hay lote(s) "marcado(s) en amarillo" (posible
+  // reserva) — no afirmar disponibilidad sin confirmar. NO venderlo como
+  // "frente al mar": es residencial, no costero. Fotos PENDIENTES.
+  // ───────────────────────────────────────────────────────────────────────
+  {
+    id: "condado-del-triunfo",
+    slug: "condado-del-triunfo",
+    nombre: "Condado del Triunfo",
+    desarrolladorId: "grupo-chacon",
+    departamento: "Usulután",
+    municipio: "Jiquilisco",
+    tipo: "residencial",
+    estado: "disponible",
+    descripcion:
+      "Condado del Triunfo es una lotificación residencial y de inversión en " +
+      "Jiquilisco, Usulután, sobre el kilómetro 103 de la Carretera Litoral. " +
+      "Ofrece lotes amplios para vivienda o inversión, con factibilidad de " +
+      "servicios básicos, calles asfaltadas, aceras, cordón cuneta, arriates, " +
+      "áreas verdes jardinizadas, casa club, estacionamiento de visitas y " +
+      "zona pet-friendly. Una zona del oriente del país bien conectada por la " +
+      "Litoral, con planes de pago directos con el desarrollador.",
+    // Fotos pendientes: el desarrollador las subirá por partes.
+    galeria: [],
+    precioDesde: 34974,
+    etiquetaPrecio: "Desde $34,974 por lote",
+    // Tipos representativos (polígonos F, G, I, K; precio por vara² de US$121
+    // a US$137.50). La disponibilidad real por lote NO está confirmada
+    // ("No especificado", con filas marcadas en amarillo): se deja en 0 y se
+    // confirma lote a lote antes de vender.
+    tiposDeLote: [
+      { nombre: "Lote estándar ≈289 v²", area: 289, unidad: "v2", precio: 34974, disponibilidad: 0 },
+      { nombre: "Lote amplio ≈323–432 v²", area: 323, unidad: "v2", precio: 44476, disponibilidad: 0 },
+      { nombre: "Lote premium hasta ≈491 v²", area: 491, unidad: "v2", precio: 67493, disponibilidad: 0 },
+    ],
+    servicios: [
+      "Factibilidad de servicios básicos",
+      "Calles asfaltadas",
+      "Cordón cuneta",
+      "Aceras",
+      "Arriates",
+      "Áreas verdes jardinizadas",
+      "Casa club",
+      "Estacionamiento de visitas",
+      "Zona pet-friendly",
+    ],
+    // Ubicación aproximada de Jiquilisco (km 103 Carretera Litoral).
+    // PENDIENTE: ajustar al punto exacto del proyecto.
+    ubicacion: { lat: 13.32, lng: -88.58 },
+    seo: {
+      titulo: "Condado del Triunfo — Lotes en Jiquilisco, Usulután | DestinoPropiedades.com",
+      metaDescripcion:
+        "Lotes residenciales y de inversión en Condado del Triunfo, Jiquilisco, Usulután (km 103 Carretera Litoral): servicios básicos, calles asfaltadas, casa club y áreas verdes. Desde $34,974 por lote. Consultá por WhatsApp.",
+      ogImage: "/assets/og/condado-del-triunfo.jpg",
+    },
+    whatsappMensaje: mensajeWhatsapp("Condado del Triunfo", "condado-del-triunfo"),
+  },
+
+  // ───────────────────────────────────────────────────────────────────────
+  // PROYECTO REAL — Nuevo San Vicente (Parcelación Nuevo San Vicente,
+  // Etapa #3). Parcelación residencial en Cantón Antón Flores, San Vicente.
+  // Datos de lista de precios (GESCOSAL S.A. de C.V.), ficha de amenidades,
+  // plano y PPDS de Grupo Chacón. 78 lotes transcritos (US$137.50 por v²).
+  // Fotos PENDIENTES: galería vacía → marcador "Fotos en camino".
+  // ───────────────────────────────────────────────────────────────────────
+  {
+    id: "nuevo-san-vicente",
+    slug: "nuevo-san-vicente",
+    nombre: "Nuevo San Vicente",
+    desarrolladorId: "grupo-chacon",
+    departamento: "San Vicente",
+    municipio: "San Vicente",
+    tipo: "residencial",
+    estado: "disponible",
+    descripcion:
+      "Parcelación Nuevo San Vicente (Etapa #3) es un proyecto residencial " +
+      "en el Cantón Antón Flores, municipio de San Vicente, a corta distancia " +
+      "del centro de la ciudad. Ofrece lotes para vivienda o inversión con un " +
+      "buen nivel de equipamiento: factibilidad de servicios básicos, calles " +
+      "asfaltadas, aceras, cordón cuneta, arriates, áreas verdes jardinizadas, " +
+      "piscina, casa club, caseta de seguridad, estacionamiento de visitas y " +
+      "zona pet-friendly. Una opción para construir patrimonio en el centro " +
+      "del país, con planes de pago directos con el desarrollador.",
+    // Fotos pendientes: el desarrollador las subirá por partes.
+    galeria: [],
+    precioDesde: 39337,
+    etiquetaPrecio: "Desde $39,337 por lote",
+    // Tipos representativos de los 78 lotes transcritos (precio por vara²
+    // uniforme de US$137.50). La disponibilidad real por lote NO está
+    // confirmada en la lista ("No especificado"): se deja en 0 y se confirma
+    // lote a lote antes de vender.
+    tiposDeLote: [
+      { nombre: "Lote estándar ≈286 v²", area: 286, unidad: "v2", precio: 39337, disponibilidad: 0 },
+      { nombre: "Lote amplio ≈430 v²", area: 430, unidad: "v2", precio: 59125, disponibilidad: 0 },
+      { nombre: "Lote premium hasta ≈593 v²", area: 593, unidad: "v2", precio: 81551, disponibilidad: 0 },
+    ],
+    servicios: [
+      "Factibilidad de servicios básicos",
+      "Caseta de seguridad",
+      "Calles asfaltadas",
+      "Cordón cuneta",
+      "Aceras",
+      "Arriates",
+      "Áreas verdes jardinizadas",
+      "Piscina",
+      "Casa club",
+      "Estacionamiento de visitas",
+      "Zona pet-friendly",
+    ],
+    // Ubicación aproximada de San Vicente (Cantón Antón Flores). PENDIENTE:
+    // ajustar al punto exacto del proyecto.
+    ubicacion: { lat: 13.64, lng: -88.78 },
+    seo: {
+      titulo: "Nuevo San Vicente — Lotes residenciales en San Vicente | DestinoPropiedades.com",
+      metaDescripcion:
+        "Lotes residenciales en Parcelación Nuevo San Vicente, Cantón Antón Flores, San Vicente: servicios básicos, calles asfaltadas, piscina, casa club y áreas verdes. Desde $39,337 por lote. Consultá por WhatsApp.",
+      ogImage: "/assets/og/nuevo-san-vicente.jpg",
+    },
+    whatsappMensaje: mensajeWhatsapp("Nuevo San Vicente", "nuevo-san-vicente"),
+  },
+
+  // ───────────────────────────────────────────────────────────────────────
+  // PROYECTO REAL — Bypass La Poza (Lotificación Bypass, Poza de Agua).
+  // Lotificación de uso mixto (habitacional + comercial) en Cantón La Poza,
+  // Hacienda La Poza, jurisdicción de Usulután. Datos de lista de precios
+  // (PARSAL S.A. de C.V.), ficha de amenidades y plano de Grupo Chacón
+  // (leídos del PDF: el PPDS venía sin transcribir). Dos precios por v²:
+  // US$133.10 (lotes habitacionales) y US$163.35 (lotes para centros
+  // comerciales). Proyecto BÁSICO: solo factibilidad de servicios y calles
+  // balastreadas. GUARDRAIL: NO venderlo como residencial premium ni con
+  // amenidades que no tiene. Disponibilidad por lote sin confirmar. Nombre
+  // oficial final por confirmar. Fotos PENDIENTES.
+  // ───────────────────────────────────────────────────────────────────────
+  {
+    id: "bypass-la-poza",
+    slug: "bypass-la-poza",
+    nombre: "Bypass La Poza",
+    desarrolladorId: "grupo-chacon",
+    departamento: "Usulután",
+    municipio: "Usulután",
+    tipo: "urbano",
+    estado: "disponible",
+    descripcion:
+      "Bypass La Poza (Poza de Agua) es una lotificación de uso mixto en el " +
+      "Cantón La Poza, Hacienda La Poza, jurisdicción de Usulután. Tiene lotes " +
+      "habitacionales y lotes para centros comerciales sobre un eje vial " +
+      "(bypass) de buen tránsito, ideal para quien busca tierra para vivienda " +
+      "o para montar un negocio. Es un proyecto de infraestructura básica: " +
+      "factibilidad de servicios básicos y calles balastreadas, con planes de " +
+      "pago directos con el desarrollador (15% de interés anual).",
+    // Fotos pendientes: el desarrollador las subirá por partes.
+    galeria: [],
+    precioDesde: 38088,
+    etiquetaPrecio: "Desde $38,088 por lote",
+    // Tipos representativos leídos de la lista de precios (polígonos A, C-I).
+    // Dos categorías de precio por v²: US$133.10 (habitacional) y US$163.35
+    // (centros comerciales). La disponibilidad real por lote NO está
+    // confirmada: se deja en 0 y se confirma lote a lote antes de vender.
+    tiposDeLote: [
+      { nombre: "Lote habitacional ≈286–300 v²", area: 286, unidad: "v2", precio: 38088, disponibilidad: 0 },
+      { nombre: "Lote comercial ≈289–300 v²", area: 289, unidad: "v2", precio: 47259, disponibilidad: 0 },
+      { nombre: "Lote amplio hasta ≈522 v²", area: 522, unidad: "v2", precio: 69466, disponibilidad: 0 },
+    ],
+    servicios: [
+      "Factibilidad de servicios básicos",
+      "Calles balastreadas",
+    ],
+    // Ubicación aproximada de Usulután (Cantón La Poza). PENDIENTE: ajustar al
+    // punto exacto del proyecto.
+    ubicacion: { lat: 13.35, lng: -88.44 },
+    seo: {
+      titulo: "Bypass La Poza — Lotes de uso mixto en Usulután | DestinoPropiedades.com",
+      metaDescripcion:
+        "Lotes habitacionales y comerciales en Bypass La Poza, Cantón La Poza, Usulután: factibilidad de servicios básicos y calles balastreadas, sobre eje vial de buen tránsito. Desde $38,088 por lote. Consultá por WhatsApp.",
+      ogImage: "/assets/og/bypass-la-poza.jpg",
+    },
+    whatsappMensaje: mensajeWhatsapp("Bypass La Poza", "bypass-la-poza"),
+  },
 ];
