@@ -14,10 +14,12 @@ const mensajeGenerico = `Hola, quisiera más información sobre los proyectos de
 const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensajeGenerico);
 const telUrl = linkLlamar(sitio.contacto.telefono);
 
-// Acceso al backend administrativo / CRM para la fuerza de ventas. Es una
-// app externa (con login propio), no parte del sitio estático. PENDIENTE:
-// reemplazar por la URL final cuando el CRM se publique bajo el dominio.
-const crmUrl = "https://api.pedrovende.lat/admin/";
+// Acceso al panel administrativo / CRM para la fuerza de ventas. Se publica
+// como build estático en `public/crm/` (ver public/crm/README.md): el
+// desarrollador del CRM carga ahí su interfaz y queda en vivo en /crm/.
+// Si el CRM resultara ser un backend dinámico (servidor), cambiar esta URL
+// por la de ese servidor.
+const crmUrl = withBase("/crm/");
 ---
 
 <header class="bg-navy text-cream sticky top-0 z-40 shadow-md">
