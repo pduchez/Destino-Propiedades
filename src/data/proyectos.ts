@@ -706,16 +706,19 @@ export const proyectos: Proyecto[] = [
   },
 
   // ───────────────────────────────────────────────────────────────────────
-  // PROYECTO REAL — Bypass La Poza (Lotificación Bypass, Poza de Agua).
+  // PROYECTO REAL — Bypass La Poza (Lotificación La Poza de Agua, "Bypas").
   // Lotificación de uso mixto (habitacional + comercial) en Cantón La Poza,
-  // Hacienda La Poza, jurisdicción de Usulután. Datos de lista de precios
-  // (PARSAL S.A. de C.V.), ficha de amenidades y plano de Grupo Chacón
-  // (leídos del PDF: el PPDS venía sin transcribir). Dos precios por v²:
-  // US$133.10 (lotes habitacionales) y US$163.35 (lotes para centros
-  // comerciales). Proyecto BÁSICO: solo factibilidad de servicios y calles
-  // balastreadas. GUARDRAIL: NO venderlo como residencial premium ni con
-  // amenidades que no tiene. Disponibilidad por lote sin confirmar. Nombre
-  // oficial final por confirmar. Fotos PENDIENTES.
+  // Hacienda La Poza, jurisdicción de Usulután, sobre la Carretera Litoral.
+  // Datos del PPDS COMPLETO de Grupo Chacón (lista de precios PARSAL S.A. de
+  // C.V.; plano "Lotificación La Poza de Agua", enero 2023, propietario
+  // Eduardo Schonemberger; 110 lotes, 39,364.33 m² / 56,322.48 v²). Dos
+  // precios por v²: US$133.10 (habitacional) y US$163.35 (centros
+  // comerciales); 15% interés anual. Proyecto BÁSICO: la ficha de amenidades
+  // solo confirma factibilidad de servicios y calles balastreadas (el plano
+  // sí contempla áreas verdes ecológica/recreativa y equipamiento social).
+  // GUARDRAIL: NO atribuirle amenidades que la ficha no confirma.
+  // Disponibilidad por lote sin confirmar (hay lotes vendidos marcados en
+  // plano). Nombre oficial final por confirmar. Fotos PENDIENTES.
   // ───────────────────────────────────────────────────────────────────────
   {
     id: "bypass-la-poza",
@@ -727,23 +730,26 @@ export const proyectos: Proyecto[] = [
     tipo: "urbano",
     estado: "disponible",
     descripcion:
-      "Bypass La Poza (Poza de Agua) es una lotificación de uso mixto en el " +
-      "Cantón La Poza, Hacienda La Poza, jurisdicción de Usulután. Tiene lotes " +
-      "habitacionales y lotes para centros comerciales sobre un eje vial " +
-      "(bypass) de buen tránsito, ideal para quien busca tierra para vivienda " +
-      "o para montar un negocio. Es un proyecto de infraestructura básica: " +
-      "factibilidad de servicios básicos y calles balastreadas, con planes de " +
-      "pago directos con el desarrollador (15% de interés anual).",
+      "Bypass La Poza (Lotificación La Poza de Agua) es una lotificación de " +
+      "uso mixto en el Cantón La Poza, Hacienda La Poza, jurisdicción de " +
+      "Usulután, sobre la Carretera Litoral. Son 110 lotes —habitacionales y " +
+      "parcelas para centros comerciales— sobre un eje vial (bypass) de buen " +
+      "tránsito, ideal para quien busca tierra para vivienda o para montar un " +
+      "negocio. Es un proyecto de infraestructura básica: factibilidad de " +
+      "servicios básicos y calles balastreadas; el plano contempla además " +
+      "áreas verdes y equipamiento social. Planes de pago directos con el " +
+      "desarrollador (15% de interés anual).",
     // Fotos pendientes: el desarrollador las subirá por partes.
     galeria: [],
-    precioDesde: 38088,
-    etiquetaPrecio: "Desde $38,088 por lote",
-    // Tipos representativos leídos de la lista de precios (polígonos A, C-I).
-    // Dos categorías de precio por v²: US$133.10 (habitacional) y US$163.35
-    // (centros comerciales). La disponibilidad real por lote NO está
-    // confirmada: se deja en 0 y se confirma lote a lote antes de vender.
+    precioDesde: 38084,
+    etiquetaPrecio: "Desde $38,084 por lote",
+    // Tipos representativos de la lista de precios (polígonos A, C-I; 110
+    // lotes en plano). Dos categorías de precio por v²: US$133.10
+    // (habitacional) y US$163.35 (centros comerciales). La disponibilidad
+    // real por lote NO está confirmada (hay lotes vendidos marcados en
+    // plano): se deja en 0 y se confirma lote a lote antes de vender.
     tiposDeLote: [
-      { nombre: "Lote habitacional ≈286–300 v²", area: 286, unidad: "v2", precio: 38088, disponibilidad: 0 },
+      { nombre: "Lote habitacional ≈286–300 v²", area: 286, unidad: "v2", precio: 38084, disponibilidad: 0 },
       { nombre: "Lote comercial ≈289–300 v²", area: 289, unidad: "v2", precio: 47259, disponibilidad: 0 },
       { nombre: "Lote amplio hasta ≈522 v²", area: 522, unidad: "v2", precio: 69466, disponibilidad: 0 },
     ],
@@ -757,7 +763,7 @@ export const proyectos: Proyecto[] = [
     seo: {
       titulo: "Bypass La Poza — Lotes de uso mixto en Usulután | DestinoPropiedades.com",
       metaDescripcion:
-        "Lotes habitacionales y comerciales en Bypass La Poza, Cantón La Poza, Usulután: factibilidad de servicios básicos y calles balastreadas, sobre eje vial de buen tránsito. Desde $38,088 por lote. Consultá por WhatsApp.",
+        "Lotes habitacionales y comerciales en Bypass La Poza, Cantón La Poza, Usulután: factibilidad de servicios básicos y calles balastreadas, sobre la Carretera Litoral. Desde $38,084 por lote. Consultá por WhatsApp.",
       ogImage: "/assets/og/bypass-la-poza.jpg",
     },
     whatsappMensaje: mensajeWhatsapp("Bypass La Poza", "bypass-la-poza"),
