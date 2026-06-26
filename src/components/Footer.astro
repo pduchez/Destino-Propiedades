@@ -1,0 +1,117 @@
+---
+import { sitio } from "../data/sitio";
+import { zonas } from "../data/zonas";
+import { proyectos } from "../data/proyectos";
+import { labelLotesDe } from "../lib/formato";
+import { linkLlamar, linkWhatsapp } from "../lib/whatsapp";
+import { withBase } from "../lib/rutas";
+import Logo from "./Logo.astro";
+
+const mensajeGenerico = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
+const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, mensajeGenerico);
+const telUrl = linkLlamar(sitio.contacto.telefono);
+
+// Columna "Explorar": navegación + buscar por tipo (nuestro equivalente de
+// "categorías"). Los tipos se generan desde los proyectos existentes.
+const tiposPresentes = Array.from(new Set(proyectos.map((p) => p.tipo)));
+const enlacesExplorar = [
+  { href: "/", label: "Inicio" },
+  { href: "/proyectos", label: "Todos los proyectos" },
+  ...tiposPresentes.map((t) => ({
+    href: `/proyectos?tipo=${t}`,
+    label: labelLotesDe[t],
+  })),
+  { href: "/quienes-somos", label: "¿Quiénes Somos?" },
+  { href: "/contacto", label: "Contacto" },
+];
+
+// Columna "Zonas": páginas SEO por zona.
+const enlacesZonas = zonas.map((z) => ({ href: `/${z.slug}`, label: z.nombre }));
+
+// Columna "Proyectos": acceso directo a cada lotificación (enlazado interno
+// útil para SEO y para el visitante).
+const enlacesProyectos = proyectos.map((p) => ({
+  href: `/proyectos/${p.slug}`,
+  label: p.nombre,
+}));
+
+// Solo se muestra el ícono de una red social si tiene URL real.
+const redes = [
+  { nombre: "Facebook", url: sitio.redes.facebook },
+  { nombre: "Instagram", url: sitio.redes.instagram },
+  { nombre: "TikTok", url: sitio.redes.tiktok },
+].filter((r) => r.url);
+---
+
+<footer class="bg-navy text-cream mt-16">
+  <div class="mx-auto max-w-6xl px-4 py-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <!-- Marca + contacto -->
+    <div>
+      <Logo tono="claro" size={32} class="mb-3" />
+      <p class="text-sm text-cream/70 mb-4">
+        En alianza con {sitio.desarrolladorActual.nombre}.
+      </p>
+      <ul class="space-y-1 text-sm">
+        <li><a href={telUrl} class="hover:text-sand transition-colors">{sitio.contacto.telefono}</a></li>
+        <li><a href={whatsappUrl} target="_blank" rel="noopener noreferrer" class="hover:text-sand transition-colors">WhatsApp</a></li>
+        <li><a href={`mailto:${sitio.contacto.correo}`} class="hover:text-sand transition-colors">{sitio.contacto.correo}</a></li>
+      </ul>
+      {redes.length > 0 && (
+        <div class="flex gap-3 mt-3">
+          {redes.map((r) => (
+            <a href={r.url} target="_blank" rel="noopener noreferrer" class="text-sm hover:text-sand transition-colors">
+              {r.nombre}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <!-- Explorar -->
+    <div>
+      <p class="font-semibold mb-2 text-sm uppercase tracking-wide text-sand">
+        Explorar
+      </p>
+      <ul class="space-y-1 text-sm">
+        {enlacesExplorar.map((e) => (
+          <li><a href={withBase(e.href)} class="hover:text-sand transition-colors">{e.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Zonas -->
+    <div>
+      <p class="font-semibold mb-2 text-sm uppercase tracking-wide text-sand">
+        Zonas
+      </p>
+      <ul class="space-y-1 text-sm">
+        {enlacesZonas.map((e) => (
+          <li><a href={withBase(e.href)} class="hover:text-sand transition-colors">{e.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Proyectos -->
+    <div>
+      <p class="font-semibold mb-2 text-sm uppercase tracking-wide text-sand">
+        Proyectos
+      </p>
+      <ul class="space-y-1 text-sm">
+        {enlacesProyectos.map((e) => (
+          <li><a href={withBase(e.href)} class="hover:text-sand transition-colors">{e.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Barra inferior: copyright + legales -->
+  <div class="border-t border-navy-light px-4 py-4">
+    <div class="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-cream/60">
+      <p>© {new Date().getFullYear()} {sitio.marcaPlataforma}. Todos los derechos reservados.</p>
+      <div class="flex gap-4">
+        <a href={withBase("/terminos")} class="hover:text-sand transition-colors">Términos</a>
+        <a href={withBase("/privacidad")} class="hover:text-sand transition-colors">Privacidad</a>
+      </div>
+    </div>
+  </div>
+</footer>

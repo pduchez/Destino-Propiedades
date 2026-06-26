@@ -1,0 +1,247 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Galeria from "../../components/Galeria.astro";
+import PlaceholderFoto from "../../components/PlaceholderFoto.astro";
+import MigasDePan from "../../components/MigasDePan.astro";
+import JsonLd from "../../components/JsonLd.astro";
+import { proyectos } from "../../data/proyectos";
+import { sitio } from "../../data/sitio";
+import { linkLlamar, linkWhatsapp } from "../../lib/whatsapp";
+import {
+  formatoPrecio,
+  formatoArea,
+  labelTipo,
+  labelLotesDe,
+  labelEstado,
+} from "../../lib/formato";
+import { rangoArea, lotesDisponibles, zonaDeProyecto } from "../../lib/relaciones";
+import { proyectoJsonLd, breadcrumbJsonLd } from "../../lib/seo";
+
+export function getStaticPaths() {
+  return proyectos.map((p) => ({ params: { slug: p.slug }, props: { proyecto: p } }));
+}
+
+const { proyecto } = Astro.props;
+const base = Astro.site!;
+
+const whatsappUrl = linkWhatsapp(sitio.contacto.whatsapp, proyecto.whatsappMensaje);
+const telUrl = linkLlamar(sitio.contacto.telefono);
+const rango = rangoArea(proyecto);
+const disponibles = lotesDisponibles(proyecto);
+const mapaUrl = `https://www.google.com/maps/search/?api=1&query=${proyecto.ubicacion.lat},${proyecto.ubicacion.lng}`;
+
+// Migas de pan: Inicio / Tipo / Zona / Proyecto. La zona enlaza a su página
+// SEO si existe.
+const zona = zonaDeProyecto(proyecto);
+const migas = [
+  { label: "Inicio", href: "/" },
+  { label: labelLotesDe[proyecto.tipo], href: `/proyectos?tipo=${proyecto.tipo}` },
+  { label: zona ? zona.nombre : proyecto.departamento, href: zona ? `/${zona.slug}` : undefined },
+  { label: proyecto.nombre },
+];
+
+// Datos clave en íconos. Cada uno tiene un SVG simple inline.
+const datosClave = [
+  { label: "Ubicación", valor: `${proyecto.municipio}, ${proyecto.departamento}` },
+  { label: "Tipo", valor: labelTipo[proyecto.tipo] },
+  { label: "Estado", valor: labelEstado[proyecto.estado] },
+  ...(rango
+    ? [{
+        label: "Área de lotes",
+        valor:
+          rango.min === rango.max
+            ? formatoArea(rango.min, rango.unidad as any)
+            : `${rango.min}–${formatoArea(rango.max, rango.unidad as any)}`,
+      }]
+    : []),
+  ...(disponibles > 0 ? [{ label: "Lotes disponibles", valor: String(disponibles) }] : []),
+];
+---
+
+<Layout
+  titulo={proyecto.seo.titulo}
+  descripcion={proyecto.seo.metaDescripcion}
+  ogImage={proyecto.seo.ogImage}
+  ogImageAlt={`${proyecto.nombre}, ${proyecto.municipio}, ${proyecto.departamento}`}
+  ogType="article"
+>
+  <JsonLd slot="head" data={proyectoJsonLd(proyecto, base)} />
+  <JsonLd slot="head" data={breadcrumbJsonLd(migas, base)} />
+
+  <div class="mx-auto max-w-6xl px-4 py-6">
+    <MigasDePan items={migas} />
+  </div>
+
+  <div class="mx-auto max-w-6xl px-4 pb-12 grid gap-8 lg:grid-cols-[1fr_360px]">
+    <!-- Columna principal -->
+    <div>
+      <header class="mb-5">
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-cream bg-navy px-3 py-1.5 rounded-full">
+          En venta · {labelEstado[proyecto.estado]}
+        </span>
+        <h1 class="font-display text-3xl sm:text-4xl mt-3">{proyecto.nombre}</h1>
+        <p class="text-navy/60 mt-1 flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-sand-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+          </svg>
+          {proyecto.municipio}, {proyecto.departamento}
+        </p>
+        <p class="text-2xl font-display font-bold text-navy mt-3 inline-flex flex-col">
+          {proyecto.etiquetaPrecio}
+          <span class="h-0.5 w-10 bg-sand mt-1.5 rounded-full"></span>
+        </p>
+      </header>
+
+      {proyecto.galeria.length > 0 ? (
+        <Galeria fotos={proyecto.galeria} nombreProyecto={proyecto.nombre} />
+      ) : (
+        <div class="aspect-[3/2] w-full overflow-hidden rounded-xl">
+          <PlaceholderFoto nombre={proyecto.nombre} detalle />
+        </div>
+      )}
+
+      <!-- Vistas 360° / recorrido virtual. PREVISTO: aparece solo si el
+           proyecto tiene `vistas360`. Los videos 360 se están generando;
+           cuando estén, basta con llenar ese campo en proyectos.ts. -->
+      {proyecto.vistas360 && proyecto.vistas360.length > 0 && (
+        <section class="mt-8">
+          <h2 class="font-display text-2xl mb-3">Recorrido 360°</h2>
+          <div class="grid gap-4 sm:grid-cols-2">
+            {proyecto.vistas360.map((v) => (
+              <figure class="rounded-xl overflow-hidden border border-navy/10 bg-black">
+                <div class="aspect-video">
+                  <iframe
+                    src={v.url}
+                    title={`Vista 360° de ${proyecto.nombre}: ${v.titulo}`}
+                    loading="lazy"
+                    allow="accelerometer; gyroscope; fullscreen; xr-spatial-tracking"
+                    allowfullscreen
+                    class="h-full w-full border-0"
+                  ></iframe>
+                </div>
+                <figcaption class="bg-white px-3 py-2 text-sm font-semibold text-navy">
+                  {v.titulo}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Datos clave -->
+      <section class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+        {datosClave.map((d) => (
+          <div class="rounded-xl border border-line bg-surface p-4 shadow-[var(--shadow-card)]">
+            <p class="text-xs uppercase tracking-wider text-navy/45">{d.label}</p>
+            <p class="font-semibold mt-1">{d.valor}</p>
+          </div>
+        ))}
+      </section>
+
+      <!-- Descripción -->
+      <section class="mt-8">
+        <h2 class="font-display text-2xl mb-2">Sobre el proyecto</h2>
+        <p class="text-navy/80 leading-relaxed">{proyecto.descripcion}</p>
+      </section>
+
+      <!-- Tipos de lote -->
+      {proyecto.tiposDeLote.length > 0 && (
+        <section class="mt-8">
+          <h2 class="font-display text-2xl mb-3">Tipos de lote</h2>
+          <div class="grid gap-3 sm:grid-cols-2">
+            {proyecto.tiposDeLote.map((t) => (
+              <div class="rounded-xl border border-line bg-surface p-4 shadow-[var(--shadow-card)]">
+                <p class="font-semibold">{t.nombre}</p>
+                <p class="text-sm text-navy/60 mt-1">{formatoArea(t.area, t.unidad)}</p>
+                <p class="text-navy font-display font-bold mt-2">
+                  {t.precio > 0 ? formatoPrecio(t.precio) : "Consultar"}
+                </p>
+                {t.disponibilidad > 0 && (
+                  <p class="text-xs text-navy/50 mt-1">{t.disponibilidad} disponibles</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Servicios / factibilidades como chips -->
+      {proyecto.servicios.length > 0 && (
+        <section class="mt-8">
+          <h2 class="font-display text-2xl mb-3">Servicios y factibilidades</h2>
+          <ul class="flex flex-wrap gap-2">
+            {proyecto.servicios.map((s) => (
+              <li class="rounded-full bg-navy/5 border border-navy/10 px-3 py-1 text-sm">{s}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <!-- Ubicación -->
+      <section class="mt-8">
+        <h2 class="font-display text-2xl mb-3">Ubicación</h2>
+        <p class="text-navy/70 mb-2">{proyecto.municipio}, {proyecto.departamento}, El Salvador.</p>
+        <a
+          href={mapaUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 text-navy font-semibold underline hover:text-sand transition-colors"
+        >
+          Ver ubicación en Google Maps
+        </a>
+      </section>
+    </div>
+
+    <!-- Tarjeta de contacto (pegajosa en escritorio) -->
+    <aside class="lg:sticky lg:top-24 h-fit">
+      <div class="rounded-2xl border border-line bg-surface p-5 shadow-[var(--shadow-card)]">
+        <p class="text-sm text-navy/60">Precio</p>
+        <p class="text-2xl font-display font-bold text-navy">{proyecto.etiquetaPrecio}</p>
+
+        <p class="mt-4 text-sm text-navy/70">
+          Escribinos y un asesor te responde con disponibilidad, fotos y
+          formas de pago de <strong>{proyecto.nombre}</strong>.
+        </p>
+
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-evento="click_whatsapp"
+          data-proyecto={proyecto.slug}
+          class="mt-4 flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 font-semibold text-white hover:opacity-90 transition-opacity"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="h-5 w-5 fill-white">
+            <path d="M16.04 4C9.4 4 4 9.36 4 15.96c0 2.5.74 4.83 2.02 6.79L4 28l5.43-1.97a12.1 12.1 0 0 0 6.61 1.93h.01c6.64 0 12.04-5.36 12.04-11.96C28.09 9.36 22.69 4 16.04 4Zm0 21.78h-.01a9.9 9.9 0 0 1-5.05-1.39l-.36-.21-3.76 1.37 1.4-3.65-.24-.38a9.78 9.78 0 0 1-1.52-5.26C6.5 10.62 10.78 6.4 16.04 6.4c2.62 0 5.08 1.02 6.93 2.86a9.69 9.69 0 0 1 2.88 6.9c0 5.36-4.39 9.62-9.81 9.62Z" />
+          </svg>
+          Escribir por WhatsApp
+        </a>
+
+        <a
+          href={telUrl}
+          class="mt-3 flex items-center justify-center gap-2 rounded-full border border-navy/20 px-5 py-3 font-semibold text-navy hover:bg-navy/5 transition-colors"
+        >
+          Llamar ahora
+        </a>
+
+        <button
+          type="button"
+          class="fav-btn text-navy mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-navy/20 px-5 py-3 font-semibold hover:bg-navy/5 transition-colors"
+          data-fav
+          data-fav-slug={proyecto.slug}
+          aria-pressed="false"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="fav-icon h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+          </svg>
+          <span>Guardar en favoritos</span>
+        </button>
+
+        <p class="mt-4 text-xs text-navy/50 text-center">
+          En alianza con {sitio.desarrolladorActual.nombre}.
+        </p>
+      </div>
+    </aside>
+  </div>
+</Layout>

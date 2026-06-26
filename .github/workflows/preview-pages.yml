@@ -1,0 +1,63 @@
+# Preview del sitio en GitHub Pages.
+#
+# Publica una versión de revisión en
+#   https://pduchez.github.io/destino-propiedades/
+# Es solo para revisar el avance: se construye con base en subcarpeta y con
+# noindex (PUBLIC_NOINDEX=true), así no aparece en buscadores. No afecta el
+# despliegue de producción (destinopropiedades.com), que usa la configuración
+# por defecto del repo (site raíz, sin base).
+name: Preview en GitHub Pages
+
+on:
+  push:
+    branches:
+      - claude/determined-curie-u890uo
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un solo despliegue a la vez.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build (preview, subcarpeta + noindex)
+        run: npm run build
+        env:
+          SITE: https://pduchez.github.io
+          # OJO: GitHub Pages sirve el proyecto en una ruta que respeta las
+          # mayúsculas del nombre del repo y distingue may/min. Debe coincidir
+          # exactamente con "Destino-Propiedades".
+          BASE: /Destino-Propiedades/
+          PUBLIC_NOINDEX: "true"
+      - uses: actions/configure-pages@v5
+        with:
+          # Crea/habilita el sitio de Pages (fuente: GitHub Actions) si aún no
+          # está habilitado en el repo, sin tener que tocar Settings a mano.
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

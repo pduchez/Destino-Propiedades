@@ -1,0 +1,29 @@
+---
+// Migas de pan (breadcrumbs). Recibe una lista de pasos; el último es la
+// página actual (sin enlace). Los datos estructurados schema.org se agregan
+// en la Fase 4 (SEO).
+interface Miga {
+  label: string;
+  href?: string;
+}
+interface Props {
+  items: Miga[];
+}
+import { withBase } from "../lib/rutas";
+const { items } = Astro.props;
+---
+
+<nav aria-label="Migas de pan" class="text-sm text-navy/60">
+  <ol class="flex flex-wrap items-center gap-1">
+    {items.map((item, i) => (
+      <li class="flex items-center gap-1">
+        {item.href ? (
+          <a href={withBase(item.href)} class="hover:text-sand transition-colors">{item.label}</a>
+        ) : (
+          <span class="text-navy/90" aria-current="page">{item.label}</span>
+        )}
+        {i < items.length - 1 && <span class="text-navy/30">/</span>}
+      </li>
+    ))}
+  </ol>
+</nav>

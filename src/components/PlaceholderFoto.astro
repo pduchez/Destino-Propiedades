@@ -1,0 +1,31 @@
+---
+// Marcador de "Fotos en camino": se muestra cuando un proyecto es real y ya
+// tiene datos confirmados, pero sus fotografías todavía no llegan. Diseñado
+// para verse intencional y de marca (no como una imagen rota), de modo que el
+// proyecto pueda publicarse con datos verificados mientras se suben las tomas.
+interface Props {
+  nombre: string;
+  /** Mostrar el texto secundario (en tarjetas pequeñas conviene ocultarlo). */
+  detalle?: boolean;
+}
+const { nombre, detalle = false } = Astro.props;
+---
+
+<div
+  class="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-navy to-navy-light px-4 text-center"
+  role="img"
+  aria-label={`${nombre}: fotografías próximamente`}
+>
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-sand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5l4.5-4.5 3 3 4.5-4.5L21 15" />
+    <path stroke-linecap="round" stroke-linejoin="round" d="M3 5.25h18v13.5H3z" />
+    <circle cx="8" cy="9" r="1.25" fill="currentColor" stroke="none" />
+  </svg>
+  <span class="font-display text-sm text-cream sm:text-base">Fotos en camino</span>
+  {detalle && (
+    <span class="max-w-xs text-xs text-cream/60">
+      Estamos preparando las fotografías de este proyecto. Mientras tanto,
+      escribinos por WhatsApp y te las compartimos.
+    </span>
+  )}
+</div>

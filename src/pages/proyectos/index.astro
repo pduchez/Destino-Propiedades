@@ -1,0 +1,251 @@
+---
+// Página de resultados (F2): tarjetas estandarizadas (F3) + filtros por
+// precio/tipo/zona + orden + contador + paginación. El filtrado ocurre en el
+// navegador (sitio estático) y lee los parámetros de la URL, incluido el
+// ?q= que envía el buscador del inicio (F1).
+//
+// FUTURO (F9, documentado, sin construir): cuando entren más desarrolladores
+// a la plataforma, agregar aquí (o en una página /desarrolladores) una sección
+// "Desarrolladores aliados" que liste cada tenant. El modelo ya lo soporta:
+// cada proyecto tiene `desarrolladorId`, y `sitio.desarrolladorActual` se puede
+// convertir en una lista de desarrolladores. No requiere rehacer el diseño,
+// solo añadir datos y un filtro por desarrollador.
+import Layout from "../../layouts/Layout.astro";
+import TarjetaProyecto from "../../components/TarjetaProyecto.astro";
+import { proyectos } from "../../data/proyectos";
+import { sitio } from "../../data/sitio";
+import { labelTipo } from "../../lib/formato";
+
+const tiposDisponibles = Array.from(new Set(proyectos.map((p) => p.tipo)));
+const departamentosDisponibles = Array.from(
+  new Set(proyectos.map((p) => p.departamento))
+).sort();
+---
+
+<Layout
+  titulo={`Proyectos — ${sitio.marcaPlataforma}`}
+  descripcion="Buscá y filtrá lotificaciones disponibles en El Salvador por zona, tipo y precio. Información clara y contacto directo por WhatsApp."
+>
+  <section class="mx-auto max-w-6xl px-4 py-10">
+    <h1 class="font-display text-3xl sm:text-4xl mb-1">Proyectos</h1>
+    <p class="text-navy/70 mb-6">
+      Lotificaciones disponibles en El Salvador, en alianza con{" "}
+      {sitio.desarrolladorActual.nombre}.
+    </p>
+
+    <!-- Barra de filtros -->
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 bg-surface border border-line rounded-2xl p-4 mb-5 shadow-[var(--shadow-card)]">
+      <div>
+        <label for="f-q" class="block text-xs font-semibold uppercase tracking-wide text-navy/50 mb-1">Buscar</label>
+        <input id="f-q" type="text" placeholder="Zona, municipio o nombre"
+          class="w-full rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:border-sand bg-surface" />
+      </div>
+
+      <div>
+        <label for="f-tipo" class="block text-xs font-semibold uppercase tracking-wide text-navy/50 mb-1">Tipo</label>
+        <select id="f-tipo" class="w-full rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:border-sand bg-surface">
+          <option value="">Todos</option>
+          {tiposDisponibles.map((t) => <option value={t}>{labelTipo[t]}</option>)}
+        </select>
+      </div>
+
+      <div>
+        <label for="f-zona" class="block text-xs font-semibold uppercase tracking-wide text-navy/50 mb-1">Zona</label>
+        <select id="f-zona" class="w-full rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:border-sand bg-surface">
+          <option value="">Todas</option>
+          {departamentosDisponibles.map((d) => <option value={d.toLowerCase()}>{d}</option>)}
+        </select>
+      </div>
+
+      <div>
+        <label for="f-precio" class="block text-xs font-semibold uppercase tracking-wide text-navy/50 mb-1">Precio</label>
+        <select id="f-precio" class="w-full rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:border-sand bg-surface">
+          <option value="">Cualquiera</option>
+          <option value="0-30000">Hasta $30,000</option>
+          <option value="30000-50000">$30,000 – $50,000</option>
+          <option value="50000-">Más de $50,000</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Contador + orden -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+      <p id="contador" class="text-sm text-navy/70" aria-live="polite"></p>
+      <div class="flex items-center gap-2">
+        <label for="f-orden" class="text-sm text-navy/60">Ordenar:</label>
+        <select id="f-orden" class="rounded-lg border border-line px-3 py-2 text-sm focus:outline-none focus:border-sand bg-surface">
+          <option value="">Destacados</option>
+          <option value="precio-asc">Precio: menor a mayor</option>
+          <option value="precio-desc">Precio: mayor a menor</option>
+          <option value="area-desc">Área: mayor primero</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Grilla de resultados -->
+    <div id="grilla" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {proyectos.map((p) => <TarjetaProyecto proyecto={p} />)}
+    </div>
+
+    <!-- Mensaje cuando no hay resultados -->
+    <p id="sin-resultados" class="hidden text-center text-navy/60 py-12">
+      No encontramos proyectos con esos filtros.
+      <button id="limpiar" type="button" class="underline text-navy hover:text-sand ml-1">Limpiar filtros</button>
+    </p>
+
+    <!-- Paginación (aparece solo si hace falta) -->
+    <nav id="paginacion" class="hidden mt-8 flex justify-center gap-2" aria-label="Paginación"></nav>
+  </section>
+</Layout>
+
+<script>
+  const PAGINA_TAM = 9;
+
+  const grilla = document.getElementById("grilla")!;
+  const cards = Array.from(grilla.querySelectorAll<HTMLElement>("[data-card]"));
+  const contador = document.getElementById("contador")!;
+  const sinResultados = document.getElementById("sin-resultados")!;
+  const paginacion = document.getElementById("paginacion")!;
+
+  const fQ = document.getElementById("f-q") as HTMLInputElement;
+  const fTipo = document.getElementById("f-tipo") as HTMLSelectElement;
+  const fZona = document.getElementById("f-zona") as HTMLSelectElement;
+  const fPrecio = document.getElementById("f-precio") as HTMLSelectElement;
+  const fOrden = document.getElementById("f-orden") as HTMLSelectElement;
+  const limpiar = document.getElementById("limpiar");
+
+  let paginaActual = 1;
+
+  // ---- Leer parámetros de la URL al cargar ----
+  const params = new URLSearchParams(location.search);
+  if (params.get("q")) fQ.value = params.get("q")!;
+  if (params.get("tipo")) fTipo.value = params.get("tipo")!;
+  if (params.get("zona")) fZona.value = params.get("zona")!.toLowerCase();
+  if (params.get("precio")) fPrecio.value = params.get("precio")!;
+  if (params.get("orden")) fOrden.value = params.get("orden")!;
+
+  function num(v: string | null): number | null {
+    return v === "" || v === null ? null : Number(v);
+  }
+
+  function pasaFiltros(card: HTMLElement): boolean {
+    const q = fQ.value.trim().toLowerCase();
+    if (q) {
+      const texto = `${card.dataset.nombre} ${card.dataset.municipio} ${card.dataset.departamento}`;
+      if (!texto.includes(q)) return false;
+    }
+    if (fTipo.value && card.dataset.tipo !== fTipo.value) return false;
+    if (fZona.value && card.dataset.departamento !== fZona.value) return false;
+
+    if (fPrecio.value) {
+      const precio = num(card.dataset.precio ?? "");
+      if (precio === null) return false; // "Consultar" no entra en rangos
+      const [min, max] = fPrecio.value.split("-");
+      if (min && precio < Number(min)) return false;
+      if (max && precio > Number(max)) return false;
+    }
+    return true;
+  }
+
+  function ordenar(lista: HTMLElement[]): HTMLElement[] {
+    const orden = fOrden.value;
+    if (!orden) return lista;
+    const copia = [...lista];
+    if (orden === "precio-asc" || orden === "precio-desc") {
+      copia.sort((a, b) => {
+        const pa = num(a.dataset.precio ?? "") ?? Infinity;
+        const pb = num(b.dataset.precio ?? "") ?? Infinity;
+        return orden === "precio-asc" ? pa - pb : pb - pa;
+      });
+    } else if (orden === "area-desc") {
+      copia.sort((a, b) => (num(b.dataset.area ?? "") ?? 0) - (num(a.dataset.area ?? "") ?? 0));
+    }
+    return copia;
+  }
+
+  function actualizarURL() {
+    const p = new URLSearchParams();
+    if (fQ.value.trim()) p.set("q", fQ.value.trim());
+    if (fTipo.value) p.set("tipo", fTipo.value);
+    if (fZona.value) p.set("zona", fZona.value);
+    if (fPrecio.value) p.set("precio", fPrecio.value);
+    if (fOrden.value) p.set("orden", fOrden.value);
+    const qs = p.toString();
+    history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
+  }
+
+  function render() {
+    const visibles = ordenar(cards.filter(pasaFiltros));
+
+    // Contador: proyectos + total de lotes disponibles
+    const totalLotes = visibles.reduce((s, c) => s + (Number(c.dataset.disp) || 0), 0);
+    const nProy = visibles.length;
+    contador.textContent =
+      nProy === 0
+        ? ""
+        : `${nProy} ${nProy === 1 ? "proyecto" : "proyectos"}` +
+          (totalLotes > 0 ? ` · ${totalLotes} lotes disponibles` : "");
+
+    sinResultados.classList.toggle("hidden", nProy > 0);
+
+    // Reordenar en el DOM y aplicar paginación
+    const totalPaginas = Math.ceil(nProy / PAGINA_TAM) || 1;
+    if (paginaActual > totalPaginas) paginaActual = 1;
+    const inicio = (paginaActual - 1) * PAGINA_TAM;
+    const fin = inicio + PAGINA_TAM;
+
+    cards.forEach((c) => (c.style.display = "none"));
+    visibles.forEach((c, i) => {
+      grilla.appendChild(c); // mantiene el orden ordenado
+      c.style.display = i >= inicio && i < fin ? "" : "none";
+    });
+
+    renderPaginacion(totalPaginas);
+    actualizarURL();
+  }
+
+  function renderPaginacion(total: number) {
+    paginacion.innerHTML = "";
+    if (total <= 1) {
+      paginacion.classList.add("hidden");
+      return;
+    }
+    paginacion.classList.remove("hidden");
+    for (let i = 1; i <= total; i++) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = String(i);
+      b.className =
+        "h-9 w-9 rounded-full text-sm font-semibold transition-colors " +
+        (i === paginaActual ? "bg-navy text-cream" : "bg-surface border border-line hover:bg-navy/5");
+      b.addEventListener("click", () => {
+        paginaActual = i;
+        render();
+        document.getElementById("grilla")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      paginacion.appendChild(b);
+    }
+  }
+
+  [fTipo, fZona, fPrecio, fOrden].forEach((el) =>
+    el.addEventListener("change", () => {
+      paginaActual = 1;
+      render();
+    })
+  );
+  fQ.addEventListener("input", () => {
+    paginaActual = 1;
+    render();
+  });
+  limpiar?.addEventListener("click", () => {
+    fQ.value = "";
+    fTipo.value = "";
+    fZona.value = "";
+    fPrecio.value = "";
+    fOrden.value = "";
+    paginaActual = 1;
+    render();
+  });
+
+  render();
+</script>

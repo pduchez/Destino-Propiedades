@@ -1,0 +1,112 @@
+---
+// Página de contacto (Fase 5). Sitio estático, sin backend: el formulario
+// compone un mensaje y abre WhatsApp (canal de conversión del negocio). Incluye
+// casilla de consentimiento obligatoria que enlaza al aviso de privacidad.
+import Layout from "../layouts/Layout.astro";
+import { sitio } from "../data/sitio";
+import { proyectos } from "../data/proyectos";
+import { normalizarNumero, linkLlamar } from "../lib/whatsapp";
+import { withBase } from "../lib/rutas";
+
+const numeroWhatsapp = normalizarNumero(sitio.contacto.whatsapp);
+const telUrl = linkLlamar(sitio.contacto.telefono);
+---
+
+<Layout
+  titulo={`Contacto — ${sitio.marcaPlataforma}`}
+  descripcion="Escribinos y un asesor real te responde por WhatsApp con disponibilidad, fotos y formas de pago de los proyectos."
+>
+  <section class="mx-auto max-w-3xl px-4 py-12">
+    <h1 class="font-display text-3xl sm:text-4xl mb-2">Contacto</h1>
+    <p class="text-navy/70 mb-8">
+      Completá el formulario y te abriremos WhatsApp con tu mensaje listo para
+      enviar. Te responde un asesor real, no un bot.
+    </p>
+
+    <form id="form-contacto" class="grid gap-4" data-numero={numeroWhatsapp}>
+      <div>
+        <label for="c-nombre" class="block text-sm font-semibold mb-1">Nombre <span class="text-sand">*</span></label>
+        <input id="c-nombre" name="nombre" type="text" required
+          class="w-full rounded-lg border border-navy/20 px-3 py-2.5 focus:outline-none focus:border-sand" />
+      </div>
+
+      <div>
+        <label for="c-telefono" class="block text-sm font-semibold mb-1">Teléfono o WhatsApp <span class="text-navy/40 font-normal">(opcional)</span></label>
+        <input id="c-telefono" name="telefono" type="tel" inputmode="tel"
+          placeholder="Ej. +1 305 555 1234"
+          class="w-full rounded-lg border border-navy/20 px-3 py-2.5 focus:outline-none focus:border-sand" />
+      </div>
+
+      <div>
+        <label for="c-proyecto" class="block text-sm font-semibold mb-1">Proyecto de interés</label>
+        <select id="c-proyecto" name="proyecto"
+          class="w-full rounded-lg border border-navy/20 px-3 py-2.5 focus:outline-none focus:border-sand">
+          <option value="">Consulta general</option>
+          {proyectos.map((p) => <option value={p.nombre}>{p.nombre}</option>)}
+        </select>
+      </div>
+
+      <div>
+        <label for="c-mensaje" class="block text-sm font-semibold mb-1">Mensaje <span class="text-sand">*</span></label>
+        <textarea id="c-mensaje" name="mensaje" rows="4" required
+          placeholder="Contanos qué te gustaría saber…"
+          class="w-full rounded-lg border border-navy/20 px-3 py-2.5 focus:outline-none focus:border-sand"></textarea>
+      </div>
+
+      <label class="flex items-start gap-2 text-sm text-navy/80">
+        <input id="c-consent" name="consentimiento" type="checkbox" required class="mt-1" />
+        <span>
+          Acepto que un asesor me contacte y que mis datos se traten según el
+          <a href={withBase("/privacidad")} class="underline text-navy hover:text-sand">Aviso de Privacidad</a>.
+        </span>
+      </label>
+
+      <p id="c-error" class="hidden text-sm text-red-600"></p>
+
+      <button type="submit"
+        class="flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-semibold text-white hover:opacity-90 transition-opacity">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="h-5 w-5 fill-white">
+          <path d="M16.04 4C9.4 4 4 9.36 4 15.96c0 2.5.74 4.83 2.02 6.79L4 28l5.43-1.97a12.1 12.1 0 0 0 6.61 1.93h.01c6.64 0 12.04-5.36 12.04-11.96C28.09 9.36 22.69 4 16.04 4Zm0 21.78h-.01a9.9 9.9 0 0 1-5.05-1.39l-.36-.21-3.76 1.37 1.4-3.65-.24-.38a9.78 9.78 0 0 1-1.52-5.26C6.5 10.62 10.78 6.4 16.04 6.4c2.62 0 5.08 1.02 6.93 2.86a9.69 9.69 0 0 1 2.88 6.9c0 5.36-4.39 9.62-9.81 9.62Z" />
+        </svg>
+        Enviar por WhatsApp
+      </button>
+
+      <p class="text-xs text-navy/50 text-center">
+        ¿Preferís llamar? <a href={telUrl} class="underline hover:text-sand">{sitio.contacto.telefono}</a>
+      </p>
+    </form>
+  </section>
+</Layout>
+
+<script is:inline>
+  (function () {
+    const form = document.getElementById("form-contacto");
+    if (!form) return;
+    const error = document.getElementById("c-error");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const numero = form.getAttribute("data-numero");
+      const nombre = form.nombre.value.trim();
+      const telefono = form.telefono.value.trim();
+      const proyecto = form.proyecto.value;
+      const mensaje = form.mensaje.value.trim();
+
+      if (!nombre || !mensaje || !form.consentimiento.checked) {
+        if (error) {
+          error.textContent = "Completá tu nombre, tu mensaje y aceptá el aviso de privacidad.";
+          error.classList.remove("hidden");
+        }
+        return;
+      }
+
+      let texto = `Hola, soy ${nombre}.`;
+      if (proyecto) texto += ` Me interesa el proyecto ${proyecto}.`;
+      texto += ` ${mensaje}`;
+      if (telefono) texto += ` Mi contacto: ${telefono}.`;
+
+      const url = "https://wa.me/" + numero + "?text=" + encodeURIComponent(texto);
+      window.open(url, "_blank", "noopener");
+    });
+  })();
+</script>

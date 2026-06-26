@@ -1,0 +1,76 @@
+---
+// Lógica de favoritos (❤️) para todo el sitio. Se incluye una sola vez en el
+// Layout. Guarda los slugs marcados en localStorage (sin backend) y mantiene
+// sincronizados: los botones de corazón, el contador del menú y la página
+// /favoritos. No usa frameworks: JS del navegador.
+---
+
+<script is:inline>
+  (function () {
+    const CLAVE = "destino:favoritos";
+
+    function leer() {
+      try {
+        const v = JSON.parse(localStorage.getItem(CLAVE) || "[]");
+        return Array.isArray(v) ? v : [];
+      } catch {
+        return [];
+      }
+    }
+    function guardar(lista) {
+      localStorage.setItem(CLAVE, JSON.stringify(lista));
+    }
+
+    function pintarBoton(btn, activo) {
+      btn.setAttribute("aria-pressed", activo ? "true" : "false");
+      const icon = btn.querySelector(".fav-icon");
+      if (icon) icon.setAttribute("fill", activo ? "currentColor" : "none");
+      btn.classList.toggle("text-[#e23b3b]", activo);
+      btn.classList.toggle("text-navy", !activo);
+    }
+
+    function actualizarContadores() {
+      const n = leer().length;
+      document.querySelectorAll("[data-fav-count]").forEach((el) => {
+        el.textContent = String(n);
+        el.classList.toggle("hidden", n === 0);
+      });
+    }
+
+    function sincronizar() {
+      const favs = leer();
+      document.querySelectorAll("[data-fav]").forEach((btn) => {
+        pintarBoton(btn, favs.includes(btn.getAttribute("data-fav-slug")));
+      });
+      actualizarContadores();
+    }
+
+    function alternar(slug) {
+      const favs = leer();
+      const i = favs.indexOf(slug);
+      if (i >= 0) favs.splice(i, 1);
+      else favs.push(slug);
+      guardar(favs);
+      sincronizar();
+      document.dispatchEvent(new CustomEvent("favoritos:cambio"));
+    }
+
+    document.addEventListener("click", function (e) {
+      const btn = e.target.closest("[data-fav]");
+      if (!btn) return;
+      e.preventDefault();
+      alternar(btn.getAttribute("data-fav-slug"));
+    });
+
+    // Si cambia en otra pestaña.
+    window.addEventListener("storage", function (e) {
+      if (e.key === CLAVE) sincronizar();
+    });
+
+    document.addEventListener("DOMContentLoaded", sincronizar);
+    sincronizar();
+
+    // Expuesto para la página /favoritos.
+    window.DestinoFavoritos = { leer: leer };
+  })();
+</script>

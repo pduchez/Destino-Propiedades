@@ -1,0 +1,60 @@
+---
+// Capa de medición opcional, apagada por defecto.
+//
+// Por qué existe: la "Estrategia Social-First + SEO + Medición" pide GA4/GTM
+// y eventos de conversión (click_whatsapp, view_gallery, etc.), pero el sitio
+// no tiene credenciales reales todavía y es un sitio estático sin backend.
+// En vez de inventar IDs o levantar infraestructura no autorizada (CAPI,
+// Events API, CRM, webhooks — explícitamente fuera de alcance hasta tener
+// cuentas/secretos reales), este componente solo activa GTM/GA4 si la
+// variable de entorno correspondiente está definida en el deploy. Sin esas
+// variables, no carga ningún script de terceros.
+const gtmId = import.meta.env.PUBLIC_GTM_CONTAINER_ID;
+const ga4Id = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID;
+---
+
+{gtmId && (
+  <script is:inline define:vars={{ gtmId }}>
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != "dataLayer" ? "&l=" + l : "";
+      j.async = true;
+      j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, "script", "dataLayer", gtmId);
+  </script>
+)}
+
+{!gtmId && ga4Id && (
+  <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>
+)}
+{!gtmId && ga4Id && (
+  <script is:inline define:vars={{ ga4Id }}>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+    gtag("config", ga4Id, { anonymize_ip: true });
+  </script>
+)}
+
+<script is:inline>
+  // Eventos de conversión (sin PII): cualquier elemento con
+  // data-evento="nombre_evento" envía un push a dataLayer al hacer clic.
+  // Si no hay GTM/GA4 cargado, dataLayer queda como cola inerte (no falla).
+  window.dataLayer = window.dataLayer || [];
+  document.addEventListener("click", function (ev) {
+    var el = ev.target && ev.target.closest && ev.target.closest("[data-evento]");
+    if (!el) return;
+    var evento = el.getAttribute("data-evento");
+    if (!evento) return;
+    window.dataLayer.push({
+      event: evento,
+      proyecto: el.getAttribute("data-proyecto") || undefined,
+    });
+  });
+</script>

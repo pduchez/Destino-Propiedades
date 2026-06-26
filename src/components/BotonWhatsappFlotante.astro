@@ -1,0 +1,20 @@
+---
+import { sitio } from "../data/sitio";
+import { linkWhatsapp } from "../lib/whatsapp";
+
+const mensaje = `Hola, quisiera más información sobre los proyectos de ${sitio.marcaPlataforma}.`;
+const url = linkWhatsapp(sitio.contacto.whatsapp, mensaje);
+---
+
+<a
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Escribir por WhatsApp"
+  data-evento="click_whatsapp"
+  class="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-lg transition-transform hover:scale-105"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="h-8 w-8 fill-white">
+    <path d="M16.04 4C9.4 4 4 9.36 4 15.96c0 2.5.74 4.83 2.02 6.79L4 28l5.43-1.97a12.1 12.1 0 0 0 6.61 1.93h.01c6.64 0 12.04-5.36 12.04-11.96C28.09 9.36 22.69 4 16.04 4Zm0 21.78h-.01a9.9 9.9 0 0 1-5.05-1.39l-.36-.21-3.76 1.37 1.4-3.65-.24-.38a9.78 9.78 0 0 1-1.52-5.26C6.5 10.62 10.78 6.4 16.04 6.4c2.62 0 5.08 1.02 6.93 2.86a9.69 9.69 0 0 1 2.88 6.9c0 5.36-4.39 9.62-9.81 9.62Zm5.4-7.21c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.65.07-1.78-.89-2.94-1.59-4.12-3.6-.31-.54.31-.5.89-1.67.1-.2.05-.37-.05-.52-.1-.15-.62-1.49-.85-2.04-.22-.54-.45-.46-.62-.47-.16-.01-.35-.01-.54-.01-.2 0-.5.07-.77.37-.27.3-1.02 1-1.02 2.44 0 1.44 1.05 2.83 1.2 3.03.15.2 2.03 3.1 4.99 4.22 2.46.94 2.96.75 3.5.7.54-.05 1.75-.71 2-1.4.25-.69.25-1.28.17-1.4-.07-.13-.27-.2-.57-.34Z" />
+  </svg>
+</a>

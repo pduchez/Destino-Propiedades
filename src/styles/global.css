@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/*
+  Paleta e identidad de DestinoPropiedades.com.
+  Dirección visual: serio y sobrio (navy + dorado/arena premium), pero
+  dinámico (titulares en sans grueso moderno + fotografía protagonista).
+  Provisional hasta tener el logo real de Grupo Chacón — ver CLAUDE.md.
+*/
+@theme {
+  /* Titulares: sans geométrico moderno. Cuerpo: grotesk legible. */
+  --font-display: "Outfit", sans-serif;
+  --font-sans: "Hanken Grotesk", sans-serif;
+
+  /* Base de marca */
+  --color-navy: #0f2438;
+  --color-navy-light: #1c3b59;
+  --color-navy-deep: #0a1a29; /* secciones/footer aún más profundos */
+  --color-sand: #c9a463; /* acento dorado/arena */
+  --color-sand-light: #e7d6b3;
+  --color-sand-dark: #a9854a; /* dorado para texto sobre claro (contraste) */
+  --color-cream: #faf7f2;
+
+  /* Neutros de interfaz */
+  --color-ink: #1a2733; /* texto principal sobre claro */
+  --color-line: #e7e2d9; /* bordes sutiles cálidos */
+  --color-surface: #ffffff;
+  --color-surface-soft: #f5f1ea; /* fondos de sección alternos */
+
+  /* Sombras suaves y premium */
+  --shadow-card: 0 1px 2px rgba(15, 36, 56, 0.04), 0 8px 24px -12px rgba(15, 36, 56, 0.18);
+  --shadow-float: 0 12px 40px -12px rgba(15, 36, 56, 0.28);
+
+  /* Radios consistentes */
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+/* Realce de palabra clave en titulares (dorado sobre oscuro o claro). */
+.acento {
+  color: var(--color-sand);
+}

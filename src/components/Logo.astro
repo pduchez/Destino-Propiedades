@@ -1,0 +1,70 @@
+---
+// Logo de la plataforma DestinoPropiedades.com (Opción 2: sol + costa).
+// Marca propia de la plataforma, independiente del desarrollador (Grupo
+// Chacón tiene su propio logo aparte). Data-driven: el nombre sale de
+// `sitio.marcaPlataforma`; el componente solo aporta la línea gráfica.
+//
+// Variantes de color por `tono`:
+//   - "claro"  → para fondos oscuros (header navy, footer): texto crema.
+//   - "oscuro" → para fondos claros: texto navy.
+// El acento dorado y el ícono se mantienen en ambos.
+import { sitio } from "../data/sitio";
+
+interface Props {
+  tono?: "claro" | "oscuro";
+  /** Alto del ícono/marca en px (el texto escala con él). */
+  size?: number;
+  class?: string;
+}
+const { tono = "claro", size = 34, class: clase = "" } = Astro.props;
+
+// "DestinoPropiedades.com" → "Destino" + "Propiedades" + ".com"
+const marca = sitio.marcaPlataforma.replace(/\.com$/i, "");
+const tld = sitio.marcaPlataforma.match(/\.com$/i) ? ".com" : "";
+const corte = marca.toLowerCase().indexOf("propiedades");
+const parte1 = corte > 0 ? marca.slice(0, corte) : marca;
+const parte2 = corte > 0 ? marca.slice(corte) : "";
+
+const colorTexto = tono === "claro" ? "text-cream" : "text-navy";
+const fontPx = Math.round(size * 0.62);
+---
+
+<span class={`inline-flex items-center gap-2.5 ${clase}`}>
+  <!-- Ícono: sol naciente sobre la costa/golfo de El Salvador -->
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 48 48"
+    fill="none"
+    aria-hidden="true"
+    class="shrink-0"
+  >
+    <circle cx="24" cy="24" r="23" class={tono === "claro" ? "fill-cream/8" : "fill-navy/5"} />
+    <!-- Sol -->
+    <circle cx="24" cy="20" r="6.5" fill="none" stroke="#c9a463" stroke-width="2.6" />
+    <!-- Rayo/destello superior (el "destino") -->
+    <line x1="24" y1="6.5" x2="24" y2="10" stroke="#c9a463" stroke-width="2.6" stroke-linecap="round" />
+    <!-- Costa: dos olas/horizonte -->
+    <path
+      d="M9 31 Q 16.5 26, 24 31 T 39 31"
+      fill="none"
+      stroke={tono === "claro" ? "#faf7f2" : "#0f2438"}
+      stroke-width="2.6"
+      stroke-linecap="round"
+    />
+    <path
+      d="M11 37 Q 17.5 33, 24 37 T 37 37"
+      fill="none"
+      stroke="#c9a463"
+      stroke-width="2.6"
+      stroke-linecap="round"
+    />
+  </svg>
+
+  <span
+    class={`font-display font-bold tracking-tight leading-none ${colorTexto}`}
+    style={`font-size:${fontPx}px`}
+  >
+    {parte1}<span class="text-sand">{parte2}</span><span class="text-sand/70 font-semibold">{tld}</span>
+  </span>
+</span>
