@@ -39,6 +39,7 @@ async function loadBrand(): Promise<BrandContext> {
     generalInstructions: b?.generalInstructions ?? "",
     defaultHashtags: parseArray(b?.defaultHashtags),
     language: b?.language ?? "es",
+    masterInstruction: b?.masterInstruction ?? "",
   };
 }
 
@@ -97,6 +98,7 @@ export async function generateDrafts(
         hashtags: parseArray(project.hashtags),
         websiteUrl: project.websiteUrl,
         contactInfo: project.contactInfo,
+        instructionDoc: project.instructionDoc,
       }
     : null;
 

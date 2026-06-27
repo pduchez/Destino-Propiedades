@@ -38,6 +38,7 @@ export const POST = withAuth(async (req) => {
       hashtags: stringify(toArray(body.hashtags)),
       websiteUrl: String(body.websiteUrl ?? ""),
       contactInfo: String(body.contactInfo ?? ""),
+      instructionDoc: String(body.instructionDoc ?? ""),
     },
   });
   return json(project, 201);

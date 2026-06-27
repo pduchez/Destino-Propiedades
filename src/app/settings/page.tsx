@@ -12,6 +12,7 @@ interface Strategy {
   generalInstructions: string;
   language: string;
   defaultHashtags: string;
+  masterInstruction: string;
 }
 
 interface Account {
@@ -62,6 +63,29 @@ function StrategySection() {
   const [s, setS] = useState<Strategy | null>(null);
   const [hashtags, setHashtags] = useState("");
   const [msg, setMsg] = useState("");
+  const [miFile, setMiFile] = useState<File | null>(null);
+  const [miMsg, setMiMsg] = useState("");
+  const [miBusy, setMiBusy] = useState(false);
+
+  async function uploadMaster() {
+    if (!miFile) return;
+    setMiBusy(true);
+    setMiMsg("");
+    try {
+      const fd = new FormData();
+      fd.append("file", miFile);
+      fd.append("target", "brand");
+      await api("/api/instructions/upload", { method: "POST", body: fd });
+      const d = await api<Strategy>("/api/strategy");
+      setS(d);
+      setMiFile(null);
+      setMiMsg("Instrucción Madre cargada ✓");
+    } catch (e) {
+      setMiMsg((e as Error).message);
+    } finally {
+      setMiBusy(false);
+    }
+  }
 
   useEffect(() => {
     api<Strategy>("/api/strategy").then((d) => {
@@ -105,6 +129,38 @@ function StrategySection() {
       <p className="text-sm text-slate-500">
         Esta es la &quot;instrucción estratégica general&quot; que alimenta toda la generación de contenido.
       </p>
+
+      <div className="rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+        <h3 className="font-semibold text-slate-800">🧠 Instrucción Madre</h3>
+        <p className="mb-3 text-sm text-slate-500">
+          Es el &quot;cerebro&quot; que guía a Claude (voz, personas, guardrails, redes).
+          Puedes <strong>subir un archivo</strong> (.txt, .md o .pdf) <strong>o editarla</strong> abajo. Ambas opciones son válidas.
+        </p>
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <input
+            type="file"
+            accept=".txt,.md,.markdown,.pdf,text/plain,text/markdown,application/pdf"
+            className="input w-auto"
+            onChange={(e) => setMiFile(e.target.files?.[0] ?? null)}
+          />
+          <button
+            type="button"
+            className="btn-secondary"
+            disabled={!miFile || miBusy}
+            onClick={uploadMaster}
+          >
+            {miBusy ? "Procesando…" : "Subir archivo"}
+          </button>
+          {miMsg && <span className="text-sm text-slate-500">{miMsg}</span>}
+        </div>
+        <textarea
+          className="input font-mono text-xs"
+          rows={12}
+          value={s.masterInstruction ?? ""}
+          onChange={(e) => setS({ ...s, masterInstruction: e.target.value })}
+        />
+      </div>
+
       <div className="grid gap-4 md:grid-cols-2">
         <div>
           <label className="label">Nombre de marca</label>

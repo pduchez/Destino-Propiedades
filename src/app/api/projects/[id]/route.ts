@@ -26,6 +26,7 @@ export const PATCH = withAuth(async (req, { params }: Ctx) => {
     "description",
     "websiteUrl",
     "contactInfo",
+    "instructionDoc",
   ]) {
     if (typeof body[k] === "string") data[k] = body[k];
   }

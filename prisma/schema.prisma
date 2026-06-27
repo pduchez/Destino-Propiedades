@@ -24,6 +24,8 @@ model BrandStrategy {
   generalInstructions String   @default("")
   defaultHashtags     String   @default("[]") // JSON array de strings
   language            String   @default("es")
+  /// Instrucción Madre: prompt raíz de marca (subible o editable desde el dashboard).
+  masterInstruction   String   @default("")
   updatedAt           DateTime @updatedAt
 }
 
@@ -43,6 +45,9 @@ model Project {
   hashtags     String   @default("[]") // JSON array (hashtags propios del proyecto)
   websiteUrl   String   @default("")
   contactInfo  String   @default("")
+  /// Ficha/instrucción específica del proyecto (subible o editable): target,
+  /// persona, narrativa, número de WhatsApp. Tiene prioridad sobre los defaults.
+  instructionDoc String @default("")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

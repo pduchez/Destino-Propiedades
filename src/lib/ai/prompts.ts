@@ -9,6 +9,8 @@ export interface BrandContext {
   generalInstructions: string;
   defaultHashtags: string[];
   language: string;
+  /** Instrucción Madre: prompt raíz estratégico de la marca. */
+  masterInstruction?: string;
 }
 
 export interface ProjectContext {
@@ -23,6 +25,8 @@ export interface ProjectContext {
   hashtags: string[];
   websiteUrl: string;
   contactInfo: string;
+  /** Ficha/instrucción específica del proyecto (target, narrativa, persona…). */
+  instructionDoc?: string;
 }
 
 export interface CampaignContext {
@@ -43,26 +47,42 @@ export interface GenerationInput {
 /** Prompt de sistema: define el rol del agente de mercadeo. */
 export function buildSystemPrompt(brand: BrandContext): string {
   const langName = brand.language === "es" ? "español" : brand.language;
-  return [
+  const lines: string[] = [
     `Eres el estratega de redes sociales del portal inmobiliario "${brand.brandName}" (${brand.portalUrl}).`,
     `Tu trabajo es redactar publicaciones para redes sociales que generen interés, confianza y contactos (leads).`,
     `Escribe SIEMPRE en ${langName}.`,
     ``,
-    `Tono de voz de la marca: ${brand.toneOfVoice || "profesional y cercano"}.`,
-    brand.mission ? `Misión: ${brand.mission}` : "",
-    brand.targetAudience ? `Audiencia objetivo: ${brand.targetAudience}` : "",
-    brand.generalInstructions
-      ? `Lineamientos generales de mercadeo: ${brand.generalInstructions}`
-      : "",
-    ``,
-    `Reglas:`,
+  ];
+
+  // Instrucción Madre (prompt raíz de marca), si existe: es la autoridad estratégica.
+  if (brand.masterInstruction && brand.masterInstruction.trim()) {
+    lines.push(
+      `### INSTRUCCIÓN MADRE DE LA MARCA (autoridad estratégica — síguela para voz, ángulo, persona y guardrails):`,
+      brand.masterInstruction.trim(),
+      ``,
+      `IMPORTANTE sobre la Instrucción Madre: úsala para definir tono, narrativa, persona y reglas. Pero tu tarea concreta AHORA es redactar el copy de UNA publicación para la red indicada. Ignora cualquier parte del documento que hable de formatos de salida JSON, calendarios o contratos de esquema: eso lo maneja otro módulo.`,
+      ``,
+    );
+  } else {
+    if (brand.toneOfVoice)
+      lines.push(`Tono de voz de la marca: ${brand.toneOfVoice}.`);
+    if (brand.mission) lines.push(`Misión: ${brand.mission}`);
+    if (brand.targetAudience)
+      lines.push(`Audiencia objetivo: ${brand.targetAudience}`);
+    if (brand.generalInstructions)
+      lines.push(`Lineamientos generales de mercadeo: ${brand.generalInstructions}`);
+    lines.push(``);
+  }
+
+  lines.push(
+    `Reglas de redacción:`,
     `- No inventes precios, fechas de entrega ni características que no aparezcan en los datos del proyecto.`,
-    `- Si no hay datos suficientes, mantén el mensaje aspiracional pero genérico.`,
+    `- Si falta un dato, omítelo con naturalidad. NUNCA escribas marcadores como [REQUIERE_DATO] dentro del texto publicable.`,
     `- Incluye un llamado a la acción claro.`,
     `- Devuelve EXCLUSIVAMENTE el contenido pedido en el formato estructurado solicitado.`,
-  ]
-    .filter(Boolean)
-    .join("\n");
+  );
+
+  return lines.filter((l) => l !== undefined).join("\n");
 }
 
 /** Prompt de usuario: contexto del proyecto/campaña + restricciones de la red. */
@@ -99,6 +119,13 @@ export function buildUserPrompt(input: GenerationInput): string {
       lines.push(`- Puntos destacados: ${p.highlights.join(", ")}`);
     if (p.contactInfo) lines.push(`- Contacto: ${p.contactInfo}`);
     if (p.websiteUrl) lines.push(`- URL: ${p.websiteUrl}`);
+    if (p.instructionDoc && p.instructionDoc.trim()) {
+      lines.push("");
+      lines.push(
+        `### Ficha/instrucción específica de este proyecto (AUTORIDAD: tiene prioridad sobre los defaults generales — respeta su target, persona y narrativa):`,
+      );
+      lines.push(p.instructionDoc.trim());
+    }
     lines.push("");
   } else {
     lines.push(

@@ -18,6 +18,7 @@ interface Project {
   hashtags: string;
   websiteUrl: string;
   contactInfo: string;
+  instructionDoc: string;
   _count?: { posts: number; assets: number; campaigns: number };
 }
 
@@ -34,6 +35,7 @@ const EMPTY = {
   hashtags: "",
   websiteUrl: "",
   contactInfo: "",
+  instructionDoc: "",
 };
 
 function arr(json: string): string {
@@ -50,6 +52,30 @@ export default function ProjectsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
+  const [docFile, setDocFile] = useState<File | null>(null);
+  const [docMsg, setDocMsg] = useState("");
+  const [docBusy, setDocBusy] = useState(false);
+
+  async function uploadProjectDoc() {
+    if (!docFile || !editingId) return;
+    setDocBusy(true);
+    setDocMsg("");
+    try {
+      const fd = new FormData();
+      fd.append("file", docFile);
+      fd.append("target", "project");
+      fd.append("projectId", editingId);
+      await api("/api/instructions/upload", { method: "POST", body: fd });
+      const p = await api<Project>(`/api/projects/${editingId}`);
+      setForm((f) => ({ ...f, instructionDoc: p.instructionDoc ?? "" }));
+      setDocFile(null);
+      setDocMsg("Ficha cargada ✓");
+    } catch (e) {
+      setDocMsg((e as Error).message);
+    } finally {
+      setDocBusy(false);
+    }
+  }
 
   async function load() {
     setProjects(await api<Project[]>("/api/projects"));
@@ -73,6 +99,7 @@ export default function ProjectsPage() {
       hashtags: arr(p.hashtags),
       websiteUrl: p.websiteUrl,
       contactInfo: p.contactInfo,
+      instructionDoc: p.instructionDoc ?? "",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -80,6 +107,8 @@ export default function ProjectsPage() {
   function reset() {
     setEditingId(null);
     setForm({ ...EMPTY });
+    setDocFile(null);
+    setDocMsg("");
   }
 
   async function save(e: React.FormEvent) {
@@ -176,6 +205,42 @@ export default function ProjectsPage() {
           <div className="md:col-span-2">
             <label className="label">Información de contacto</label>
             <input className="input" value={form.contactInfo} onChange={set("contactInfo")} />
+          </div>
+          <div className="md:col-span-2">
+            <label className="label">
+              Ficha / instrucción del proyecto (target, narrativa, persona, WhatsApp)
+            </label>
+            <p className="mb-2 text-xs text-slate-500">
+              Aquí personalizas fácil el enfoque de ESTE proyecto (ej. los de playa
+              apuntan distinto que los residenciales). Puedes editarla aquí o, al
+              editar un proyecto guardado, <strong>subir un archivo</strong> (.txt, .md, .pdf).
+            </p>
+            <textarea
+              className="input font-mono text-xs"
+              rows={6}
+              placeholder="Tipo: beachfront. Persona: Carlos. Ángulo: inversión + turismo. WhatsApp: +503 0000 0000…"
+              value={form.instructionDoc}
+              onChange={set("instructionDoc")}
+            />
+            {editingId && (
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <input
+                  type="file"
+                  accept=".txt,.md,.markdown,.pdf,text/plain,application/pdf"
+                  className="input w-auto"
+                  onChange={(e) => setDocFile(e.target.files?.[0] ?? null)}
+                />
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  disabled={!docFile || docBusy}
+                  onClick={uploadProjectDoc}
+                >
+                  {docBusy ? "Procesando…" : "Subir ficha"}
+                </button>
+                {docMsg && <span className="text-sm text-slate-500">{docMsg}</span>}
+              </div>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-3">

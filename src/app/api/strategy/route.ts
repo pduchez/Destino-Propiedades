@@ -1,13 +1,21 @@
 import { prisma } from "@/lib/db";
 import { json, withAuth } from "@/lib/api";
 import { stringify } from "@/lib/json";
+import { DEFAULT_MASTER_INSTRUCTION } from "@/lib/ai/masterInstruction";
 
 export const GET = withAuth(async () => {
-  const strategy = await prisma.brandStrategy.upsert({
+  let strategy = await prisma.brandStrategy.upsert({
     where: { id: "default" },
     update: {},
     create: { id: "default" },
   });
+  // Pre-carga la Instrucción Madre por defecto si aún está vacía.
+  if (!strategy.masterInstruction || !strategy.masterInstruction.trim()) {
+    strategy = await prisma.brandStrategy.update({
+      where: { id: "default" },
+      data: { masterInstruction: DEFAULT_MASTER_INSTRUCTION },
+    });
+  }
   return json(strategy);
 });
 
@@ -22,6 +30,7 @@ export const PATCH = withAuth(async (req) => {
     "targetAudience",
     "generalInstructions",
     "language",
+    "masterInstruction",
   ]) {
     if (typeof body[k] === "string") data[k] = body[k];
   }
