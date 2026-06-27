@@ -85,7 +85,7 @@ async function extractText(file: File): Promise<string> {
 }
 
 async function transcribePdf(buffer: Buffer): Promise<string> {
-  const client = new Anthropic();
+  const client = new Anthropic({ apiKey: (process.env.ANTHROPIC_API_KEY || "").trim() });
   const b64 = buffer.toString("base64");
   const content = [
     {

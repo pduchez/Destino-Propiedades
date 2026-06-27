@@ -47,16 +47,34 @@ export async function generateCopy(
     return { ...templateCopy(input), model: "plantilla", usedAI: false };
   }
 
-  const client = new Anthropic();
+  // Limpia espacios/saltos de línea accidentales al pegar la clave en Vercel.
+  const apiKey = (process.env.ANTHROPIC_API_KEY || "").trim();
+  const client = new Anthropic({ apiKey });
   const system = buildSystemPrompt(input.brand);
   const user = buildUserPrompt(input) + "\n" + JSON_INSTRUCTION;
 
-  const response = await client.messages.create({
-    model: DEFAULT_MODEL,
-    max_tokens: 1200,
-    system,
-    messages: [{ role: "user", content: user }],
-  });
+  let response;
+  try {
+    response = await client.messages.create({
+      model: DEFAULT_MODEL,
+      max_tokens: 1200,
+      system,
+      messages: [{ role: "user", content: user }],
+    });
+  } catch (e) {
+    const err = e as { status?: number; message?: string };
+    if (err.status === 401) {
+      throw new Error(
+        "La API key de Claude es inválida (401). En Vercel → Settings → Environment Variables, revisa ANTHROPIC_API_KEY: que esté COMPLETA, sin espacios ni saltos de línea, y que sea una clave activa de console.anthropic.com. Luego vuelve a desplegar (Redeploy).",
+      );
+    }
+    if (err.status === 429) {
+      throw new Error(
+        "Límite de uso de Claude alcanzado (429). Revisa el saldo/los límites de tu cuenta en console.anthropic.com e inténtalo de nuevo.",
+      );
+    }
+    throw new Error(`Error al generar con Claude: ${err.message || "desconocido"}`);
+  }
 
   const textBlock = response.content.find(
     (b): b is Anthropic.TextBlock => b.type === "text",
