@@ -1,0 +1,174 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { api } from "@/lib/client";
+
+interface Project {
+  id: string;
+  name: string;
+}
+interface Campaign {
+  id: string;
+  name: string;
+  projectId: string | null;
+  networks: string;
+}
+
+const NETWORKS = [
+  { id: "facebook", label: "📘 Facebook" },
+  { id: "instagram", label: "📸 Instagram" },
+  { id: "x", label: "✖️ X" },
+  { id: "tiktok", label: "🎵 TikTok" },
+];
+
+export default function GeneratePage() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [projectId, setProjectId] = useState("");
+  const [campaignId, setCampaignId] = useState("");
+  const [networks, setNetworks] = useState<string[]>(["facebook", "instagram"]);
+  const [count, setCount] = useState(1);
+  const [attachImage, setAttachImage] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<{ created: number } | null>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    api<Project[]>("/api/projects").then(setProjects).catch(() => {});
+    api<Campaign[]>("/api/campaigns").then(setCampaigns).catch(() => {});
+  }, []);
+
+  const filteredCampaigns = campaigns.filter(
+    (c) => !projectId || c.projectId === projectId || c.projectId === null,
+  );
+
+  function toggle(id: string) {
+    setNetworks((n) => (n.includes(id) ? n.filter((x) => x !== id) : [...n, id]));
+  }
+
+  async function generate() {
+    setLoading(true);
+    setError("");
+    setResult(null);
+    try {
+      const res = await api<{ created: number }>("/api/generate", {
+        method: "POST",
+        body: JSON.stringify({
+          projectId: projectId || null,
+          campaignId: campaignId || null,
+          networks,
+          countPerNetwork: count,
+          attachImage,
+        }),
+      });
+      setResult(res);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">Generar contenido</h1>
+        <p className="text-slate-500">
+          El bot combina la estrategia de marca, el proyecto/campaña y una imagen
+          aleatoria del stock para crear borradores en cada red.
+        </p>
+      </div>
+
+      <div className="card space-y-4">
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="label">Proyecto</label>
+            <select
+              className="input"
+              value={projectId}
+              onChange={(e) => {
+                setProjectId(e.target.value);
+                setCampaignId("");
+              }}
+            >
+              <option value="">Institucional (sin proyecto)</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="label">Campaña (opcional)</label>
+            <select className="input" value={campaignId} onChange={(e) => setCampaignId(e.target.value)}>
+              <option value="">Sin campaña</option>
+              {filteredCampaigns.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label className="label">Redes</label>
+          <div className="flex flex-wrap gap-3">
+            {NETWORKS.map((n) => (
+              <button
+                key={n.id}
+                type="button"
+                onClick={() => toggle(n.id)}
+                className={`rounded-lg px-3 py-2 text-sm ring-1 ${
+                  networks.includes(n.id)
+                    ? "bg-brand text-white ring-brand"
+                    : "bg-white text-slate-600 ring-slate-300"
+                }`}
+              >
+                {n.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="label">Borradores por red</label>
+            <input
+              type="number"
+              min={1}
+              max={5}
+              className="input"
+              value={count}
+              onChange={(e) => setCount(Number(e.target.value))}
+            />
+          </div>
+          <div className="flex items-end">
+            <label className="flex items-center gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                checked={attachImage}
+                onChange={(e) => setAttachImage(e.target.checked)}
+              />
+              Adjuntar imagen aleatoria del stock
+            </label>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button className="btn-primary" disabled={loading || networks.length === 0} onClick={generate}>
+            {loading ? "Generando…" : "✨ Generar borradores"}
+          </button>
+          {error && <span className="text-sm text-red-600">{error}</span>}
+        </div>
+      </div>
+
+      {result && (
+        <div className="rounded-lg bg-emerald-50 p-4 text-sm text-emerald-800 ring-1 ring-emerald-200">
+          ✓ Se generaron <strong>{result.created}</strong> borradores.{" "}
+          <Link href="/queue" className="font-medium underline">
+            Ir a la cola de aprobación →
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+}
