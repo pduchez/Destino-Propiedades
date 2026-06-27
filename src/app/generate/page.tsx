@@ -33,10 +33,14 @@ export default function GeneratePage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ created: number } | null>(null);
   const [error, setError] = useState("");
+  const [aiStatus, setAiStatus] = useState<{ aiConfigured: boolean; model: string } | null>(null);
 
   useEffect(() => {
     api<Project[]>("/api/projects").then(setProjects).catch(() => {});
     api<Campaign[]>("/api/campaigns").then(setCampaigns).catch(() => {});
+    api<{ aiConfigured: boolean; model: string }>("/api/status")
+      .then((s) => setAiStatus({ aiConfigured: s.aiConfigured, model: s.model }))
+      .catch(() => {});
   }, []);
 
   const filteredCampaigns = campaigns.filter(
@@ -79,6 +83,22 @@ export default function GeneratePage() {
           aleatoria del stock para crear borradores en cada red.
         </p>
       </div>
+
+      {aiStatus && (
+        <div
+          className={`rounded-lg p-3 text-sm ring-1 ${
+            aiStatus.aiConfigured
+              ? "bg-emerald-50 text-emerald-800 ring-emerald-200"
+              : "bg-amber-50 text-amber-800 ring-amber-200"
+          }`}
+        >
+          {aiStatus.aiConfigured ? (
+            <>✅ Motor de IA activo: <strong>Claude ({aiStatus.model})</strong>. Los textos los escribe la IA.</>
+          ) : (
+            <>⚠️ La IA NO está activa en este despliegue (modo plantilla). Asegúrate de abrir tu URL de producción y que <code>ANTHROPIC_API_KEY</code> esté configurada.</>
+          )}
+        </div>
+      )}
 
       <div className="card space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
