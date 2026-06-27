@@ -1,0 +1,121 @@
+// Esquema de datos del Agente de Redes Sociales de Destinopropiedades.com
+// Motor: SQLite (cero configuración en local). Migrable a Postgres en producción.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Estrategia general de marca del portal (singleton, id = "default").
+/// Es la "instrucción estratégica" de alto nivel que alimenta a toda la generación.
+model BrandStrategy {
+  id                  String   @id @default("default")
+  brandName           String   @default("Destino Propiedades")
+  portalUrl           String   @default("https://destinopropiedades.com")
+  mission             String   @default("")
+  toneOfVoice         String   @default("Cercano, aspiracional, profesional y confiable")
+  targetAudience      String   @default("")
+  generalInstructions String   @default("")
+  defaultHashtags     String   @default("[]") // JSON array de strings
+  language            String   @default("es")
+  updatedAt           DateTime @updatedAt
+}
+
+/// Un proyecto inmobiliario del portafolio del portal.
+model Project {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  location     String   @default("")
+  propertyType String   @default("") // ej. Apartamento, Casa, Lote, Comercial
+  status       String   @default("active") // active | paused | sold_out | archived
+  priceFrom    String   @default("")
+  currency     String   @default("USD")
+  description  String   @default("")
+  amenities    String   @default("[]") // JSON array
+  highlights   String   @default("[]") // JSON array (puntos de venta)
+  hashtags     String   @default("[]") // JSON array (hashtags propios del proyecto)
+  websiteUrl   String   @default("")
+  contactInfo  String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  campaigns Campaign[]
+  assets    Asset[]
+  posts     Post[]
+}
+
+/// Una campaña de mercadeo: puede ser global (projectId null) o por proyecto.
+model Campaign {
+  id           String    @id @default(cuid())
+  projectId    String?
+  name         String
+  objective    String    @default("awareness") // awareness | leads | sales | launch | event
+  instructions String    @default("") // instrucción específica de la campaña
+  networks     String    @default("[]") // JSON array: ["facebook","instagram","x","tiktok"]
+  startDate    DateTime?
+  endDate      DateTime?
+  status       String    @default("active") // active | paused | finished
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  posts   Post[]
+}
+
+/// Imagen del "stock" reutilizable. Puede ser global (projectId null) o de un proyecto.
+model Asset {
+  id           String   @id @default(cuid())
+  projectId    String?
+  filename     String // nombre en disco/almacenamiento
+  originalName String   @default("")
+  url          String // ruta pública servida por /api/uploads/<filename>
+  mimeType     String   @default("image/jpeg")
+  sizeBytes    Int      @default(0)
+  width        Int      @default(0)
+  height       Int      @default(0)
+  tags         String   @default("[]") // JSON array
+  createdAt    DateTime @default(now())
+
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+}
+
+/// Un post generado por el bot, listo para revisión/aprobación y publicación.
+model Post {
+  id          String    @id @default(cuid())
+  projectId   String?
+  campaignId  String?
+  network     String // facebook | instagram | x | tiktok
+  status      String    @default("draft") // draft | approved | scheduled | publishing | published | rejected | failed
+  caption     String    @default("")
+  hashtags    String    @default("[]") // JSON array
+  assetIds    String    @default("[]") // JSON array de Asset.id
+  callToAction String   @default("")
+  scheduledAt DateTime?
+  publishedAt DateTime?
+  externalId  String?
+  externalUrl String?
+  error       String?
+  model       String?   @default("") // modelo de IA usado
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project  Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  campaign Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+}
+
+/// Conexión a una cuenta de red social y su modo de publicación.
+model SocialAccount {
+  id          String   @id @default(cuid())
+  network     String   @unique // facebook | instagram | x | tiktok
+  displayName String   @default("")
+  enabled     Boolean  @default(false)
+  autoPublish Boolean  @default(false) // Fase 2: publicar sin aprobación humana
+  config      String   @default("{}") // JSON con credenciales/ids específicos
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
