@@ -32,6 +32,14 @@ export function isAIConfigured(): boolean {
   return !!process.env.ANTHROPIC_API_KEY;
 }
 
+/** Limpia la API key: quita espacios/saltos y comillas accidentales al pegarla. */
+export function sanitizeKey(): string {
+  return (process.env.ANTHROPIC_API_KEY || "")
+    .trim()
+    .replace(/^["'`]+|["'`]+$/g, "")
+    .trim();
+}
+
 const JSON_INSTRUCTION = `
 Responde ÚNICAMENTE con un objeto JSON válido (sin texto adicional, sin bloques de código) con esta forma exacta:
 {
@@ -47,9 +55,7 @@ export async function generateCopy(
     return { ...templateCopy(input), model: "plantilla", usedAI: false };
   }
 
-  // Limpia espacios/saltos de línea accidentales al pegar la clave en Vercel.
-  const apiKey = (process.env.ANTHROPIC_API_KEY || "").trim();
-  const client = new Anthropic({ apiKey });
+  const client = new Anthropic({ apiKey: sanitizeKey() });
   const system = buildSystemPrompt(input.brand);
   const user = buildUserPrompt(input) + "\n" + JSON_INSTRUCTION;
 

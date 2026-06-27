@@ -11,7 +11,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/db";
 import { json, errorJson, withAuth } from "@/lib/api";
-import { isAIConfigured } from "@/lib/ai/generate";
+import { isAIConfigured, sanitizeKey } from "@/lib/ai/generate";
 
 const MODEL = process.env.AI_MODEL || "claude-opus-4-8";
 
@@ -85,7 +85,7 @@ async function extractText(file: File): Promise<string> {
 }
 
 async function transcribePdf(buffer: Buffer): Promise<string> {
-  const client = new Anthropic({ apiKey: (process.env.ANTHROPIC_API_KEY || "").trim() });
+  const client = new Anthropic({ apiKey: sanitizeKey() });
   const b64 = buffer.toString("base64");
   const content = [
     {
