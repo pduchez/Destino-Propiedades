@@ -1,7 +1,9 @@
 /**
  * Abstracción de almacenamiento de imágenes del stock.
- * Driver "local": guarda en ./uploads y se sirve vía /api/uploads/<filename>.
- * Diseñado para poder reemplazarse por S3/R2 sin tocar el resto del código.
+ *  - STORAGE_DRIVER="local" (por defecto): guarda en ./uploads y se sirve vía
+ *    /api/uploads/<filename>. Ideal para desarrollo.
+ *  - STORAGE_DRIVER="blob": sube a Vercel Blob y usa la URL pública directa.
+ *    Ideal para producción en Vercel (filesystem efímero).
  */
 import { mkdir, writeFile, readFile, unlink } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -9,6 +11,10 @@ import path from "node:path";
 import crypto from "node:crypto";
 
 const UPLOAD_DIR = path.join(process.cwd(), "uploads");
+
+function driver(): "local" | "blob" {
+  return process.env.STORAGE_DRIVER === "blob" ? "blob" : "local";
+}
 
 function safeExt(originalName: string, mimeType: string): string {
   const ext = path.extname(originalName).toLowerCase();
@@ -35,11 +41,22 @@ export async function saveBuffer(
   originalName: string,
   mimeType: string,
 ): Promise<StoredFile> {
-  if (!existsSync(UPLOAD_DIR)) await mkdir(UPLOAD_DIR, { recursive: true });
   const filename = `${Date.now()}-${crypto.randomBytes(6).toString("hex")}${safeExt(
     originalName,
     mimeType,
   )}`;
+
+  if (driver() === "blob") {
+    // Importación dinámica: el paquete solo se necesita en modo blob.
+    const { put } = await import("@vercel/blob");
+    const blob = await put(`stock/${filename}`, buffer, {
+      access: "public",
+      contentType: mimeType,
+    });
+    return { filename, url: blob.url, sizeBytes: buffer.byteLength };
+  }
+
+  if (!existsSync(UPLOAD_DIR)) await mkdir(UPLOAD_DIR, { recursive: true });
   await writeFile(path.join(UPLOAD_DIR, filename), buffer);
   return {
     filename,
@@ -49,15 +66,22 @@ export async function saveBuffer(
 }
 
 export async function readStored(filename: string): Promise<Buffer | null> {
-  // Previene path traversal: solo se permite el nombre base.
+  // Solo aplica al driver local. Previene path traversal con basename.
   const base = path.basename(filename);
   const full = path.join(UPLOAD_DIR, base);
   if (!full.startsWith(UPLOAD_DIR) || !existsSync(full)) return null;
   return readFile(full);
 }
 
-export async function deleteStored(filename: string): Promise<void> {
-  const base = path.basename(filename);
+/** Elimina el archivo. Para blob recibe la URL pública; para local, el filename. */
+export async function deleteStored(filenameOrUrl: string): Promise<void> {
+  if (driver() === "blob") {
+    if (!/^https?:\/\//.test(filenameOrUrl)) return;
+    const { del } = await import("@vercel/blob");
+    await del(filenameOrUrl).catch(() => {});
+    return;
+  }
+  const base = path.basename(filenameOrUrl);
   const full = path.join(UPLOAD_DIR, base);
   if (full.startsWith(UPLOAD_DIR) && existsSync(full)) {
     await unlink(full).catch(() => {});

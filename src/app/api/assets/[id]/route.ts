@@ -27,7 +27,8 @@ export const PATCH = withAuth(async (req, { params }: Ctx) => {
 export const DELETE = withAuth(async (_req, { params }: Ctx) => {
   const asset = await prisma.asset.findUnique({ where: { id: params.id } });
   if (!asset) return errorJson("Asset no encontrado", 404);
-  await deleteStored(asset.filename);
+  // Pasa la URL: en blob es la URL pública; en local, basename → filename.
+  await deleteStored(asset.url);
   await prisma.asset.delete({ where: { id: params.id } });
   return json({ ok: true });
 });

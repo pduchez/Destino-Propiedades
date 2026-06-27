@@ -39,9 +39,13 @@ para **revisión y aprobación humana** antes de publicarse.
 ## 🧱 Stack
 
 - **Next.js 14** (App Router) — dashboard + API + integraciones, app standalone.
-- **Prisma + SQLite** — base de datos sin configuración (migrable a Postgres).
+- **Prisma + PostgreSQL** — base de datos (local y producción).
 - **Anthropic SDK (Claude)** — generación de copys.
+- **Vercel Blob** (o `./uploads` en local) — almacenamiento de imágenes.
 - **Tailwind CSS** — interfaz.
+
+> ¿Quieres una **URL pública**? Sigue **[DEPLOY.md](./DEPLOY.md)** para
+> desplegar en Vercel en ~15 minutos.
 
 ---
 
@@ -53,9 +57,10 @@ npm install
 
 # 2. Configurar variables de entorno
 cp .env.example .env
-#   Edita .env y añade tu ANTHROPIC_API_KEY (opcional para modo demo).
+#   - DATABASE_URL: una Postgres (crea una gratis en https://neon.tech).
+#   - ANTHROPIC_API_KEY: opcional (sin ella usa plantillas).
 
-# 3. Crear la base de datos y datos iniciales
+# 3. Crear las tablas y datos iniciales
 npm run setup        # prisma generate + db push + seed
 
 # 4. Levantar el dashboard
@@ -65,6 +70,8 @@ npm run dev
 
 > Sin `ANTHROPIC_API_KEY` el sistema funciona igual, pero genera los textos con
 > **plantillas** en lugar de IA. Añade la key para activar Claude.
+>
+> Para una **URL pública** (Vercel + Postgres + Blob), ver **[DEPLOY.md](./DEPLOY.md)**.
 
 ### Flujo de uso
 
