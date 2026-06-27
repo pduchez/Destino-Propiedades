@@ -25,6 +25,10 @@ export default function ImagesPage() {
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState("");
   const [filter, setFilter] = useState("all");
+  // Agregar por URL pública
+  const [urlInput, setUrlInput] = useState("");
+  const [urlTags, setUrlTags] = useState("");
+  const [urlMsg, setUrlMsg] = useState("");
 
   async function load() {
     const [a, p] = await Promise.all([
@@ -58,6 +62,27 @@ export default function ImagesPage() {
       setMsg((e as Error).message);
     } finally {
       setUploading(false);
+    }
+  }
+
+  async function addByUrl(e: React.FormEvent) {
+    e.preventDefault();
+    setUrlMsg("");
+    try {
+      await api("/api/assets", {
+        method: "POST",
+        body: JSON.stringify({
+          url: urlInput.trim(),
+          projectId: projectId || null,
+          tags: urlTags,
+        }),
+      });
+      setUrlInput("");
+      setUrlTags("");
+      await load();
+      setUrlMsg("Agregada ✓");
+    } catch (e) {
+      setUrlMsg((e as Error).message);
     }
   }
 
@@ -124,6 +149,40 @@ export default function ImagesPage() {
             {uploading ? "Subiendo…" : "Subir al stock"}
           </button>
           {msg && <span className="text-sm text-slate-500">{msg}</span>}
+        </div>
+      </form>
+
+      <form onSubmit={addByUrl} className="card space-y-3">
+        <div>
+          <h2 className="font-semibold text-slate-800">Agregar imagen por URL pública</h2>
+          <p className="text-sm text-slate-500">
+            Pega el enlace de una imagen pública (ej. de Unsplash o tu sitio). No
+            requiere almacenamiento. Se asigna al proyecto seleccionado arriba (o global).
+          </p>
+        </div>
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="md:col-span-2">
+            <label className="label">URL de la imagen</label>
+            <input
+              className="input"
+              placeholder="https://images.unsplash.com/..."
+              value={urlInput}
+              onChange={(e) => setUrlInput(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="label">Etiquetas (coma)</label>
+            <input
+              className="input"
+              placeholder="fachada, lujo"
+              value={urlTags}
+              onChange={(e) => setUrlTags(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <button className="btn-secondary">Agregar por URL</button>
+          {urlMsg && <span className="text-sm text-slate-500">{urlMsg}</span>}
         </div>
       </form>
 
