@@ -58,3 +58,5 @@ export const POST = withAuth(async (req) => {
   }
   return json(created, 201);
 });
+
+export const dynamic = "force-dynamic";

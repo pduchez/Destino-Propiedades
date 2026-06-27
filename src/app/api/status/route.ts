@@ -15,3 +15,5 @@ export const GET = withAuth(async () => {
     counts: { projects, drafts, published, assets },
   });
 });
+
+export const dynamic = "force-dynamic";

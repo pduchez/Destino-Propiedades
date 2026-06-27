@@ -46,3 +46,5 @@ export const PATCH = withAuth(async (req, { params }: Ctx) => {
     configuredKeys: Object.keys(config),
   });
 });
+
+export const dynamic = "force-dynamic";

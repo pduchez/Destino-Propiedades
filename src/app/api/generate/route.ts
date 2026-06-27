@@ -25,3 +25,5 @@ export const POST = withAuth(async (req) => {
 
   return json({ created: results.length, posts: results }, 201);
 });
+
+export const dynamic = "force-dynamic";

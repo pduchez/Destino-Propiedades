@@ -37,3 +37,5 @@ export const POST = withAuth(async (req) => {
   });
   return json(campaign, 201);
 });
+
+export const dynamic = "force-dynamic";

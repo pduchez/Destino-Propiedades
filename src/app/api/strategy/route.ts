@@ -35,3 +35,5 @@ export const PATCH = withAuth(async (req) => {
   });
   return json(updated);
 });
+
+export const dynamic = "force-dynamic";

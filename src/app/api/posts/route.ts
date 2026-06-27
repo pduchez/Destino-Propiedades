@@ -51,3 +51,5 @@ export const GET = withAuth(async (req) => {
 
   return json(enriched);
 });
+
+export const dynamic = "force-dynamic";

@@ -31,3 +31,5 @@ export const DELETE = withAuth(async (_req, { params }: Ctx) => {
   await prisma.asset.delete({ where: { id: params.id } });
   return json({ ok: true });
 });
+
+export const dynamic = "force-dynamic";

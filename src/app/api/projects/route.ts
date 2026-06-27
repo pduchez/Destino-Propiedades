@@ -52,3 +52,5 @@ function toArray(v: unknown): string[] {
       .filter(Boolean);
   return [];
 }
+
+export const dynamic = "force-dynamic";

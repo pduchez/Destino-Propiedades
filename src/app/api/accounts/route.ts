@@ -32,3 +32,5 @@ export const GET = withAuth(async () => {
   });
   return json(safe);
 });
+
+export const dynamic = "force-dynamic";

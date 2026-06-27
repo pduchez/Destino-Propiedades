@@ -9,3 +9,5 @@ export const POST = withAuth(async (_req, { params }: Ctx) => {
   if (!result.ok) return errorJson(result.error || "No se pudo publicar", 400);
   return json(result);
 });
+
+export const dynamic = "force-dynamic";

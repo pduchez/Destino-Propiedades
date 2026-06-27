@@ -27,3 +27,5 @@ export async function DELETE() {
   res.cookies.delete(AUTH_COOKIE);
   return res;
 }
+
+export const dynamic = "force-dynamic";
