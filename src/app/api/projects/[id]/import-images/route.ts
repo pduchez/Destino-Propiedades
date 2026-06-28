@@ -81,33 +81,72 @@ export const POST = withAuth(async (req, { params }: Ctx) => {
   return json({ ok: true, found: urls.length, created });
 });
 
-/** Extrae URLs de imágenes del HTML (og:image, <img src>, y srcset). */
+/**
+ * Extrae URLs de imágenes del HTML. Cubre los patrones reales de galerías
+ * inmobiliarias: og:image, <img src>, atributos de carga diferida (lazy:
+ * data-src/data-lazy/data-original), srcset/<picture>, fondos CSS
+ * (background-image:url(...)), enlaces de lightbox (<a href="...jpg">) y
+ * preloads (<link rel="preload" as="image">).
+ */
 function extractImageUrls(html: string, baseUrl: string): string[] {
   const found = new Set<string>();
-  const push = (raw: string) => {
-    const u = resolve(raw, baseUrl);
+  const push = (raw: string | undefined) => {
+    if (!raw) return;
+    const u = resolve(raw.trim(), baseUrl);
     if (u && isLikelyPhoto(u)) found.add(u);
   };
+  const pushSrcset = (value: string) => {
+    for (const part of value.split(",")) {
+      push(part.trim().split(/\s+/)[0]);
+    }
+  };
 
-  // og:image / twitter:image
+  // og:image / twitter:image (en cualquier orden de atributos)
   for (const m of html.matchAll(
-    /<meta[^>]+(?:property|name)=["'](?:og:image|twitter:image)[^"']*["'][^>]+content=["']([^"']+)["']/gi,
+    /<meta[^>]+(?:property|name)=["'](?:og:image(?::secure_url)?|twitter:image)[^"']*["'][^>]*>/gi,
   )) {
+    const c = /content=["']([^"']+)["']/i.exec(m[0]);
+    if (c) push(c[1]);
+  }
+  // <img> y <source>: src + atributos de carga diferida más comunes
+  for (const m of html.matchAll(/<(?:img|source)\b[^>]*>/gi)) {
+    const tag = m[0];
+    for (const attr of [
+      "src",
+      "data-src",
+      "data-lazy-src",
+      "data-lazy",
+      "data-original",
+      "data-image",
+      "data-bg",
+    ]) {
+      const a = new RegExp(`\\b${attr}=["']([^"']+)["']`, "i").exec(tag);
+      if (a) push(a[1]);
+    }
+    const ss = /\b(?:data-)?srcset=["']([^"']+)["']/i.exec(tag);
+    if (ss) pushSrcset(ss[1]);
+  }
+  // srcset sueltos (por si el regex de tag no capturó alguno)
+  for (const m of html.matchAll(/\bsrcset=["']([^"']+)["']/gi)) {
+    pushSrcset(m[1]);
+  }
+  // Fondos CSS: background-image:url(...) o style="...url(...)"
+  for (const m of html.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/gi)) {
     push(m[1]);
   }
-  // <img src="...">
-  for (const m of html.matchAll(/<img[^>]+src=["']([^"']+)["']/gi)) {
+  // Enlaces de lightbox a la imagen a resolución completa
+  for (const m of html.matchAll(/<a\b[^>]*\bhref=["']([^"']+\.(?:jpe?g|png|webp|avif)(?:\?[^"']*)?)["']/gi)) {
     push(m[1]);
   }
-  // srcset (toma la primera URL de cada entrada)
-  for (const m of html.matchAll(/srcset=["']([^"']+)["']/gi)) {
-    for (const part of m[1].split(",")) {
-      const u = part.trim().split(/\s+/)[0];
-      if (u) push(u);
+  // <link rel="preload" as="image" href="...">
+  for (const m of html.matchAll(/<link\b[^>]*>/gi)) {
+    if (/as=["']image["']/i.test(m[0]) || /rel=["'][^"']*image[^"']*["']/i.test(m[0])) {
+      const h = /href=["']([^"']+)["']/i.exec(m[0]);
+      if (h) push(h[1]);
     }
   }
 
-  return Array.from(found).slice(0, 20);
+  return Array.from(found).slice(0, 30);
 }
 
 function resolve(raw: string, base: string): string | null {
@@ -122,12 +161,14 @@ function resolve(raw: string, base: string): string | null {
 function isLikelyPhoto(url: string): boolean {
   const u = url.toLowerCase();
   if (!/^https?:\/\//.test(u)) return false;
-  // Descarta logos, íconos, sprites, svg y placeholders.
-  if (/(logo|icon|sprite|favicon|avatar|placeholder|\.svg)(\?|$|[/_-])/.test(u)) return false;
+  // Descarta SVG y elementos de UI (logos, íconos, sprites, etc.) por nombre.
+  if (/\.svg(\?|$)/.test(u)) return false;
+  const file = u.split("?")[0].split("/").pop() || "";
+  if (/(logo|icon|sprite|favicon|avatar|placeholder|spinner|loader|banner-ad)/.test(file)) return false;
   // Acepta extensiones de foto o rutas típicas de media.
   return (
     /\.(jpe?g|png|webp|avif)(\?|$)/.test(u) ||
-    /(uploads|media|images|img|wp-content|cdn)/.test(u)
+    /(uploads|media|images|img|wp-content|cdn|gallery|fotos?|photos?)/.test(u)
   );
 }
 
