@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/client";
+import PostPreview from "@/components/PostPreview";
 
 interface Asset {
   id: string;
@@ -114,6 +115,7 @@ function PostCard({ post, onChange }: { post: Post; onChange: () => void }) {
   });
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
+  const [preview, setPreview] = useState(false);
 
   async function patch(body: Record<string, unknown>) {
     setError("");
@@ -220,6 +222,9 @@ function PostCard({ post, onChange }: { post: Post; onChange: () => void }) {
       )}
 
       <div className="flex flex-wrap gap-2 pt-1">
+        <button className="btn-secondary" onClick={() => setPreview(true)}>
+          👁 Vista previa
+        </button>
         {editable && (
           <button className="btn-secondary" onClick={saveEdits} disabled={!!busy}>
             {busy === "save" ? "Guardando…" : "Guardar"}
@@ -244,6 +249,20 @@ function PostCard({ post, onChange }: { post: Post; onChange: () => void }) {
       </div>
       {post.model && (
         <p className="text-[11px] text-slate-400">Generado con: {post.model}</p>
+      )}
+
+      {preview && (
+        <PostPreview
+          data={{
+            network: post.network,
+            caption,
+            callToAction: cta,
+            hashtags: hashtags.split(/\s+/).filter(Boolean),
+            imageUrl: asset?.url,
+            brandName: "Destino Propiedades",
+          }}
+          onClose={() => setPreview(false)}
+        />
       )}
     </div>
   );

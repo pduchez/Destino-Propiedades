@@ -55,6 +55,29 @@ export default function ProjectsPage() {
   const [docFile, setDocFile] = useState<File | null>(null);
   const [docMsg, setDocMsg] = useState("");
   const [docBusy, setDocBusy] = useState(false);
+  const [importMsg, setImportMsg] = useState("");
+  const [importBusy, setImportBusy] = useState(false);
+
+  async function importImages() {
+    if (!editingId) return;
+    setImportBusy(true);
+    setImportMsg("");
+    try {
+      const r = await api<{ found: number; created: number }>(
+        `/api/projects/${editingId}/import-images`,
+        { method: "POST", body: JSON.stringify({ url: form.websiteUrl }) },
+      );
+      setImportMsg(
+        r.created > 0
+          ? `✓ Importadas ${r.created} fotos (de ${r.found} encontradas). Revísalas en Stock de imágenes.`
+          : `No se agregaron fotos nuevas (encontradas: ${r.found}).`,
+      );
+    } catch (e) {
+      setImportMsg((e as Error).message);
+    } finally {
+      setImportBusy(false);
+    }
+  }
 
   async function uploadProjectDoc() {
     if (!docFile || !editingId) return;
@@ -199,8 +222,26 @@ export default function ProjectsPage() {
             <input className="input" value={form.hashtags} onChange={set("hashtags")} />
           </div>
           <div>
-            <label className="label">URL del proyecto</label>
-            <input className="input" value={form.websiteUrl} onChange={set("websiteUrl")} />
+            <label className="label">URL del proyecto (en el portal)</label>
+            <input
+              className="input"
+              placeholder="https://destinopropiedades.com/condado-del-golfo"
+              value={form.websiteUrl}
+              onChange={set("websiteUrl")}
+            />
+            {editingId && (
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  disabled={importBusy}
+                  onClick={importImages}
+                >
+                  {importBusy ? "Importando…" : "🖼️ Importar fotos del portal"}
+                </button>
+                {importMsg && <span className="text-xs text-slate-500">{importMsg}</span>}
+              </div>
+            )}
           </div>
           <div className="md:col-span-2">
             <label className="label">Información de contacto</label>
