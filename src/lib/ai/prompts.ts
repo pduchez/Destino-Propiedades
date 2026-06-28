@@ -11,6 +11,8 @@ export interface BrandContext {
   language: string;
   /** Instrucción Madre: prompt raíz estratégico de la marca. */
   masterInstruction?: string;
+  /** Aprendizajes del sistema de autoevaluación (ajustes basados en métricas). */
+  learnings?: string;
 }
 
 export interface ProjectContext {
@@ -72,6 +74,17 @@ export function buildSystemPrompt(brand: BrandContext): string {
     if (brand.generalInstructions)
       lines.push(`Lineamientos generales de mercadeo: ${brand.generalInstructions}`);
     lines.push(``);
+  }
+
+  // Aprendizajes del sistema de autoevaluación: ajustan la estrategia con base
+  // en el rendimiento real (qué funcionó por red/proyecto).
+  if (brand.learnings && brand.learnings.trim()) {
+    lines.push(
+      ``,
+      `### APRENDIZAJES DE RENDIMIENTO (ajustes basados en métricas reales — aplícalos para mejorar el impacto):`,
+      brand.learnings.trim(),
+      ``,
+    );
   }
 
   lines.push(

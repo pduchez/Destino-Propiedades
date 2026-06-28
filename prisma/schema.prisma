@@ -26,6 +26,10 @@ model BrandStrategy {
   language            String   @default("es")
   /// Instrucción Madre: prompt raíz de marca (subible o editable desde el dashboard).
   masterInstruction   String   @default("")
+  /// Aprendizajes acumulados por el sistema de autoevaluación: ajustes de
+  /// estrategia basados en el rendimiento real (métricas por red/proyecto).
+  /// Se inyectan en la generación para mejorar continuamente.
+  learnings           String   @default("")
   updatedAt           DateTime @updatedAt
 }
 
@@ -113,6 +117,41 @@ model Post {
 
   project  Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
   campaign Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  metric   PostMetric?
+}
+
+/// Métricas de impacto de un post publicado (al estilo Meta Business).
+/// Snapshot más reciente conocido. Origen: entrada manual hoy; en Fase 2 se
+/// llena automáticamente desde las APIs de cada red (Meta/X/TikTok).
+model PostMetric {
+  id          String   @id @default(cuid())
+  postId      String   @unique
+  likes       Int      @default(0)
+  comments    Int      @default(0)
+  shares      Int      @default(0) // compartidos / reposts / retweets
+  impressions Int      @default(0) // veces que se mostró
+  reach       Int      @default(0) // cuentas únicas alcanzadas
+  clicks      Int      @default(0) // clics al enlace / WhatsApp
+  saves       Int      @default(0) // guardados
+  source      String   @default("manual") // manual | meta | x | tiktok
+  capturedAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+/// Autoevaluación periódica de la estrategia: análisis del rendimiento real
+/// (métricas por red/proyecto) con recomendaciones concretas de ajuste.
+model StrategyReview {
+  id              String   @id @default(cuid())
+  periodStart     DateTime
+  periodEnd       DateTime
+  scope           String   @default("global") // global | <projectId>
+  summary         String   @default("") // qué funcionó y qué no
+  recommendations String   @default("") // ajustes concretos propuestos
+  metricsSnapshot String   @default("{}") // JSON con los agregados usados
+  applied         Boolean  @default(false) // si se incorporó a la estrategia
+  createdAt       DateTime @default(now())
 }
 
 /// Conexión a una cuenta de red social y su modo de publicación.

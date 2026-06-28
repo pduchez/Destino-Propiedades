@@ -7,6 +7,7 @@ const LINKS = [
   { href: "/", label: "Inicio", icon: "🏠" },
   { href: "/generate", label: "Generar", icon: "✨" },
   { href: "/queue", label: "Aprobación", icon: "✅" },
+  { href: "/metrics", label: "Métricas e informe", icon: "📊" },
   { href: "/projects", label: "Proyectos", icon: "🏢" },
   { href: "/campaigns", label: "Campañas", icon: "📣" },
   { href: "/images", label: "Stock de imágenes", icon: "🖼️" },
@@ -19,7 +20,7 @@ export default function Nav() {
     <aside className="hidden w-60 shrink-0 border-r border-slate-200 bg-white md:block">
       <div className="p-5">
         <Link href="/" className="block">
-          <div className="text-lg font-bold text-brand">Destino</div>
+          <div className="text-lg font-bold text-brand">ARS</div>
           <div className="text-xs text-slate-500">Agente de Redes Sociales</div>
         </Link>
       </div>

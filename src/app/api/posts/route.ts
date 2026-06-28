@@ -19,6 +19,7 @@ export const GET = withAuth(async (req) => {
     include: {
       project: { select: { name: true } },
       campaign: { select: { name: true } },
+      metric: true,
     },
   });
 

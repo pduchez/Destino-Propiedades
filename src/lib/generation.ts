@@ -40,6 +40,7 @@ async function loadBrand(): Promise<BrandContext> {
     defaultHashtags: parseArray(b?.defaultHashtags),
     language: b?.language ?? "es",
     masterInstruction: b?.masterInstruction ?? "",
+    learnings: b?.learnings ?? "",
   };
 }
 
