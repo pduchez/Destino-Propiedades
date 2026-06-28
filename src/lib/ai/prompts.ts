@@ -77,6 +77,7 @@ export function buildSystemPrompt(brand: BrandContext): string {
   lines.push(
     `Reglas de redacción:`,
     `- No inventes precios, fechas de entrega ni características que no aparezcan en los datos del proyecto.`,
+    `- Si mencionas precio, usa SIEMPRE el "precio desde" (de entrada, el más accesible) que aparece en los datos. Nunca el más caro ni un rango alto: el precio bajo es el gancho que abre la conversación.`,
     `- Si falta un dato, omítelo con naturalidad. NUNCA escribas marcadores como [REQUIERE_DATO] dentro del texto publicable.`,
     `- Incluye un llamado a la acción claro.`,
     `- Devuelve EXCLUSIVAMENTE el contenido pedido en el formato estructurado solicitado.`,
@@ -112,7 +113,12 @@ export function buildUserPrompt(input: GenerationInput): string {
     lines.push(`- Nombre: ${p.name}`);
     if (p.location) lines.push(`- Ubicación: ${p.location}`);
     if (p.propertyType) lines.push(`- Tipo: ${p.propertyType}`);
-    if (p.priceFrom) lines.push(`- Precio desde: ${p.priceFrom} ${p.currency}`);
+    if (p.priceFrom) {
+      lines.push(`- Precio desde (ENTRADA, el más accesible): ${p.priceFrom} ${p.currency}`);
+      lines.push(
+        `  · Lógica comercial OBLIGATORIA: si mencionas precio, usa EXACTAMENTE este "desde ${p.priceFrom} ${p.currency}". Nunca inventes otra cifra, ni un precio mayor, ni un rango alto.`,
+      );
+    }
     if (p.description) lines.push(`- Descripción: ${p.description}`);
     if (p.amenities.length) lines.push(`- Amenidades: ${p.amenities.join(", ")}`);
     if (p.highlights.length)

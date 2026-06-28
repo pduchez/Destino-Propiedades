@@ -57,6 +57,38 @@ export default function ProjectsPage() {
   const [docBusy, setDocBusy] = useState(false);
   const [importMsg, setImportMsg] = useState("");
   const [importBusy, setImportBusy] = useState(false);
+  const [dataMsg, setDataMsg] = useState("");
+  const [dataBusy, setDataBusy] = useState(false);
+
+  async function importData() {
+    if (!editingId) return;
+    setDataBusy(true);
+    setDataMsg("");
+    try {
+      const r = await api<{ applied: string[]; priceLabel: string | null }>(
+        `/api/projects/${editingId}/import-data`,
+        { method: "POST", body: JSON.stringify({ url: form.websiteUrl }) },
+      );
+      // Refresca el formulario con los datos reales traídos del portal.
+      const p = await api<Project>(`/api/projects/${editingId}`);
+      setForm((f) => ({
+        ...f,
+        priceFrom: p.priceFrom,
+        currency: p.currency,
+        description: p.description,
+        location: p.location,
+      }));
+      setDataMsg(
+        r.applied.length
+          ? `✓ Actualizado del portal: ${r.applied.join(", ")}. Revisa y guarda.`
+          : "No se encontraron datos nuevos.",
+      );
+    } catch (e) {
+      setDataMsg((e as Error).message);
+    } finally {
+      setDataBusy(false);
+    }
+  }
 
   async function importImages() {
     if (!editingId) return;
@@ -230,16 +262,33 @@ export default function ProjectsPage() {
               onChange={set("websiteUrl")}
             />
             {editingId && (
-              <div className="mt-2 flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  disabled={importBusy}
-                  onClick={importImages}
-                >
-                  {importBusy ? "Importando…" : "🖼️ Importar fotos del portal"}
-                </button>
-                {importMsg && <span className="text-xs text-slate-500">{importMsg}</span>}
+              <div className="mt-2 space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    disabled={dataBusy}
+                    onClick={importData}
+                  >
+                    {dataBusy ? "Leyendo portal…" : "📄 Importar datos del portal"}
+                  </button>
+                  {dataMsg && <span className="text-xs text-slate-500">{dataMsg}</span>}
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    disabled={importBusy}
+                    onClick={importImages}
+                  >
+                    {importBusy ? "Importando…" : "🖼️ Importar fotos del portal"}
+                  </button>
+                  {importMsg && <span className="text-xs text-slate-500">{importMsg}</span>}
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  Trae precio, descripción y ubicación reales del portal (sin reescribir a mano).
+                  El precio se toma como “desde” (el más accesible).
+                </p>
               </div>
             )}
           </div>
