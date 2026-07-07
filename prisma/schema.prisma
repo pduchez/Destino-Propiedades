@@ -12,6 +12,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// Usuario del área privada. Roles:
+///   admin  → Director1: único con acceso al panel ARS.
+///   sales  → ventas1..ventas5: se dirigen al CRM (no a ARS).
+/// La contraseña se guarda hasheada (scrypt). Todos parten de "password" y la
+/// pueden cambiar desde su panel.
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  role         String   @default("sales") // admin | sales
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
 /// Estrategia general de marca del portal (singleton, id = "default").
 /// Es la "instrucción estratégica" de alto nivel que alimenta a toda la generación.
 model BrandStrategy {

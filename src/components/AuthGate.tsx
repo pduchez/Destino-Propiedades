@@ -3,20 +3,37 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/client";
 
-/** Verifica acceso al cargar; si el dashboard está protegido y no hay sesión,
- *  muestra un prompt de contraseña. */
+interface Me {
+  authenticated: boolean;
+  username?: string;
+  role?: "admin" | "sales";
+}
+
+/**
+ * Puerta de acceso del área privada. Verifica la sesión vía /api/me:
+ *  - No autenticado  → formulario de login (usuario + contraseña).
+ *  - Rol `sales`     → se redirige al CRM.
+ *  - Rol `admin`     → renderiza el panel ARS.
+ */
 export default function AuthGate({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<"checking" | "ok" | "locked">("checking");
+  const [state, setState] = useState<"checking" | "admin" | "locked">("checking");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
   async function check() {
     try {
-      await api("/api/status");
-      setState("ok");
-    } catch (e) {
-      if ((e as { status?: number }).status === 401) setState("locked");
-      else setState("ok"); // otros errores no bloquean el render
+      const me = await api<Me>("/api/me");
+      if (!me.authenticated) {
+        setState("locked");
+      } else if (me.role === "admin") {
+        setState("admin");
+      } else {
+        window.location.href = "/crm";
+      }
+    } catch {
+      setState("locked");
     }
   }
 
@@ -27,14 +44,21 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   async function login(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setBusy(true);
     try {
-      await api("/api/auth", {
+      const res = await api<{ role: "admin" | "sales" }>("/api/auth", {
         method: "POST",
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ username, password }),
       });
-      setState("ok");
-    } catch {
-      setError("Contraseña incorrecta");
+      if (res.role === "admin") {
+        setState("admin");
+      } else {
+        window.location.href = "/crm";
+      }
+    } catch (e) {
+      setError((e as Error).message || "Usuario o contraseña incorrectos");
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -51,10 +75,18 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
       <div className="flex h-screen items-center justify-center bg-slate-100">
         <form onSubmit={login} className="card w-80 space-y-4">
           <div>
-            <div className="text-lg font-bold text-brand">Destino</div>
-            <div className="text-sm text-slate-500">
-              Acceso al panel de control
-            </div>
+            <div className="text-lg font-bold text-brand">DestinoPropiedades</div>
+            <div className="text-sm text-slate-500">Acceso ventas</div>
+          </div>
+          <div>
+            <label className="label">Usuario</label>
+            <input
+              className="input"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              autoFocus
+              autoComplete="username"
+            />
           </div>
           <div>
             <label className="label">Contraseña</label>
@@ -63,11 +95,13 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
               className="input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              autoFocus
+              autoComplete="current-password"
             />
           </div>
           {error && <p className="text-sm text-red-600">{error}</p>}
-          <button className="btn-primary w-full">Entrar</button>
+          <button className="btn-primary w-full" disabled={busy}>
+            {busy ? "Entrando…" : "Entrar"}
+          </button>
         </form>
       </div>
     );

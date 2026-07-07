@@ -14,6 +14,7 @@ const LINKS = [
   { href: `${BASE}/campaigns`, label: "Campañas", icon: "📣" },
   { href: `${BASE}/images`, label: "Stock de imágenes", icon: "🖼️" },
   { href: `${BASE}/settings`, label: "Configuración", icon: "⚙️" },
+  { href: `${BASE}/cuenta`, label: "Mi cuenta", icon: "👤" },
 ];
 
 export default function Nav() {
