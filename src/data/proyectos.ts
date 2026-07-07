@@ -797,7 +797,14 @@ export const proyectos: Proyecto[] = [
       "áreas verdes y equipamiento social. Planes de pago directos con el " +
       "desarrollador (15% de interés anual).",
     // Fotos pendientes: el desarrollador las subirá por partes.
-    galeria: [],
+    galeria: [
+      "/assets/proyectos/bypass-la-poza/foto-1.webp",
+      "/assets/proyectos/bypass-la-poza/foto-2.webp",
+      "/assets/proyectos/bypass-la-poza/foto-3.webp",
+      "/assets/proyectos/bypass-la-poza/foto-4.webp",
+      "/assets/proyectos/bypass-la-poza/foto-5.webp",
+      "/assets/proyectos/bypass-la-poza/foto-6.webp",
+    ],
     precioDesde: 38084,
     etiquetaPrecio: "Desde $38,084 por lote",
     // Tipos representativos de la lista de precios (polígonos A, C-I; 110
