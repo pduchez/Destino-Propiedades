@@ -112,7 +112,14 @@ export const proyectos: Proyecto[] = [
       "planes de pago directos: prima del 20% y saldo financiado con el " +
       "desarrollador.",
     // Fotos pendientes: el desarrollador las subirá por partes.
-    galeria: [],
+    galeria: [
+      "/assets/proyectos/riviera-del-pacifico/foto-1.webp",
+      "/assets/proyectos/riviera-del-pacifico/foto-2.webp",
+      "/assets/proyectos/riviera-del-pacifico/foto-3.webp",
+      "/assets/proyectos/riviera-del-pacifico/foto-4.webp",
+      "/assets/proyectos/riviera-del-pacifico/foto-5.webp",
+      "/assets/proyectos/riviera-del-pacifico/foto-6.webp",
+    ],
     precioDesde: 85066,
     etiquetaPrecio: "Desde $85,066 por lote",
     // Tipos representativos de los 46 lotes (polígonos A-D; precio uniforme de
@@ -245,7 +252,14 @@ export const proyectos: Proyecto[] = [
       "Salvador, con precio por vara cuadrada uniforme y planes de pago " +
       "directo con el desarrollador.",
     // Fotos pendientes: el desarrollador las subirá por partes.
-    galeria: [],
+    galeria: [
+      "/assets/proyectos/adelaida-city/foto-1.webp",
+      "/assets/proyectos/adelaida-city/foto-2.webp",
+      "/assets/proyectos/adelaida-city/foto-3.webp",
+      "/assets/proyectos/adelaida-city/foto-4.webp",
+      "/assets/proyectos/adelaida-city/foto-5.webp",
+      "/assets/proyectos/adelaida-city/foto-6.webp",
+    ],
     precioDesde: 22034,
     etiquetaPrecio: "Desde $22,034 por lote",
     // Tipos representativos calculados desde la lista de precios real (41 lotes
@@ -298,7 +312,13 @@ export const proyectos: Proyecto[] = [
       "buscan un lote para construir o invertir en una zona de crecimiento del " +
       "Gran San Salvador, con financiamiento directo del desarrollador.",
     // Fotos pendientes: el desarrollador las subirá por partes.
-    galeria: [],
+    galeria: [
+      "/assets/proyectos/altos-de-las-mercedes/foto-1.webp",
+      "/assets/proyectos/altos-de-las-mercedes/foto-2.webp",
+      "/assets/proyectos/altos-de-las-mercedes/foto-3.webp",
+      "/assets/proyectos/altos-de-las-mercedes/foto-4.webp",
+      "/assets/proyectos/altos-de-las-mercedes/foto-5.webp",
+    ],
     precioDesde: 29023,
     etiquetaPrecio: "Desde $29,023 por lote",
     // Tipos representativos desde la lista de precios real (precio uniforme de
@@ -481,7 +501,13 @@ export const proyectos: Proyecto[] = [
       "familia salvadoreña que quiere construir o invertir en tierra urbana, " +
       "con planes de pago directos con el desarrollador.",
     // Fotos pendientes: el desarrollador las subirá por partes.
-    galeria: [],
+    galeria: [
+      "/assets/proyectos/villa-lourdes/foto-1.webp",
+      "/assets/proyectos/villa-lourdes/foto-2.webp",
+      "/assets/proyectos/villa-lourdes/foto-3.webp",
+      "/assets/proyectos/villa-lourdes/foto-4.webp",
+      "/assets/proyectos/villa-lourdes/foto-5.webp",
+    ],
     precioDesde: 25182,
     etiquetaPrecio: "Desde $25,182 por lote",
     // Tipos representativos de los 389 lotes (polígonos F, G, I, J; precio por
@@ -546,7 +572,13 @@ export const proyectos: Proyecto[] = [
       "opción para que la familia salvadoreña construya patrimonio en " +
       "Chalatenango, con planes de pago directos con el desarrollador.",
     // Fotos pendientes: el desarrollador las subirá por partes.
-    galeria: [],
+    galeria: [
+      "/assets/proyectos/portal-las-luces/foto-1.webp",
+      "/assets/proyectos/portal-las-luces/foto-2.webp",
+      "/assets/proyectos/portal-las-luces/foto-3.webp",
+      "/assets/proyectos/portal-las-luces/foto-4.webp",
+      "/assets/proyectos/portal-las-luces/foto-5.webp",
+    ],
     precioDesde: 22250,
     etiquetaPrecio: "Desde $22,250 por lote",
     // Tipos representativos de los 63 registros transcritos (polígonos A-G;
