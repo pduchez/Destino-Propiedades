@@ -34,3 +34,7 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# artefactos del build del portal Astro (irrelevantes en la app Next.js)
+/.astro/
+/dist/
