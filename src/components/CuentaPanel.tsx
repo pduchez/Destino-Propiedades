@@ -40,7 +40,7 @@ export default function CuentaPanel({ username }: { username?: string }) {
 
   async function logout() {
     await api("/api/auth", { method: "DELETE" }).catch(() => {});
-    window.location.href = "/acceso-ventas";
+    window.location.href = "/inicio";
   }
 
   return (

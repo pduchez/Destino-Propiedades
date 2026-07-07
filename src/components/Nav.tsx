@@ -26,7 +26,10 @@ export default function Nav() {
           <div className="text-lg font-bold text-brand">ARS</div>
           <div className="text-xs text-slate-500">Agente de Redes Sociales</div>
         </Link>
-        <Link href="/" className="mt-2 inline-block text-xs text-slate-400 hover:text-brand">
+        <Link href="/inicio" className="mt-2 block text-xs text-slate-400 hover:text-brand">
+          ⇄ Cambiar módulo (CRM/ARS)
+        </Link>
+        <Link href="/" className="mt-1 inline-block text-xs text-slate-400 hover:text-brand">
           ← Volver al portal
         </Link>
       </div>

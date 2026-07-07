@@ -23,6 +23,7 @@ interface Lead {
   stage: string;
   temperature: string;
   value: number;
+  score: number;
   nextActionAt: string | null;
   assignedTo?: { username: string; displayName: string } | null;
 }
@@ -99,6 +100,7 @@ function LeadsInner() {
               <th className="p-3">Cliente</th>
               <th className="p-3">Proyecto</th>
               <th className="p-3">Etapa</th>
+              <th className="p-3 text-center">Score</th>
               <th className="p-3">Temp.</th>
               <th className="p-3 text-right">Valor</th>
               <th className="p-3">Vendedor</th>
@@ -106,9 +108,9 @@ function LeadsInner() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td className="p-4 text-slate-400" colSpan={6}>Cargando…</td></tr>
+              <tr><td className="p-4 text-slate-400" colSpan={7}>Cargando…</td></tr>
             ) : leads.length === 0 ? (
-              <tr><td className="p-4 text-slate-400" colSpan={6}>Sin leads con estos filtros.</td></tr>
+              <tr><td className="p-4 text-slate-400" colSpan={7}>Sin leads con estos filtros.</td></tr>
             ) : (
               leads.map((l) => (
                 <tr key={l.id} className="border-b last:border-0 hover:bg-slate-50">
@@ -125,6 +127,19 @@ function LeadsInner() {
                       style={{ background: STAGE_COLOR[l.stage] }}
                     >
                       {STAGE_LABEL[l.stage] ?? l.stage}
+                    </span>
+                  </td>
+                  <td className="p-3 text-center">
+                    <span
+                      className={`inline-block rounded px-1.5 py-0.5 text-xs font-bold ${
+                        l.score >= 70
+                          ? "bg-emerald-100 text-emerald-700"
+                          : l.score >= 40
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-slate-100 text-slate-500"
+                      }`}
+                    >
+                      {l.score}
                     </span>
                   </td>
                   <td className="p-3">{temperatureIcon(l.temperature)}</td>
