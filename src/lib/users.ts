@@ -75,13 +75,13 @@ export function verifySession(token: string | undefined): string | null {
 
 // --- Semilla idempotente de usuarios -------------------------------------
 
-const SEED: { username: string; role: Role }[] = [
-  { username: "Director1", role: "admin" },
-  { username: "ventas1", role: "sales" },
-  { username: "ventas2", role: "sales" },
-  { username: "ventas3", role: "sales" },
-  { username: "ventas4", role: "sales" },
-  { username: "ventas5", role: "sales" },
+const SEED: { username: string; role: Role; displayName: string }[] = [
+  { username: "Director1", role: "admin", displayName: "Director" },
+  { username: "ventas1", role: "sales", displayName: "Vendedor 1" },
+  { username: "ventas2", role: "sales", displayName: "Vendedor 2" },
+  { username: "ventas3", role: "sales", displayName: "Vendedor 3" },
+  { username: "ventas4", role: "sales", displayName: "Vendedor 4" },
+  { username: "ventas5", role: "sales", displayName: "Vendedor 5" },
 ];
 
 /** Crea los usuarios base si aún no existen. Seguro de llamar en cada request. */
@@ -93,6 +93,7 @@ export async function ensureSeedUsers(): Promise<void> {
       data: {
         username: u.username,
         role: u.role,
+        displayName: u.displayName,
         passwordHash: hashPassword("password"),
       },
     });

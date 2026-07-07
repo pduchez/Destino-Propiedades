@@ -22,8 +22,82 @@ model User {
   username     String   @unique
   passwordHash String
   role         String   @default("sales") // admin | sales
+  displayName  String   @default("") // nombre visible del vendedor
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  leads      Lead[]     @relation("AssignedLeads")
+  activities Activity[]
+}
+
+// ======================= CRM =======================
+// CRM de ventas inmobiliarias. Diseñado "enlatado" (white-label): cada registro
+// pertenece a una Organización (hoy Grupo Chacón; mañana otros grupos). El
+// input llega de 3 fuentes: WhatsApp (principal), retroalimentación del vendedor
+// y seguimiento del director.
+
+/// Organización/cliente del CRM (multi-tenant para el modelo "enlatado").
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  leads Lead[]
+}
+
+/// Un prospecto/oportunidad de venta. Es el corazón del CRM.
+model Lead {
+  id             String    @id @default(cuid())
+  orgId          String
+  // Contacto
+  name           String
+  phone          String    @default("") // número de WhatsApp
+  email          String    @default("")
+  // Origen del lead
+  source         String    @default("whatsapp") // whatsapp | referido | portal | facebook | instagram | tiktok | walk_in | otro
+  // Interés
+  projectSlug    String    @default("") // proyecto del portal que le interesa
+  projectName    String    @default("")
+  budget         String    @default("") // presupuesto declarado
+  value          Float     @default(0) // valor estimado de la oportunidad (USD)
+  // Estado en el embudo
+  stage          String    @default("nuevo") // nuevo|contactado|calificado|visita|propuesta|negociacion|ganado|perdido
+  temperature    String    @default("tibio") // frio | tibio | caliente
+  lostReason     String    @default("") // motivo si se pierde
+  // Asignación y seguimiento
+  assignedToId   String?
+  nextActionAt   DateTime? // próxima acción / follow-up (clave para reportes)
+  nextActionNote String    @default("")
+  lastContactAt  DateTime?
+  notes          String    @default("") // ficha libre
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  org        Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  assignedTo User?        @relation("AssignedLeads", fields: [assignedToId], references: [id], onDelete: SetNull)
+  activities Activity[]
+}
+
+/// Interacción en la línea de tiempo del lead. Captura las 3 fuentes de input:
+/// WhatsApp, retroalimentación del vendedor y seguimiento del director.
+model Activity {
+  id        String    @id @default(cuid())
+  leadId    String
+  userId    String?
+  // whatsapp | nota | llamada | visita | email | tarea | etapa | director
+  type      String    @default("nota")
+  body      String    @default("")
+  // Para tareas / follow-ups:
+  dueAt     DateTime?
+  done      Boolean   @default(false)
+  // Para cambios de etapa: de/hacia
+  fromStage String    @default("")
+  toStage   String    @default("")
+  createdAt DateTime  @default(now())
+
+  lead Lead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
 /// Estrategia general de marca del portal (singleton, id = "default").
