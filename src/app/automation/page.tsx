@@ -47,6 +47,7 @@ export default function AutomationPage() {
   const [cfg, setCfg] = useState<Config | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [pending, setPending] = useState<SalesCheckin | null>(null);
+  const [videoNeeds, setVideoNeeds] = useState<{ projectName: string; networks: string[] }[]>([]);
   const [salesNote, setSalesNote] = useState("");
   const [msg, setMsg] = useState("");
   const [syncMsg, setSyncMsg] = useState("");
@@ -54,14 +55,16 @@ export default function AutomationPage() {
   const [busy, setBusy] = useState("");
 
   async function loadAll() {
-    const [c, ps, s] = await Promise.all([
+    const [c, ps, s, v] = await Promise.all([
       api<Config>("/api/automation"),
       api<Project[]>("/api/projects"),
       api<{ pending: SalesCheckin | null }>("/api/sales"),
+      api<{ needs: { projectName: string; networks: string[] }[] }>("/api/video/needs"),
     ]);
     setCfg(c);
     setProjects(ps);
     setPending(s.pending);
+    setVideoNeeds(v.needs);
   }
   useEffect(() => {
     loadAll();
@@ -173,6 +176,25 @@ export default function AutomationPage() {
           <button className="btn-primary mt-2" disabled={busy === "sales"} onClick={answerSales}>
             {busy === "sales" ? "Guardando…" : "Enviar a ARS"}
           </button>
+        </div>
+      )}
+
+      {/* ARS necesita videos crudos */}
+      {videoNeeds.length > 0 && (
+        <div className="card border-l-4 border-indigo-400">
+          <h2 className="font-semibold text-slate-900">🎥 ARS necesita videos crudos</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Estos proyectos van a publicar en redes de video pero no tienen material
+            crudo. Sube videos verticales (drone/tour) en{" "}
+            <a href="/images" className="text-brand underline">Stock de imágenes</a>.
+          </p>
+          <ul className="mt-2 space-y-1 text-sm">
+            {videoNeeds.map((n) => (
+              <li key={n.projectName}>
+                • <strong>{n.projectName}</strong> — {n.networks.join(", ")}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
