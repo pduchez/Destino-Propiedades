@@ -66,6 +66,7 @@ function StrategySection() {
   const [miFile, setMiFile] = useState<File | null>(null);
   const [miMsg, setMiMsg] = useState("");
   const [miBusy, setMiBusy] = useState(false);
+  const [loadErr, setLoadErr] = useState("");
 
   async function uploadMaster() {
     if (!miFile) return;
@@ -88,14 +89,16 @@ function StrategySection() {
   }
 
   useEffect(() => {
-    api<Strategy>("/api/strategy").then((d) => {
-      setS(d);
-      try {
-        setHashtags((JSON.parse(d.defaultHashtags) as string[]).join(", "));
-      } catch {
-        setHashtags("");
-      }
-    });
+    api<Strategy>("/api/strategy")
+      .then((d) => {
+        setS(d);
+        try {
+          setHashtags((JSON.parse(d.defaultHashtags) as string[]).join(", "));
+        } catch {
+          setHashtags("");
+        }
+      })
+      .catch((e) => setLoadErr((e as Error).message));
   }, []);
 
   async function save(e: React.FormEvent) {
@@ -119,6 +122,17 @@ function StrategySection() {
     }
   }
 
+  if (loadErr)
+    return (
+      <div className="card border-red-200 bg-red-50">
+        <p className="font-semibold text-red-700">No se pudo cargar</p>
+        <p className="mt-1 text-sm text-red-600">{loadErr}</p>
+        <p className="mt-3 text-sm text-slate-600">
+          Suele faltar la <strong>base de datos</strong> en este despliegue: en Vercel → Settings →
+          Environment Variables, agregá <code>DATABASE_URL</code> y volvé a desplegar.
+        </p>
+      </div>
+    );
   if (!s) return <div className="card">Cargando…</div>;
   const set = (k: keyof Strategy) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setS({ ...s, [k]: e.target.value });

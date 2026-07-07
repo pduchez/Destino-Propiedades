@@ -55,18 +55,24 @@ export default function AutomationPage() {
   // Solo se llena para leer un portal externo distinto.
   const [syncBase, setSyncBase] = useState("");
   const [busy, setBusy] = useState("");
+  const [loadErr, setLoadErr] = useState("");
 
   async function loadAll() {
-    const [c, ps, s, v] = await Promise.all([
-      api<Config>("/api/automation"),
-      api<Project[]>("/api/projects"),
-      api<{ pending: SalesCheckin | null }>("/api/sales"),
-      api<{ needs: { projectName: string; networks: string[] }[] }>("/api/video/needs"),
-    ]);
-    setCfg(c);
-    setProjects(ps);
-    setPending(s.pending);
-    setVideoNeeds(v.needs);
+    try {
+      const [c, ps, s, v] = await Promise.all([
+        api<Config>("/api/automation"),
+        api<Project[]>("/api/projects"),
+        api<{ pending: SalesCheckin | null }>("/api/sales"),
+        api<{ needs: { projectName: string; networks: string[] }[] }>("/api/video/needs"),
+      ]);
+      setCfg(c);
+      setProjects(ps);
+      setPending(s.pending);
+      setVideoNeeds(v.needs);
+      setLoadErr("");
+    } catch (e) {
+      setLoadErr((e as Error).message);
+    }
   }
   useEffect(() => {
     loadAll();
@@ -148,6 +154,20 @@ export default function AutomationPage() {
     }
   }
 
+  if (loadErr)
+    return (
+      <div className="card border-red-200 bg-red-50">
+        <p className="font-semibold text-red-700">No se pudo cargar el panel</p>
+        <p className="mt-1 text-sm text-red-600">{loadErr}</p>
+        <p className="mt-3 text-sm text-slate-600">
+          Suele ser que este despliegue no tiene la <strong>base de datos</strong> configurada.
+          En Vercel → el proyecto → <strong>Settings → Environment Variables</strong>, agregá{" "}
+          <code>DATABASE_URL</code> (y <code>DASHBOARD_PASSWORD</code>, <code>ANTHROPIC_API_KEY</code>,{" "}
+          <code>CRON_SECRET</code>), y volvé a desplegar.
+        </p>
+        <button className="btn-secondary mt-4" onClick={() => loadAll()}>Reintentar</button>
+      </div>
+    );
   if (!cfg) return <p className="text-sm text-slate-500">Cargando…</p>;
 
   return (
