@@ -41,6 +41,10 @@ model Project {
   location     String   @default("")
   propertyType String   @default("") // ej. Apartamento, Casa, Lote, Comercial
   status       String   @default("active") // active | paused | sold_out | archived
+  /// Autopiloto: ¿ARS genera posts diarios de este proyecto automáticamente?
+  autoPost     Boolean  @default(true)
+  /// Redes en las que rota la calendarización diaria (JSON). Vacío = todas.
+  postNetworks String   @default("[]")
   priceFrom    String   @default("")
   currency     String   @default("USD")
   description  String   @default("")
@@ -152,6 +156,42 @@ model StrategyReview {
   metricsSnapshot String   @default("{}") // JSON con los agregados usados
   applied         Boolean  @default(false) // si se incorporó a la estrategia
   createdAt       DateTime @default(now())
+}
+
+/// Configuración de automatización de ARS (singleton, id = "default").
+/// Controla los loops autónomos: generación diaria, investigación quincenal de
+/// tendencias, autoactualización de la instrucción y chequeo mensual de ventas.
+model Automation {
+  id                    String    @id @default("default")
+  /// Autopiloto general: genera borradores diarios por proyecto/red.
+  autopilot             Boolean   @default(false)
+  /// Redes por defecto para la generación diaria (JSON array).
+  dailyNetworks         String    @default("[\"facebook\",\"instagram\",\"x\",\"tiktok\"]")
+  /// Borradores por proyecto por día.
+  postsPerDay           Int       @default(1)
+  /// Loop quincenal de investigación de tendencias mundiales.
+  trendsLoop            Boolean   @default(true)
+  /// Autoactualización quincenal de la instrucción con base en tendencias+métricas.
+  autoUpdateInstruction Boolean   @default(true)
+  /// Día del mes para pedir el reporte de ventas (1–28).
+  salesCheckinDay       Int       @default(1)
+  /// Proveedor de generación de video (ej. "runway", "replicate"). Vacío = off.
+  videoProvider         String    @default("")
+  lastDailyRun          DateTime?
+  lastTrendsRun         DateTime?
+  lastSalesCheckin      DateTime?
+  updatedAt             DateTime  @updatedAt
+}
+
+/// Chequeo mensual de ventas: ARS pregunta cómo van las ventas para
+/// retroalimentar la instrucción con efectividad real.
+model SalesCheckin {
+  id        String   @id @default(cuid())
+  period    String   @unique // "YYYY-MM"
+  answered  Boolean  @default(false)
+  salesNote String   @default("") // respuesta del operador
+  askedAt   DateTime @default(now())
+  answeredAt DateTime?
 }
 
 /// Conexión a una cuenta de red social y su modo de publicación.

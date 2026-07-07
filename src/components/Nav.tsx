@@ -7,6 +7,7 @@ const LINKS = [
   { href: "/", label: "Inicio", icon: "🏠" },
   { href: "/generate", label: "Generar", icon: "✨" },
   { href: "/queue", label: "Aprobación", icon: "✅" },
+  { href: "/automation", label: "Automatización", icon: "🤖" },
   { href: "/metrics", label: "Métricas e informe", icon: "📊" },
   { href: "/projects", label: "Proyectos", icon: "🏢" },
   { href: "/campaigns", label: "Campañas", icon: "📣" },

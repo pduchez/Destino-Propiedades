@@ -30,9 +30,10 @@ export const PATCH = withAuth(async (req, { params }: Ctx) => {
   ]) {
     if (typeof body[k] === "string") data[k] = body[k];
   }
-  for (const k of ["amenities", "highlights", "hashtags"]) {
+  for (const k of ["amenities", "highlights", "hashtags", "postNetworks"]) {
     if (body[k] !== undefined) data[k] = stringify(toArray(body[k]));
   }
+  if (typeof body.autoPost === "boolean") data.autoPost = body.autoPost;
   const project = await prisma.project.update({
     where: { id: params.id },
     data,
