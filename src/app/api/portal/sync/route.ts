@@ -16,13 +16,84 @@ import {
   discoverProjectUrls,
   slugFromUrl,
   guessMime,
+  fetchPortalFeed,
+  feedProjectToFields,
 } from "@/lib/portal";
+
+interface SyncResult {
+  slug: string;
+  url: string;
+  ok: boolean;
+  priceFrom?: string;
+  photos?: number;
+  note?: string;
+}
 
 export const POST = withAuth(async (req) => {
   const body = (await req.json().catch(() => ({}))) as { base?: string };
   const brand = await prisma.brandStrategy.findUnique({ where: { id: "default" } });
   const base = (body.base || brand?.portalUrl || "https://destinopropiedades.com").trim().replace(/\/+$/, "");
   if (!/^https?:\/\//i.test(base)) return errorJson("URL base del portal inválida.");
+
+  // 0) Preferir el FEED estructurado /proyectos.json (fuente de verdad del
+  //    portal): trae amenidades y novedades que el scraping no ve, sin leer
+  //    HTML. Si no existe, cae al descubrimiento por HTML/sitemap (abajo).
+  const feed = await fetchPortalFeed(base);
+  if (feed) {
+    const results: SyncResult[] = [];
+    for (const fp of feed.proyectos) {
+      try {
+        const { slug, name, fields, images } = feedProjectToFields(fp);
+        const project = await prisma.project.upsert({
+          where: { slug },
+          update: fields,
+          create: { name, slug, ...fields },
+        });
+        const existing = await prisma.asset.findMany({
+          where: { projectId: project.id },
+          select: { url: true },
+        });
+        const have = new Set(existing.map((a) => a.url));
+        let photos = 0;
+        for (const imgUrl of images) {
+          if (have.has(imgUrl)) continue;
+          await prisma.asset.create({
+            data: {
+              projectId: project.id,
+              filename: imgUrl,
+              originalName: imgUrl.split("/").pop()?.split("?")[0] || "imagen",
+              url: imgUrl,
+              mimeType: guessMime(imgUrl),
+              tags: stringify(["portal", slug]),
+            },
+          });
+          have.add(imgUrl);
+          photos++;
+        }
+        results.push({
+          slug,
+          url: fp.url,
+          ok: true,
+          priceFrom: fields.priceFrom,
+          photos,
+          note: fp.novedad ? `novedad: ${fp.novedad}` : undefined,
+        });
+      } catch (e) {
+        results.push({ slug: fp.slug, url: fp.url, ok: false, note: (e as Error).message });
+      }
+    }
+    const okCount = results.filter((r) => r.ok).length;
+    const totalPhotos = results.reduce((s, r) => s + (r.photos ?? 0), 0);
+    return json({
+      ok: true,
+      source: "feed",
+      base,
+      discovered: feed.proyectos.length,
+      imported: okCount,
+      totalPhotos,
+      results,
+    });
+  }
 
   // 1) Descubrir URLs de proyectos (índice + sitemaps).
   const urls = new Set<string>();

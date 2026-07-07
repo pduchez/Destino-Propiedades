@@ -248,3 +248,77 @@ function stripQuery(u: string): string {
   const i = u.search(/[?#]/);
   return i === -1 ? u : u.slice(0, i);
 }
+
+/* ─────────────────────── FEED ESTRUCTURADO DEL PORTAL ─────────────────────── */
+// El portal publica /proyectos.json (fuente de verdad, sin scraping). Es más
+// robusto que leer el HTML y trae AMENIDADES y NOVEDADES que el scraping no ve.
+
+export interface PortalFeedProject {
+  slug: string;
+  nombre: string;
+  url: string;
+  tipo?: string;
+  tipoLabel?: string;
+  estado?: string;
+  destacado?: boolean;
+  departamento?: string;
+  municipio?: string;
+  ubicacion?: string;
+  etiquetaPrecio?: string;
+  precioDesde?: number | null;
+  moneda?: string;
+  descripcion?: string;
+  servicios?: string[];
+  imagenes?: string[];
+  novedad?: string | null;
+  actualizado?: string;
+}
+export interface PortalFeed {
+  marca?: string;
+  portalUrl?: string;
+  generado?: string;
+  total?: number;
+  proyectos: PortalFeedProject[];
+}
+
+/**
+ * Lee el feed estructurado /proyectos.json del portal. Devuelve null si no
+ * existe o no es válido, para que el llamador caiga al scraping (compatibilidad).
+ */
+export async function fetchPortalFeed(base: string): Promise<PortalFeed | null> {
+  const url = `${base.replace(/\/+$/, "")}/proyectos.json`;
+  try {
+    const res = await fetch(url, { headers: { Accept: "application/json" } });
+    if (!res.ok) return null;
+    const data = (await res.json()) as PortalFeed;
+    if (!data || !Array.isArray(data.proyectos) || data.proyectos.length === 0) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+/** Convierte una entrada del feed en los campos que guarda el ARS (Project). Puro. */
+export function feedProjectToFields(p: PortalFeedProject): {
+  slug: string;
+  name: string;
+  fields: Record<string, string>;
+  images: string[];
+} {
+  const fields: Record<string, string> = {};
+  if (p.url) fields.websiteUrl = p.url;
+  if (p.tipoLabel || p.tipo) fields.propertyType = String(p.tipoLabel || p.tipo);
+  if (p.ubicacion) fields.location = p.ubicacion;
+  if (p.precioDesde != null) fields.priceFrom = formatNumber(p.precioDesde);
+  else if (p.etiquetaPrecio) fields.priceFrom = p.etiquetaPrecio;
+  if (p.moneda) fields.currency = p.moneda;
+  if (p.descripcion && p.descripcion.length > 20) fields.description = p.descripcion;
+  if (Array.isArray(p.servicios)) fields.amenities = JSON.stringify(p.servicios);
+  fields.novedad = (p.novedad ?? "").toString();
+  return {
+    slug: p.slug,
+    name: p.nombre || p.slug,
+    fields,
+    images: Array.isArray(p.imagenes) ? p.imagenes : [],
+  };
+}

@@ -53,6 +53,10 @@ model Project {
   hashtags     String   @default("[]") // JSON array (hashtags propios del proyecto)
   websiteUrl   String   @default("")
   contactInfo  String   @default("")
+  /// Novedad puntual traída del feed del portal (/proyectos.json): algo
+  /// concreto a comunicar en redes (rebaja, amenidad nueva, evento…). La
+  /// escribe el dueño en el portal; el ARS la prioriza al generar posts.
+  novedad      String   @default("")
   /// Ficha/instrucción específica del proyecto (subible o editable): target,
   /// persona, narrativa, número de WhatsApp. Tiene prioridad sobre los defaults.
   instructionDoc String @default("")
