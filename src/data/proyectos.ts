@@ -438,7 +438,13 @@ export const proyectos: Proyecto[] = [
       "estacionamiento de visitas, con precio por vara cuadrada uniforme y " +
       "planes de pago directos con el desarrollador.",
     // Fotos pendientes: el desarrollador las subirá por partes.
-    galeria: [],
+    galeria: [
+      "/assets/proyectos/galveston/foto-1.webp",
+      "/assets/proyectos/galveston/foto-2.webp",
+      "/assets/proyectos/galveston/foto-3.webp",
+      "/assets/proyectos/galveston/foto-4.webp",
+      "/assets/proyectos/galveston/foto-5.webp",
+    ],
     precioDesde: 36357,
     etiquetaPrecio: "Desde $36,357 por lote",
     // Tipos representativos de los 43 lotes listados (polígonos E, F y K;
@@ -639,7 +645,13 @@ export const proyectos: Proyecto[] = [
       "zona pet-friendly. Una zona del oriente del país bien conectada por la " +
       "Litoral, con planes de pago directos con el desarrollador.",
     // Fotos pendientes: el desarrollador las subirá por partes.
-    galeria: [],
+    galeria: [
+      "/assets/proyectos/condado-del-triunfo/foto-1.webp",
+      "/assets/proyectos/condado-del-triunfo/foto-2.webp",
+      "/assets/proyectos/condado-del-triunfo/foto-3.webp",
+      "/assets/proyectos/condado-del-triunfo/foto-4.webp",
+      "/assets/proyectos/condado-del-triunfo/foto-5.webp",
+    ],
     precioDesde: 34974,
     etiquetaPrecio: "Desde $34,974 por lote",
     // Tipos representativos (polígonos F, G, I, K; precio por vara² de US$121
@@ -700,7 +712,13 @@ export const proyectos: Proyecto[] = [
       "zona pet-friendly. Una opción para construir patrimonio en el centro " +
       "del país, con planes de pago directos con el desarrollador.",
     // Fotos pendientes: el desarrollador las subirá por partes.
-    galeria: [],
+    galeria: [
+      "/assets/proyectos/nuevo-san-vicente/foto-1.webp",
+      "/assets/proyectos/nuevo-san-vicente/foto-2.webp",
+      "/assets/proyectos/nuevo-san-vicente/foto-3.webp",
+      "/assets/proyectos/nuevo-san-vicente/foto-4.webp",
+      "/assets/proyectos/nuevo-san-vicente/foto-5.webp",
+    ],
     precioDesde: 39337,
     etiquetaPrecio: "Desde $39,337 por lote",
     // Tipos representativos de los 78 lotes transcritos (precio por vara²
