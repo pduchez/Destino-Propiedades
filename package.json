@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
-    "vercel-build": "prisma generate && (prisma db push --accept-data-loss || echo 'Sin base de datos todavia; se omite db push y se continua el build') && (tsx prisma/seed-condado.ts || echo 'seed-condado omitido') && next build",
+    "vercel-build": "prisma generate && (timeout 120 prisma db push --accept-data-loss --skip-generate || echo 'Esquema no aplicado (sin BD o timeout): el build continua igual') && next build",
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",
