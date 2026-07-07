@@ -66,6 +66,51 @@ export const ACTIVITY_LABEL: Record<string, string> = Object.fromEntries(
   ACTIVITY_TYPES.map((a) => [a.key, a.label]),
 );
 
+/**
+ * Puntaje automático de calidad del lead (0-100), al estilo del scoring por IA:
+ * combina etapa del embudo, recencia del último contacto y valor. Sirve para
+ * priorizar el seguimiento y no perder prospectos calientes.
+ */
+const STAGE_SCORE: Record<string, number> = {
+  nuevo: 10,
+  contactado: 25,
+  calificado: 42,
+  visita: 60,
+  propuesta: 75,
+  negociacion: 90,
+  ganado: 100,
+  perdido: 0,
+};
+
+export function leadScore(lead: {
+  stage: string;
+  value: number;
+  lastContactAt?: Date | string | null;
+}): number {
+  if (lead.stage === "perdido") return 0;
+  if (lead.stage === "ganado") return 100;
+  let score = STAGE_SCORE[lead.stage] ?? 10;
+  // Recencia del último contacto.
+  if (lead.lastContactAt) {
+    const days =
+      (Date.now() - new Date(lead.lastContactAt).getTime()) / 86400000;
+    if (days <= 2) score += 12;
+    else if (days <= 7) score += 6;
+    else if (days > 14) score -= 12;
+    else if (days > 30) score -= 20;
+  }
+  // Valor de la oportunidad.
+  if (lead.value >= 100000) score += 10;
+  else if (lead.value >= 50000) score += 5;
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+
+export function scoreTemperature(score: number): "caliente" | "tibio" | "frio" {
+  if (score >= 70) return "caliente";
+  if (score >= 40) return "tibio";
+  return "frio";
+}
+
 /** Lista de proyectos del portal para el selector de "interés". */
 export function projectOptions() {
   return proyectos.map((p) => ({ slug: p.slug, name: p.nombre }));

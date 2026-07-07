@@ -23,11 +23,28 @@ model User {
   passwordHash String
   role         String   @default("sales") // admin | sales
   displayName  String   @default("") // nombre visible del vendedor
+  phone        String   @default("") // WhatsApp del usuario (para reportes)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   leads      Lead[]     @relation("AssignedLeads")
   activities Activity[]
+}
+
+/// Programación de reportes automáticos (director). Dos tipos:
+///  - director_summary: resumen enviado al móvil del director.
+///  - seller_portfolio: reporte diario a CADA vendedor con su cartera.
+model ReportSchedule {
+  id          String    @id @default(cuid())
+  kind        String    @default("director_summary") // director_summary | seller_portfolio
+  period      String    @default("daily") // daily | weekly | monthly
+  hour        Int       @default(7) // hora de envío (0-23), hora de El Salvador
+  channel     String    @default("whatsapp")
+  destination String    @default("") // teléfono destino (para director_summary)
+  enabled     Boolean   @default(true)
+  lastRunAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 // ======================= CRM =======================

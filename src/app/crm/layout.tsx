@@ -14,7 +14,7 @@ export default async function CrmLayout({
   children: React.ReactNode;
 }) {
   const user = await getCurrentUser().catch(() => null);
-  if (!user) redirect("/acceso-ventas");
+  if (!user) redirect("/inicio");
   return (
     <CrmShell role={user.role} username={user.username}>
       {children}

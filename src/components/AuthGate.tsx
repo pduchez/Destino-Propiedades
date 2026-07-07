@@ -26,14 +26,14 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
     try {
       const me = await api<Me>("/api/me");
       if (!me.authenticated) {
-        setState("locked");
+        window.location.href = "/inicio"; // login unificado en el hub
       } else if (me.role === "admin") {
         setState("admin");
       } else {
         window.location.href = "/crm";
       }
     } catch {
-      setState("locked");
+      window.location.href = "/inicio";
     }
   }
 

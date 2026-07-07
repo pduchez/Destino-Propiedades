@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { requireUser, leadScope, crmRoute, HttpError } from "@/lib/crmServer";
-import { ensureDefaultOrg } from "@/lib/crm";
+import { ensureDefaultOrg, leadScore } from "@/lib/crm";
 
 export const dynamic = "force-dynamic";
 
@@ -27,12 +27,15 @@ export const GET = crmRoute(async (req: Request) => {
     ];
   }
 
-  const leads = await prisma.lead.findMany({
+  const rows = await prisma.lead.findMany({
     where,
     orderBy: [{ updatedAt: "desc" }],
     include: { assignedTo: { select: { username: true, displayName: true } } },
     take: 500,
   });
+  // Puntaje automático de calidad (0-100) para priorizar el seguimiento.
+  const leads = rows.map((l) => ({ ...l, score: leadScore(l) }));
+  if (p.get("sort") === "score") leads.sort((a, b) => b.score - a.score);
   return Response.json({ leads });
 });
 
