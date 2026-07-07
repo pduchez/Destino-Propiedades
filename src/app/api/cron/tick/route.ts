@@ -9,7 +9,7 @@
  * ?force=1 ignora las fechas (para probar los loops de inmediato).
  */
 import { json, errorJson } from "@/lib/api";
-import { isAuthorized } from "@/lib/auth";
+import { isAdminRequest } from "@/lib/auth";
 import { runTick } from "@/lib/automation";
 
 function cronAuthorized(req: Request): boolean {
@@ -21,7 +21,7 @@ function cronAuthorized(req: Request): boolean {
 }
 
 async function handle(req: Request) {
-  if (!cronAuthorized(req) && !isAuthorized()) return errorJson("No autorizado", 401);
+  if (!cronAuthorized(req) && !(await isAdminRequest())) return errorJson("No autorizado", 401);
   const url = new URL(req.url);
   const force = url.searchParams.get("force") === "1";
   const result = await runTick(new Date(), force);
