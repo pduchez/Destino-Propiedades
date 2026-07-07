@@ -18,10 +18,10 @@ export default function Home() {
   }, []);
 
   const cards = [
-    { label: "Proyectos", value: status?.counts.projects, href: "/projects", icon: "🏢" },
-    { label: "Borradores por aprobar", value: status?.counts.drafts, href: "/queue", icon: "✅" },
-    { label: "Publicados", value: status?.counts.published, href: "/queue", icon: "🚀" },
-    { label: "Imágenes en stock", value: status?.counts.assets, href: "/images", icon: "🖼️" },
+    { label: "Proyectos", value: status?.counts.projects, href: "/acceso-ventas/projects", icon: "🏢" },
+    { label: "Borradores por aprobar", value: status?.counts.drafts, href: "/acceso-ventas/queue", icon: "✅" },
+    { label: "Publicados", value: status?.counts.published, href: "/acceso-ventas/queue", icon: "🚀" },
+    { label: "Imágenes en stock", value: status?.counts.assets, href: "/acceso-ventas/images", icon: "🖼️" },
   ];
 
   return (
