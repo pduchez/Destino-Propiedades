@@ -374,7 +374,14 @@ export const proyectos: Proyecto[] = [
       "segunda casa o inversión turística-residencial, con planes de pago " +
       "directos con el desarrollador.",
     // Fotos pendientes: el desarrollador las subirá por partes.
-    galeria: [],
+    galeria: [
+      "/assets/proyectos/highlights/foto-1.webp",
+      "/assets/proyectos/highlights/foto-2.webp",
+      "/assets/proyectos/highlights/foto-3.webp",
+      "/assets/proyectos/highlights/foto-4.webp",
+      "/assets/proyectos/highlights/foto-5.webp",
+      "/assets/proyectos/highlights/foto-6.webp",
+    ],
     precioDesde: 64930,
     etiquetaPrecio: "Desde $64,930 por lote",
     // Tipos representativos de los 139 lotes en polígonos A-F (lista de precios
