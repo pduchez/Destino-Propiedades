@@ -36,3 +36,17 @@ body {
     @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
   }
 }
+
+/* ── Identidad del portal DestinoPropiedades.com (tokens usados por las
+      páginas públicas portadas desde Astro) ─────────────────────────────── */
+:root {
+  --shadow-card: 0 1px 2px rgba(15, 36, 56, 0.04), 0 8px 24px -12px rgba(15, 36, 56, 0.18);
+  --shadow-float: 0 12px 40px -12px rgba(15, 36, 56, 0.28);
+}
+.font-display { font-family: var(--font-display), system-ui, sans-serif; }
+/* Titulares del portal: sans grueso, tracking ajustado. */
+.portal h1, .portal h2, .portal h3, .portal h4 {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700; letter-spacing: -0.02em; line-height: 1.05;
+}
+.acento { color: var(--sand, #c9a463); }
