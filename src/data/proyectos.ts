@@ -76,6 +76,20 @@ export interface Proyecto {
   };
   /** Plantilla del mensaje de WhatsApp pre-escrito para este proyecto. */
   whatsappMensaje: string;
+  /**
+   * Novedad puntual a comunicar en redes (opcional). Lo escribe el dueño
+   * cuando quiere que el ARS (agente de redes) promocione algo concreto de
+   * este proyecto: una rebaja, una amenidad nueva, disponibilidad, evento…
+   * Viaja en el feed `/proyectos.json` que consume el ARS. Vacío/ausente =
+   * sin novedad; el ARS sigue con su calendarización normal.
+   */
+  novedad?: string;
+  /**
+   * Fecha ISO de la última actualización relevante de este proyecto
+   * (opcional; p. ej. "2026-07-08"). Ayuda al ARS a detectar cambios. Si se
+   * omite, el feed usa la fecha de publicación del sitio.
+   */
+  actualizado?: string;
 }
 
 function mensajeWhatsapp(nombre: string, slug: string): string {
