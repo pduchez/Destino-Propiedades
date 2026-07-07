@@ -4,9 +4,9 @@ import Nav from "@/components/Nav";
 import AuthGate from "@/components/AuthGate";
 
 export const metadata: Metadata = {
-  title: "Destino — Agente de Redes Sociales",
+  title: "ARS — Agente de Redes Sociales",
   description:
-    "Generación y publicación automatizada de contenido para redes sociales del portal Destinopropiedades.com",
+    "ARS: genera, publica, mide y mejora el contenido de redes sociales de un portal inmobiliario. Reutilizable por proyecto.",
 };
 
 export default function RootLayout({

@@ -27,9 +27,10 @@ export default function Home() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Panel de control</h1>
+        <h1 className="text-2xl font-bold text-slate-900">ARS · Panel de control</h1>
         <p className="text-slate-500">
-          Agente de generación y publicación de contenido para Destinopropiedades.com
+          Agente de Redes Sociales: genera, publica, mide y mejora el contenido del
+          portal (hoy, Destinopropiedades.com).
         </p>
       </div>
 
@@ -62,6 +63,7 @@ export default function Home() {
             <li>3. Crea <Link href="/campaigns" className="text-brand underline">campañas</Link> con instrucciones específicas (opcional).</li>
             <li>4. <Link href="/generate" className="text-brand underline">Genera</Link> borradores para Facebook, Instagram, X y TikTok.</li>
             <li>5. Revisa y aprueba en la <Link href="/queue" className="text-brand underline">cola de aprobación</Link>; publica con un clic.</li>
+            <li>6. Mide el impacto en <Link href="/metrics" className="text-brand underline">Métricas e informe</Link> y deja que ARS autoevalúe y ajuste la estrategia.</li>
           </ol>
         </div>
         <div className="card">

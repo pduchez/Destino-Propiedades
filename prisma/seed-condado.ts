@@ -78,6 +78,13 @@ const IMAGES: { url: string; alt: string }[] = [
 ];
 
 async function main() {
+  // ENLATADO: en una instancia clonada para otro portal, pon ARS_SEED_EXAMPLE=off
+  // para arrancar limpio (sin el proyecto de ejemplo Condado del Golfo).
+  if ((process.env.ARS_SEED_EXAMPLE || "").toLowerCase() === "off") {
+    console.log("[seed-condado] ARS_SEED_EXAMPLE=off — se omite el ejemplo.");
+    return;
+  }
+
   // Asegura la Instrucción Madre por defecto.
   const brand = await prisma.brandStrategy.upsert({
     where: { id: "default" },
