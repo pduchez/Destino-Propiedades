@@ -184,7 +184,7 @@ export default function GeneratePage() {
       {result && (
         <div className="rounded-lg bg-emerald-50 p-4 text-sm text-emerald-800 ring-1 ring-emerald-200">
           ✓ Se generaron <strong>{result.created}</strong> borradores.{" "}
-          <Link href="/queue" className="font-medium underline">
+          <Link href="/acceso-ventas/queue" className="font-medium underline">
             Ir a la cola de aprobación →
           </Link>
         </div>

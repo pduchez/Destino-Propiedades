@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Nav from "@/components/Nav";
-import AuthGate from "@/components/AuthGate";
 
+// Layout RAÍZ: cáscara mínima para el portal público. La sección privada del
+// ARS trae su propio chrome (Nav + AuthGate) en src/app/acceso-ventas/layout.tsx.
 export const metadata: Metadata = {
-  title: "ARS — Agente de Redes Sociales",
+  title: "DestinoPropiedades.com — Lotes en El Salvador",
   description:
-    "ARS: genera, publica, mide y mejora el contenido de redes sociales de un portal inmobiliario. Reutilizable por proyecto.",
+    "Portal inmobiliario para la diáspora salvadoreña y compradores locales: lotes en lotificaciones confiables en El Salvador.",
 };
 
 export default function RootLayout({
@@ -16,16 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body>
-        <AuthGate>
-          <div className="flex min-h-screen">
-            <Nav />
-            <main className="flex-1 overflow-x-hidden">
-              <div className="mx-auto max-w-6xl p-6">{children}</div>
-            </main>
-          </div>
-        </AuthGate>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

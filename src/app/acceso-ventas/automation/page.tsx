@@ -186,7 +186,7 @@ export default function AutomationPage() {
           <p className="mt-1 text-sm text-slate-500">
             Estos proyectos van a publicar en redes de video pero no tienen material
             crudo. Sube videos verticales (drone/tour) en{" "}
-            <a href="/images" className="text-brand underline">Stock de imágenes</a>.
+            <a href="/acceso-ventas/images" className="text-brand underline">Stock de imágenes</a>.
           </p>
           <ul className="mt-2 space-y-1 text-sm">
             {videoNeeds.map((n) => (

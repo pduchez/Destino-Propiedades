@@ -3,16 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+const BASE = "/acceso-ventas";
 const LINKS = [
-  { href: "/", label: "Inicio", icon: "🏠" },
-  { href: "/generate", label: "Generar", icon: "✨" },
-  { href: "/queue", label: "Aprobación", icon: "✅" },
-  { href: "/automation", label: "Automatización", icon: "🤖" },
-  { href: "/metrics", label: "Métricas e informe", icon: "📊" },
-  { href: "/projects", label: "Proyectos", icon: "🏢" },
-  { href: "/campaigns", label: "Campañas", icon: "📣" },
-  { href: "/images", label: "Stock de imágenes", icon: "🖼️" },
-  { href: "/settings", label: "Configuración", icon: "⚙️" },
+  { href: BASE, label: "Inicio", icon: "🏠" },
+  { href: `${BASE}/generate`, label: "Generar", icon: "✨" },
+  { href: `${BASE}/queue`, label: "Aprobación", icon: "✅" },
+  { href: `${BASE}/automation`, label: "Automatización", icon: "🤖" },
+  { href: `${BASE}/metrics`, label: "Métricas e informe", icon: "📊" },
+  { href: `${BASE}/projects`, label: "Proyectos", icon: "🏢" },
+  { href: `${BASE}/campaigns`, label: "Campañas", icon: "📣" },
+  { href: `${BASE}/images`, label: "Stock de imágenes", icon: "🖼️" },
+  { href: `${BASE}/settings`, label: "Configuración", icon: "⚙️" },
 ];
 
 export default function Nav() {
@@ -20,15 +21,18 @@ export default function Nav() {
   return (
     <aside className="hidden w-60 shrink-0 border-r border-slate-200 bg-white md:block">
       <div className="p-5">
-        <Link href="/" className="block">
+        <Link href={BASE} className="block">
           <div className="text-lg font-bold text-brand">ARS</div>
           <div className="text-xs text-slate-500">Agente de Redes Sociales</div>
+        </Link>
+        <Link href="/" className="mt-2 inline-block text-xs text-slate-400 hover:text-brand">
+          ← Volver al portal
         </Link>
       </div>
       <nav className="space-y-1 px-3">
         {LINKS.map((l) => {
           const active =
-            l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
+            l.href === BASE ? pathname === BASE : pathname.startsWith(l.href);
           return (
             <Link
               key={l.href}
