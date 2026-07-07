@@ -51,7 +51,9 @@ export default function AutomationPage() {
   const [salesNote, setSalesNote] = useState("");
   const [msg, setMsg] = useState("");
   const [syncMsg, setSyncMsg] = useState("");
-  const [syncBase, setSyncBase] = useState("https://destinopropiedades.com");
+  // Vacío = sincroniza con ESTE mismo sitio (portal y ARS son la misma app).
+  // Solo se llena para leer un portal externo distinto.
+  const [syncBase, setSyncBase] = useState("");
   const [busy, setBusy] = useState("");
 
   async function loadAll() {
@@ -202,16 +204,17 @@ export default function AutomationPage() {
       <div className="card space-y-3">
         <h2 className="font-semibold text-slate-800">Acciones</h2>
         <div>
-          <label className="label">URL del portal a sincronizar</label>
+          <label className="label">URL del portal a sincronizar (opcional)</label>
           <input
             className="input"
             value={syncBase}
             onChange={(e) => setSyncBase(e.target.value)}
-            placeholder="https://destinopropiedades.com"
+            placeholder="Vacío = este mismo sitio"
           />
           <p className="mt-1 text-[11px] text-slate-400">
-            Usa la dirección publicada del portal. Si el dominio propio no responde,
-            prueba el espejo: https://pduchez.github.io/Destino-Propiedades
+            Dejalo <strong>vacío</strong>: el portal y el ARS son la misma app, así que
+            sincroniza con este mismo sitio automáticamente. Solo llená una URL para
+            leer un portal externo distinto.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

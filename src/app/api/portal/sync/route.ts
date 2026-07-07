@@ -31,8 +31,11 @@ interface SyncResult {
 
 export const POST = withAuth(async (req) => {
   const body = (await req.json().catch(() => ({}))) as { base?: string };
-  const brand = await prisma.brandStrategy.findUnique({ where: { id: "default" } });
-  const base = (body.base || brand?.portalUrl || "https://destinopropiedades.com").trim().replace(/\/+$/, "");
+  // El portal y el ARS son la MISMA app: por defecto se lee el feed del propio
+  // origen del despliegue (funciona en preview y en producción sin configurar
+  // nada). Solo un `base` EXPLÍCITO lo sobrescribe (para un portal externo).
+  const selfOrigin = new URL(req.url).origin;
+  const base = (body.base?.trim() || selfOrigin).replace(/\/+$/, "");
   if (!/^https?:\/\//i.test(base)) return errorJson("URL base del portal inválida.");
 
   // 0) Preferir el FEED estructurado /proyectos.json (fuente de verdad del

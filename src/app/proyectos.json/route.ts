@@ -7,10 +7,21 @@ import { rangoArea, lotesDisponibles } from "@/portal/lib/relaciones";
 import { sitio } from "@/portal/data/sitio";
 import { SITE } from "@/portal/lib/site";
 
-export const dynamic = "force-static";
+// Dinámico: las URLs absolutas (páginas e imágenes) se arman con el ORIGEN de
+// la petición, para que resuelvan tanto en producción como en un preview de
+// Vercel (donde el dominio final aún no está activo). Cae a SITE si no hay
+// origen (build).
+export const dynamic = "force-dynamic";
 
-export function GET() {
-  const abs = (path: string) => new URL(path, SITE).href;
+export function GET(req: Request) {
+  const origin = (() => {
+    try {
+      return new URL(req.url).origin;
+    } catch {
+      return SITE.href.replace(/\/$/, "");
+    }
+  })();
+  const abs = (path: string) => new URL(path, origin).href;
   const generado = new Date().toISOString();
 
   const items = proyectos.map((p) => {
@@ -46,7 +57,7 @@ export function GET() {
 
   return Response.json({
     marca: sitio.marcaPlataforma,
-    portalUrl: SITE.href.replace(/\/$/, ""),
+    portalUrl: origin,
     generado,
     total: items.length,
     proyectos: items,

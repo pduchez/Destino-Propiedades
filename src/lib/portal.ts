@@ -267,6 +267,8 @@ export interface PortalFeedProject {
   etiquetaPrecio?: string;
   precioDesde?: number | null;
   moneda?: string;
+  area?: string | null;
+  lotesDisponibles?: number;
   descripcion?: string;
   servicios?: string[];
   imagenes?: string[];
@@ -314,6 +316,22 @@ export function feedProjectToFields(p: PortalFeedProject): {
   if (p.moneda) fields.currency = p.moneda;
   if (p.descripcion && p.descripcion.length > 20) fields.description = p.descripcion;
   if (Array.isArray(p.servicios)) fields.amenities = JSON.stringify(p.servicios);
+  // Puntos de venta (highlights) que el ARS usa como "ganchos" al redactar:
+  // precio, área, disponibilidad y las amenidades clave.
+  const highlights: string[] = [];
+  if (p.etiquetaPrecio) highlights.push(p.etiquetaPrecio);
+  if (p.area) highlights.push(`Lotes de ${p.area}`);
+  if (typeof p.lotesDisponibles === "number" && p.lotesDisponibles > 0) {
+    highlights.push(`${p.lotesDisponibles} lotes disponibles`);
+  }
+  if (Array.isArray(p.servicios)) highlights.push(...p.servicios.slice(0, 6));
+  if (highlights.length > 0) fields.highlights = JSON.stringify(highlights);
+  // Hashtags listos por proyecto (marca + ubicación + tipo), para que el ARS
+  // publique con etiquetas aunque no haya IA configurada.
+  const hashtags = ["#DestinoPropiedades", "#ElSalvador"];
+  if (p.departamento) hashtags.push("#" + p.departamento.replace(/\s+/g, ""));
+  if (p.tipoLabel) hashtags.push("#Lotes" + p.tipoLabel.replace(/\s+/g, ""));
+  fields.hashtags = JSON.stringify(hashtags);
   fields.novedad = (p.novedad ?? "").toString();
   return {
     slug: p.slug,
