@@ -14,6 +14,11 @@ export async function GET() {
     whatsapp: whatsappConfigured(),
     whatsappToken: !!process.env.WHATSAPP_TOKEN,
     whatsappPhoneId: !!process.env.WHATSAPP_PHONE_ID,
+    // Nombres EXACTOS (sin valores) de variables con "WHATS", entre corchetes
+    // para revelar espacios ocultos o diferencias en el nombre.
+    whatsappKeys: Object.keys(process.env)
+      .filter((k) => /whats/i.test(k))
+      .map((k) => `[${k}]`),
     hasDbUrl: !!process.env.DATABASE_URL,
     hasAnthropic: !!process.env.ANTHROPIC_API_KEY,
     at: new Date().toISOString(),
