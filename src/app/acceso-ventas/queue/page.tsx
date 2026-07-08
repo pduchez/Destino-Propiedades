@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/client";
 import PostPreview from "@/components/PostPreview";
+import PublicarAsistido from "@/components/PublicarAsistido";
 
 interface Asset {
   id: string;
@@ -71,8 +72,9 @@ export default function QueuePage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-slate-900">Cola de aprobación</h1>
       <p className="text-slate-500">
-        Revisa, edita y aprueba cada borrador. Al publicar, el post se envía a la
-        red correspondiente (requiere credenciales configuradas).
+        Revisa, edita y aprueba cada borrador. Con <strong>📤 Publicar</strong> se abre el
+        asistente de 3 pasos (copiar texto → descargar imagen → pegar en Business Suite).
+        La publicación directa por API queda para la Fase 2.
       </p>
 
       <div className="flex flex-wrap items-center gap-3">
@@ -116,6 +118,7 @@ function PostCard({ post, onChange }: { post: Post; onChange: () => void }) {
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
   const [preview, setPreview] = useState(false);
+  const [asistido, setAsistido] = useState(false);
 
   async function patch(body: Record<string, unknown>) {
     setError("");
@@ -236,9 +239,32 @@ function PostCard({ post, onChange }: { post: Post; onChange: () => void }) {
           </button>
         )}
         {(post.status === "approved" || post.status === "draft" || post.status === "failed") && (
-          <button className="btn-primary" onClick={publish} disabled={!!busy}>
-            {busy === "publish" ? "Publicando…" : "🚀 Publicar"}
-          </button>
+          <>
+            <button
+              className="btn-primary"
+              disabled={!!busy}
+              onClick={async () => {
+                // Guarda las ediciones antes de abrir el asistente.
+                setBusy("save");
+                try {
+                  await patch({ caption, callToAction: cta, hashtags });
+                } finally {
+                  setBusy("");
+                }
+                setAsistido(true);
+              }}
+            >
+              📤 Publicar
+            </button>
+            <button
+              className="btn-secondary"
+              onClick={publish}
+              disabled={!!busy}
+              title="Publicación directa por API (Fase 2: requiere credenciales de Meta)"
+            >
+              {busy === "publish" ? "Publicando…" : "🚀 API"}
+            </button>
+          </>
         )}
         {post.status !== "rejected" && post.status !== "published" && (
           <button className="btn-secondary" onClick={() => setStatus("rejected")} disabled={!!busy}>
@@ -249,6 +275,22 @@ function PostCard({ post, onChange }: { post: Post; onChange: () => void }) {
       </div>
       {post.model && (
         <p className="text-[11px] text-slate-400">Generado con: {post.model}</p>
+      )}
+
+      {asistido && (
+        <PublicarAsistido
+          network={post.network}
+          caption={caption}
+          callToAction={cta}
+          hashtags={hashtags}
+          imageUrl={asset && !asset.mimeType.startsWith("video/") ? asset.url : undefined}
+          postId={post.id}
+          onConfirm={async () => {
+            await patch({ status: "published" });
+            onChange();
+          }}
+          onClose={() => setAsistido(false)}
+        />
       )}
 
       {preview && (

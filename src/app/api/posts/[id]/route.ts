@@ -30,6 +30,12 @@ export const PATCH = withAuth(async (req, { params }: Ctx) => {
       return errorJson("Estado inválido.");
     }
     data.status = body.status;
+    // Publicación asistida (manual vía Business Suite): registrar la fecha y
+    // limpiar errores, para que métricas y reportes funcionen igual que con API.
+    if (body.status === "published") {
+      data.publishedAt = new Date();
+      data.error = null;
+    }
   }
   if (body.scheduledAt !== undefined) {
     data.scheduledAt = body.scheduledAt ? new Date(String(body.scheduledAt)) : null;
