@@ -85,6 +85,21 @@ export const POST = withAuth(async (req) => {
   });
   const url = `/api/img/${stored.id}`;
 
+  // Anti-duplicado: si ya existe una embellecida de la MISMA foto origen y el
+  // MISMO estilo, se reemplaza (borra la anterior y su imagen) para no cargar
+  // el sistema con versiones acumuladas.
+  const sourceAssetId = body.assetId || "";
+  if (sourceAssetId) {
+    const previas = await prisma.asset.findMany({
+      where: { sourceAssetId, tags: { contains: `"${estilo}"` } },
+    });
+    for (const prev of previas) {
+      const m = prev.url.match(/\/api\/img\/(.+)$/);
+      if (m) await prisma.storedImage.delete({ where: { id: m[1] } }).catch(() => {});
+      await prisma.asset.delete({ where: { id: prev.id } }).catch(() => {});
+    }
+  }
+
   const asset = await prisma.asset.create({
     data: {
       projectId: projectId || null,
@@ -94,6 +109,7 @@ export const POST = withAuth(async (req) => {
       mimeType: "image/jpeg",
       sizeBytes: stamped.byteLength,
       tags: stringify(["embellecida", estilo]),
+      sourceAssetId,
     },
   });
 

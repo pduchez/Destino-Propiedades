@@ -14,6 +14,13 @@ interface Campaign {
   projectId: string | null;
   networks: string;
 }
+interface Asset {
+  id: string;
+  url: string;
+  originalName: string;
+  mimeType: string;
+  tags: string;
+}
 
 const NETWORKS = [
   { id: "facebook", label: "📘 Facebook" },
@@ -30,6 +37,8 @@ export default function GeneratePage() {
   const [networks, setNetworks] = useState<string[]>(["facebook", "instagram"]);
   const [count, setCount] = useState(1);
   const [attachImage, setAttachImage] = useState(true);
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [assetId, setAssetId] = useState(""); // "" = automática (prefiere embellecida)
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ created: number } | null>(null);
   const [error, setError] = useState("");
@@ -43,9 +52,22 @@ export default function GeneratePage() {
       .catch(() => {});
   }, []);
 
+  // Carga las imágenes disponibles según el proyecto (proyecto + globales).
+  useEffect(() => {
+    setAssetId("");
+    const q = projectId ? `projectId=${projectId}` : "scope=global";
+    api<Asset[]>(`/api/assets?${q}`)
+      .then((a) => setAssets(a.filter((x) => x.mimeType.startsWith("image/"))))
+      .catch(() => setAssets([]));
+  }, [projectId]);
+
   const filteredCampaigns = campaigns.filter(
     (c) => !projectId || c.projectId === projectId || c.projectId === null,
   );
+
+  const tagList = (j: string) => {
+    try { return JSON.parse(j) as string[]; } catch { return []; }
+  };
 
   function toggle(id: string) {
     setNetworks((n) => (n.includes(id) ? n.filter((x) => x !== id) : [...n, id]));
@@ -64,6 +86,7 @@ export default function GeneratePage() {
           networks,
           countPerNetwork: count,
           attachImage,
+          assetId: attachImage && assetId ? assetId : null,
         }),
       });
       setResult(res);
@@ -168,10 +191,58 @@ export default function GeneratePage() {
                 checked={attachImage}
                 onChange={(e) => setAttachImage(e.target.checked)}
               />
-              Adjuntar imagen aleatoria del stock
+              Adjuntar imagen del stock
             </label>
           </div>
         </div>
+
+        {/* Selector de imagen por proyecto */}
+        {attachImage && (
+          <div>
+            <label className="label">
+              Imagen a usar {projectId ? "" : "(institucional / global)"}
+            </label>
+            {assets.length === 0 ? (
+              <p className="text-sm text-slate-400">
+                No hay imágenes para este proyecto todavía. Súbelas o embellécelas en
+                &quot;Stock de imágenes&quot;. Se usará una automática si existe.
+              </p>
+            ) : (
+              <div className="flex gap-3 overflow-x-auto pb-2">
+                {/* Opción automática */}
+                <button
+                  type="button"
+                  onClick={() => setAssetId("")}
+                  className={`shrink-0 rounded-lg p-2 text-center ring-2 ${
+                    assetId === "" ? "ring-brand" : "ring-slate-200"
+                  }`}
+                >
+                  <div className="flex h-24 w-24 items-center justify-center rounded bg-slate-100 text-2xl">🎲</div>
+                  <div className="mt-1 w-24 text-xs text-slate-500">Automática<br/>(prefiere ✨)</div>
+                </button>
+                {assets.map((a) => {
+                  const emb = tagList(a.tags).includes("embellecida");
+                  return (
+                    <button
+                      key={a.id}
+                      type="button"
+                      onClick={() => setAssetId(a.id)}
+                      className={`relative shrink-0 rounded-lg p-1 ring-2 ${
+                        assetId === a.id ? "ring-brand" : "ring-slate-200"
+                      }`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={a.url} alt="" className="h-24 w-24 rounded object-cover" />
+                      {emb && (
+                        <span className="absolute left-1 top-1 rounded bg-emerald-500 px-1 text-[10px] font-bold text-white">✨</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="flex items-center gap-3">
           <button className="btn-primary" disabled={loading || networks.length === 0} onClick={generate}>

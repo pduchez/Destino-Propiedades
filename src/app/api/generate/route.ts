@@ -9,6 +9,7 @@ export const POST = withAuth(async (req) => {
     networks?: string[];
     countPerNetwork?: number;
     attachImage?: boolean;
+    assetId?: string | null;
   };
 
   if (!Array.isArray(body.networks) || body.networks.length === 0) {
@@ -21,6 +22,7 @@ export const POST = withAuth(async (req) => {
     networks: body.networks,
     countPerNetwork: body.countPerNetwork,
     attachImage: body.attachImage,
+    assetId: body.assetId ?? null,
   });
 
   return json({ created: results.length, posts: results }, 201);

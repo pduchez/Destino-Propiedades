@@ -213,9 +213,26 @@ model Asset {
   width        Int      @default(0)
   height       Int      @default(0)
   tags         String   @default("[]") // JSON array
+  /// Si es una imagen embellecida, el id del Asset original del que salió.
+  /// Sirve para no duplicar embellecidas del mismo origen (una por estilo).
+  sourceAssetId String  @default("")
   createdAt    DateTime @default(now())
 
   project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+}
+
+/// Análisis de una campaña hecho por Claude: validación, comparación contra
+/// campañas previas, tendencias y métricas, con recomendaciones concretas que
+/// el director puede autorizar en combo. Es también el "log" de la campaña.
+model CampaignAnalysis {
+  id              String   @id @default(cuid())
+  campaignId      String
+  summary         String   @default("") // diagnóstico general
+  comparison      String   @default("") // vs campañas anteriores / tendencias
+  /// Recomendaciones puntuales (JSON): [{field,label,current,suggested,reason}]
+  recommendations String   @default("[]")
+  appliedFields   String   @default("[]") // campos aplicados por el director (JSON)
+  createdAt       DateTime @default(now())
 }
 
 /// Un post generado por el bot, listo para revisión/aprobación y publicación.

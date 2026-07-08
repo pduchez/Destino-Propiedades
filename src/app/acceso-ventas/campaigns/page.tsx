@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/client";
+import CampaignCard from "@/components/CampaignCard";
 
 interface Project {
   id: string;
@@ -37,6 +38,13 @@ export default function CampaignsPage() {
     status: "active",
   });
   const [msg, setMsg] = useState("");
+  const [logFilter, setLogFilter] = useState("");
+
+  const visibleCampaigns = campaigns.filter((c) => {
+    if (!logFilter) return true;
+    if (logFilter === "__global") return c.projectId === null;
+    return c.projectId === logFilter;
+  });
 
   async function load() {
     const [c, p] = await Promise.all([
@@ -84,13 +92,6 @@ export default function CampaignsPage() {
     await load();
   }
 
-  function nets(json: string): string[] {
-    try {
-      return JSON.parse(json) as string[];
-    } catch {
-      return [];
-    }
-  }
 
   return (
     <div className="space-y-6">
@@ -170,27 +171,29 @@ export default function CampaignsPage() {
         </div>
       </form>
 
+      {/* Log de campañas por proyecto */}
+      <div className="flex items-center gap-2">
+        <label className="text-sm text-slate-600">Ver campañas de:</label>
+        <select
+          className="input w-auto"
+          value={logFilter}
+          onChange={(e) => setLogFilter(e.target.value)}
+        >
+          <option value="">Todos los proyectos</option>
+          <option value="__global">Solo globales</option>
+          {projects.map((p) => (
+            <option key={p.id} value={p.id}>{p.name}</option>
+          ))}
+        </select>
+        <span className="text-xs text-slate-400">{visibleCampaigns.length} campaña(s)</span>
+      </div>
+
       <div className="space-y-3">
-        {campaigns.map((c) => (
-          <div key={c.id} className="card flex items-start justify-between">
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-slate-900">{c.name}</h3>
-                <span className="badge bg-brand/10 text-brand">{c.objective}</span>
-                <span className="badge bg-slate-100 text-slate-600">{c.status}</span>
-              </div>
-              <p className="text-sm text-slate-500">
-                {c.project?.name ?? "Global"} · {nets(c.networks).join(", ") || "sin redes"}
-              </p>
-              {c.instructions && (
-                <p className="mt-1 text-sm text-slate-600">{c.instructions}</p>
-              )}
-            </div>
-            <button className="btn-danger" onClick={() => remove(c.id)}>Eliminar</button>
-          </div>
+        {visibleCampaigns.map((c) => (
+          <CampaignCard key={c.id} campaign={c} onChange={load} onRemove={remove} />
         ))}
-        {campaigns.length === 0 && (
-          <p className="text-sm text-slate-500">Aún no hay campañas.</p>
+        {visibleCampaigns.length === 0 && (
+          <p className="text-sm text-slate-500">No hay campañas en este filtro.</p>
         )}
       </div>
     </div>

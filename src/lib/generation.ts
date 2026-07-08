@@ -20,6 +20,8 @@ export interface GenerateRequest {
   countPerNetwork?: number;
   /** Adjuntar imagen del stock automáticamente (por defecto true). */
   attachImage?: boolean;
+  /** Forzar una imagen específica del stock (si no, se elige preferir embellecidas). */
+  assetId?: string | null;
 }
 
 export interface GeneratedPostSummary {
@@ -121,9 +123,13 @@ export async function generateDrafts(
 
   for (const network of networks) {
     for (let i = 0; i < count; i++) {
-      const assetId = attachImage
-        ? await pickRandomAsset(project?.id ?? null, network)
-        : null;
+      // Imagen fija elegida por el usuario, o selección automática (prefiere
+      // embellecidas). Si eligió una imagen, se usa en todos los borradores.
+      const assetId = !attachImage
+        ? null
+        : req.assetId
+          ? req.assetId
+          : await pickRandomAsset(project?.id ?? null, network);
 
       let imageHint: string | null = null;
       if (assetId) {
