@@ -24,6 +24,11 @@ export async function GET() {
     // Embellecedor: fal.ai + almacenamiento Blob.
     hasFalKey: !!(process.env.FAL_KEY || process.env.FAL_API_KEY),
     hasBlobToken: !!process.env.BLOB_READ_WRITE_TOKEN,
+    // Nombres EXACTOS de variables con "BLOB" presentes en el runtime (sin
+    // valores) para detectar si el token no llega o llega vacío/renombrado.
+    blobKeys: Object.keys(process.env)
+      .filter((k) => /blob/i.test(k))
+      .map((k) => `[${k}]=${process.env[k] ? "set" : "empty"}`),
     at: new Date().toISOString(),
   });
 }
