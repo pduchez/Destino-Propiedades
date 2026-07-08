@@ -40,6 +40,7 @@ interface Lead {
   nextActionAt: string | null;
   assignedTo?: { id: string; username: string; displayName: string } | null;
   activities: Activity[];
+  appointments?: { id: string; scheduledAt: string; location: string; status: string; createdBy: string }[];
 }
 
 const money = (n: number) => (n ? "$" + Math.round(n).toLocaleString("en-US") : "—");
@@ -120,6 +121,20 @@ export default function LeadDetail() {
         {/* Datos + edición */}
         <div className="space-y-4 lg:col-span-1">
           <LeadInfo lead={lead} onSaved={load} />
+          {lead.appointments && lead.appointments.length > 0 && (
+            <div className="card space-y-2">
+              <h2 className="text-lg font-semibold">📅 Citas</h2>
+              {lead.appointments.map((ap) => (
+                <div key={ap.id} className="rounded-lg bg-slate-50 p-2 text-sm ring-1 ring-slate-200">
+                  <div className="font-medium text-slate-700">{fmt(ap.scheduledAt)}</div>
+                  {ap.location && <div className="text-xs text-slate-500">📍 {ap.location}</div>}
+                  <div className="text-xs text-slate-400">
+                    {ap.status} · {ap.createdBy === "bot" ? "agendada por el bot 🤖" : ap.createdBy}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Timeline + agregar actividad */}

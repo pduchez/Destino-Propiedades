@@ -25,6 +25,7 @@ export const GET = crmRoute(async (_req: Request, { params }: Ctx) => {
         orderBy: { createdAt: "desc" },
         include: { user: { select: { username: true, displayName: true } } },
       },
+      appointments: { orderBy: { scheduledAt: "asc" } },
     },
   });
   if (!lead) throw new HttpError("Lead no encontrado", 404);

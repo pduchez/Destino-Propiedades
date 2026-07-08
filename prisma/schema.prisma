@@ -98,12 +98,39 @@ model Lead {
   nextActionNote String    @default("")
   lastContactAt  DateTime?
   notes          String    @default("") // ficha libre
+  // --- Integración WhatsApp (bot movido por Claude, se conecta luego) ---
+  /// Identificador del hilo/conversación de WhatsApp (lo provee el bot externo)
+  /// para poder mapear mensajes entrantes al mismo lead. Sirve de clave estable.
+  waThreadId     String    @default("")
+  /// Momento en que el bot entregó la conversación a un asesor humano (handoff).
+  handoffAt      DateTime?
+  /// Quién maneja ahora la conversación: "bot" o "seller".
+  handledBy      String    @default("bot") // bot | seller
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
-  org        Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  assignedTo User?        @relation("AssignedLeads", fields: [assignedToId], references: [id], onDelete: SetNull)
-  activities Activity[]
+  org          Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  assignedTo   User?         @relation("AssignedLeads", fields: [assignedToId], references: [id], onDelete: SetNull)
+  activities   Activity[]
+  appointments Appointment[]
+}
+
+/// Cita/visita agendada. La puede crear el bot de WhatsApp (sin intervención
+/// humana), el vendedor o el director. Aparece en la agenda del CRM del vendedor
+/// y en el log del cliente.
+model Appointment {
+  id          String   @id @default(cuid())
+  leadId      String
+  sellerId    String?  // User (vendedor) responsable
+  scheduledAt DateTime
+  location    String   @default("")
+  notes       String   @default("")
+  status      String   @default("scheduled") // scheduled | done | canceled | no_show
+  createdBy   String   @default("bot") // bot | seller | director
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
 }
 
 /// Interacción en la línea de tiempo del lead. Captura las 3 fuentes de input:

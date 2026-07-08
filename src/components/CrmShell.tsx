@@ -9,6 +9,7 @@ const NAV = [
   { href: "/crm", label: "Tablero", icon: "📊", exact: true },
   { href: "/crm/leads", label: "Leads", icon: "🧑‍🤝‍🧑" },
   { href: "/crm/pipeline", label: "Embudo", icon: "📈" },
+  { href: "/crm/agenda", label: "Agenda", icon: "📅" },
   { href: "/crm/tareas", label: "Tareas", icon: "⏰" },
   { href: "/crm/reportes", label: "Reportes", icon: "📑" },
   { href: "/crm/cuenta", label: "Mi cuenta", icon: "👤" },
@@ -66,6 +67,16 @@ export default function CrmShell({
         </div>
         <div className="px-3">{links}</div>
         <div className="mt-auto p-4 text-xs text-slate-400">
+          {/* Cambio de módulo: solo el Director (admin) puede ir a ARS. */}
+          <div className="mb-3 space-y-1 border-b border-slate-100 pb-3">
+            {role === "admin" && (
+              <>
+                <a href="/inicio" className="block hover:text-brand">⇄ Cambiar módulo</a>
+                <a href="/acceso-ventas" className="block hover:text-brand">🤖 Ir a ARS</a>
+              </>
+            )}
+            <a href="/" className="block hover:text-brand">🌐 Ver portal</a>
+          </div>
           <div className="mb-2 truncate">👤 {username}</div>
           <button onClick={logout} className="hover:text-brand">
             Cerrar sesión
@@ -88,9 +99,11 @@ export default function CrmShell({
         {open && (
           <div className="border-b border-slate-200 bg-white p-3 md:hidden">
             {links}
-            <button onClick={logout} className="mt-2 px-3 text-sm text-slate-500">
-              Cerrar sesión
-            </button>
+            <div className="mt-2 space-y-1 border-t border-slate-100 px-3 pt-2 text-sm text-slate-500">
+              {role === "admin" && <a href="/acceso-ventas" className="block hover:text-brand">🤖 Ir a ARS</a>}
+              <a href="/" className="block hover:text-brand">🌐 Ver portal</a>
+              <button onClick={logout} className="hover:text-brand">Cerrar sesión</button>
+            </div>
           </div>
         )}
         <main className="min-w-0 flex-1 overflow-x-hidden">
