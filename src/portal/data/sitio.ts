@@ -42,10 +42,10 @@ export const sitio: Sitio = {
     intercambiable: true,
   },
   contacto: {
-    // Confirmados en los documentos de Grupo Chacón / GESCOSAL (carta de
-    // reservación y presentación). Verificar con el dueño antes de publicar.
-    whatsapp: "+50378023333",
-    telefono: "+50324390900",
+    // Número definitivo de WhatsApp del negocio (lo atiende el bot WhatsApp-Claude).
+    // Todos los botones de WhatsApp y el teléfono del portal derivan de aquí.
+    whatsapp: "+50364375417",
+    telefono: "+50364375417",
     // PENDIENTE: reemplazar con correo real
     correo: "contacto@destinopropiedades.com",
   },
