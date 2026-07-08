@@ -3,12 +3,15 @@
 /** Cliente fetch para el dashboard. Lanza Error con el mensaje del API. */
 export async function api<T = unknown>(
   path: string,
-  options: RequestInit = {},
+  options: RequestInit & { timeoutMs?: number } = {},
 ): Promise<T> {
   // Timeout: la UI nunca queda colgada si el servidor no responde (p. ej. un
-  // despliegue sin base de datos configurada).
+  // despliegue sin base de datos configurada). Configurable para operaciones
+  // largas como la generación de imágenes (embellecer).
+  const { timeoutMs = 20000, ...fetchOptions } = options;
+  options = fetchOptions;
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 20000);
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   let res: Response;
   try {
     res = await fetch(path, {

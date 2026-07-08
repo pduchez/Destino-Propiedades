@@ -21,6 +21,12 @@ function driver(): "local" | "blob" {
   return process.env.BLOB_READ_WRITE_TOKEN ? "blob" : "local";
 }
 
+/** ¿El almacenamiento persiste entre ejecuciones? (Blob). En Vercel el disco
+ *  local es efímero/solo-lectura, así que las imágenes generadas requieren Blob. */
+export function isDurableStorage(): boolean {
+  return driver() === "blob";
+}
+
 function safeExt(originalName: string, mimeType: string): string {
   const ext = path.extname(originalName).toLowerCase();
   if (ext && /^\.(jpg|jpeg|png|webp|gif|mp4|mov)$/.test(ext)) return ext;

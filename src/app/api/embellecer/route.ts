@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
 import { json, errorJson, withAuth } from "@/lib/api";
 import { stringify } from "@/lib/json";
-import { saveBuffer } from "@/lib/storage";
+import { saveBuffer, isDurableStorage } from "@/lib/storage";
 import {
   buildEditPrompt,
   runFalKontext,
@@ -16,7 +16,7 @@ export const maxDuration = 120; // la generación puede tardar
 
 /** GET -> estado de configuración (para la UI). */
 export const GET = withAuth(async () => {
-  return json({ falReady: falConfigured() });
+  return json({ falReady: falConfigured(), storageReady: isDurableStorage() });
 });
 
 /**
@@ -28,6 +28,14 @@ export const POST = withAuth(async (req) => {
   if (!falConfigured()) {
     return errorJson(
       "Falta la variable FAL_KEY en Vercel. Agrégala (Settings → Environment Variables) y vuelve a desplegar.",
+      400,
+    );
+  }
+  // Sin Blob no hay dónde guardar la imagen generada (el disco de Vercel es de
+  // solo lectura). Fallamos rápido y claro ANTES de gastar crédito de fal.ai.
+  if (!isDurableStorage()) {
+    return errorJson(
+      "Falta conectar un almacenamiento Vercel Blob. En Vercel → tu proyecto → Storage → Create → Blob, conéctalo y vuelve a desplegar. (Crea la variable BLOB_READ_WRITE_TOKEN automáticamente.)",
       400,
     );
   }

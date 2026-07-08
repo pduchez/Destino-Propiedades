@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "@/lib/client";
 
 const ESTILOS = [
@@ -33,6 +33,13 @@ export default function EmbellecerModal({
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [result, setResult] = useState<Result | null>(null);
+  const [cfg, setCfg] = useState<{ falReady: boolean; storageReady: boolean } | null>(null);
+
+  useEffect(() => {
+    api<{ falReady: boolean; storageReady: boolean }>("/api/embellecer")
+      .then(setCfg)
+      .catch(() => {});
+  }, []);
 
   async function generar() {
     setBusy(true);
@@ -41,6 +48,7 @@ export default function EmbellecerModal({
       const r = await api<Result>("/api/embellecer", {
         method: "POST",
         body: JSON.stringify({ assetId, estilo }),
+        timeoutMs: 180000, // la generación puede tardar ~30-60s
       });
       setResult(r);
       onDone(); // recarga el stock (ya se creó el asset embellecido)
@@ -61,6 +69,15 @@ export default function EmbellecerModal({
             con un sello legal discreto al pie. La imagen original no se toca.
           </p>
         </div>
+
+        {cfg && (!cfg.falReady || !cfg.storageReady) && (
+          <div className="rounded bg-amber-50 p-2 text-xs text-amber-800 ring-1 ring-amber-200">
+            {!cfg.falReady && <div>⚠️ Falta <code>FAL_KEY</code> en Vercel.</div>}
+            {!cfg.storageReady && (
+              <div>⚠️ Falta conectar <strong>Vercel Blob</strong> (Storage → Create → Blob) para guardar la imagen generada.</div>
+            )}
+          </div>
+        )}
 
         <div className="flex flex-wrap items-end gap-3">
           <div className="flex-1">
