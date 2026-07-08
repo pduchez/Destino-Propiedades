@@ -21,6 +21,9 @@ export async function GET() {
       .map((k) => `[${k}]`),
     hasDbUrl: !!process.env.DATABASE_URL,
     hasAnthropic: !!process.env.ANTHROPIC_API_KEY,
+    // Embellecedor: fal.ai + almacenamiento Blob.
+    hasFalKey: !!(process.env.FAL_KEY || process.env.FAL_API_KEY),
+    hasBlobToken: !!process.env.BLOB_READ_WRITE_TOKEN,
     at: new Date().toISOString(),
   });
 }
