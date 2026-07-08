@@ -29,6 +29,10 @@ export async function GET() {
     blobKeys: Object.keys(process.env)
       .filter((k) => /blob/i.test(k))
       .map((k) => `[${k}]=${process.env[k] ? "set" : "empty"}`),
+    // Formato del token (sin exponer el secreto): un token válido de Vercel
+    // Blob empieza con "vercel_blob_rw_". Si no, está mal pegado o es de otro store.
+    blobTokenFormatOk: (process.env.BLOB_READ_WRITE_TOKEN || "").startsWith("vercel_blob_rw_"),
+    blobTokenLen: (process.env.BLOB_READ_WRITE_TOKEN || "").length,
     at: new Date().toISOString(),
   });
 }
