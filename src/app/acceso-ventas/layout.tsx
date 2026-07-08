@@ -23,12 +23,7 @@ export default async function AccesoVentasLayout({
   if (user && user.role !== "admin") redirect("/crm");
   return (
     <AuthGate>
-      <div className="flex min-h-screen">
-        <Nav />
-        <main className="flex-1 overflow-x-hidden">
-          <div className="mx-auto max-w-6xl p-6">{children}</div>
-        </main>
-      </div>
+      <Nav>{children}</Nav>
     </AuthGate>
   );
 }

@@ -50,26 +50,33 @@ function sessionSecret(): string {
   );
 }
 
-export function signSession(userId: string): string {
-  const mac = createHmac("sha256", sessionSecret()).update(userId).digest("hex");
-  return `${userId}.${mac}`;
+/** Vida máxima absoluta de la sesión (respaldo). El cierre real ocurre además
+ *  al cerrar el navegador (cookie de sesión) y por inactividad (timer cliente). */
+const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12 h
+
+/** Token firmado con expiración embebida: `${userId}.${exp}.${hmac}`. */
+export function signSession(userId: string, ttlMs = SESSION_TTL_MS): string {
+  const exp = Date.now() + ttlMs;
+  const payload = `${userId}.${exp}`;
+  const mac = createHmac("sha256", sessionSecret()).update(payload).digest("hex");
+  return `${payload}.${mac}`;
 }
 
 export function verifySession(token: string | undefined): string | null {
   if (!token) return null;
-  const idx = token.lastIndexOf(".");
-  if (idx < 0) return null;
-  const id = token.slice(0, idx);
-  const mac = token.slice(idx + 1);
-  const expected = createHmac("sha256", sessionSecret())
-    .update(id)
-    .digest("hex");
+  const parts = token.split(".");
+  // Formato nuevo: userId.exp.mac  (los cuid no contienen puntos).
+  if (parts.length !== 3) return null; // rechaza tokens viejos → re-login una vez
+  const [id, expStr, mac] = parts;
+  const payload = `${id}.${expStr}`;
+  const expected = createHmac("sha256", sessionSecret()).update(payload).digest("hex");
   if (mac.length !== expected.length) return null;
   try {
     if (!timingSafeEqual(Buffer.from(mac), Buffer.from(expected))) return null;
   } catch {
     return null;
   }
+  if (!Number(expStr) || Date.now() > Number(expStr)) return null; // expirada
   return id;
 }
 

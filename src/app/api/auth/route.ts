@@ -25,11 +25,13 @@ export async function POST(req: Request) {
     return errorJson("Usuario o contraseña incorrectos", 401);
   }
   const res = NextResponse.json({ ok: true, role: user.role, username: user.username });
+  // Cookie de SESIÓN (sin maxAge): se borra al cerrar el navegador. La vigencia
+  // adicional (12 h absolutas) va firmada dentro del token; la inactividad la
+  // controla un timer en el cliente.
   res.cookies.set(AUTH_COOKIE, signSession(user.id), {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24 * 30,
   });
   return res;
 }

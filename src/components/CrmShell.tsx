@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { api } from "@/lib/client";
+import IdleLogout from "@/components/IdleLogout";
 
 const NAV = [
   { href: "/crm", label: "Tablero", icon: "📊", exact: true },
@@ -57,6 +58,7 @@ export default function CrmShell({
 
   return (
     <div className="flex min-h-screen bg-slate-100">
+      <IdleLogout />
       {/* Sidebar desktop */}
       <aside className="hidden w-60 shrink-0 flex-col border-r border-slate-200 bg-white md:flex">
         <div className="p-5">
