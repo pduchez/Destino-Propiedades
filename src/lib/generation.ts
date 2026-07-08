@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db";
 import { parseArray, stringify } from "@/lib/json";
 import { isNetwork, NETWORK_META, type Network } from "@/lib/networks";
 import { generateCopy } from "@/lib/ai/generate";
+import { sitio } from "@/portal/data/sitio";
 import type {
   BrandContext,
   ProjectContext,
@@ -35,6 +36,7 @@ async function loadBrand(): Promise<BrandContext> {
   return {
     brandName: b?.brandName ?? "Destino Propiedades",
     portalUrl: b?.portalUrl ?? "https://destinopropiedades.com",
+    whatsapp: sitio.contacto.whatsapp,
     mission: b?.mission ?? "",
     toneOfVoice: b?.toneOfVoice ?? "",
     targetAudience: b?.targetAudience ?? "",

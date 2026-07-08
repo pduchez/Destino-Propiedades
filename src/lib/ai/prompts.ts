@@ -3,6 +3,8 @@ import { NETWORK_META, type Network } from "@/lib/networks";
 export interface BrandContext {
   brandName: string;
   portalUrl: string;
+  /** WhatsApp del negocio (número central). Los CTA deben dirigir aquí. */
+  whatsapp?: string;
   mission: string;
   toneOfVoice: string;
   targetAudience: string;
@@ -107,6 +109,9 @@ export function buildSystemPrompt(brand: BrandContext): string {
     `- Si mencionas precio, usa SIEMPRE el "precio desde" (de entrada, el más accesible) que aparece en los datos. Nunca el más caro ni un rango alto: el precio bajo es el gancho que abre la conversación.`,
     `- Si falta un dato, omítelo con naturalidad. NUNCA escribas marcadores como [REQUIERE_DATO] dentro del texto publicable.`,
     `- Incluye un llamado a la acción claro.`,
+    ...(brand.whatsapp
+      ? [`- El llamado a la acción SIEMPRE invita a escribir por WhatsApp al ${brand.whatsapp} (es el número central del negocio). Puedes mencionarlo como "escríbenos al ${brand.whatsapp}".`]
+      : []),
     `- AUTOCRÍTICA antes de responder: revisa tu borrador y mejóralo. ¿La primera línea detiene el scroll? ¿Evita el cliché ("vive el estilo de vida que mereces")? ¿Usa el precio de ENTRADA real? ¿Es fiel al portal y a la foto? ¿Aporta algo específico de ESTE proyecto? Entrega solo la versión final ya mejorada.`,
     `- Devuelve EXCLUSIVAMENTE el contenido pedido en el formato estructurado solicitado.`,
   );

@@ -146,7 +146,8 @@ function templateCopy(input: GenerationInput): PostCopy {
   return {
     caption,
     hashtags,
-    callToAction:
-      "Escríbenos por WhatsApp o agenda tu visita en " + brand.portalUrl,
+    callToAction: brand.whatsapp
+      ? `Escríbenos por WhatsApp al ${brand.whatsapp} o visita ${brand.portalUrl}`
+      : "Escríbenos por WhatsApp o agenda tu visita en " + brand.portalUrl,
   };
 }
