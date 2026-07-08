@@ -66,6 +66,10 @@ async function pickRandomAsset(
   } else {
     const images = assets.filter((a) => a.mimeType.startsWith("image/"));
     if (images.length) pool = images;
+    // Preferir las imágenes EMBELLECIDAS: son las aspiracionales que mejor
+    // convierten en redes. Si hay al menos una, el pool se limita a ellas.
+    const embellecidas = pool.filter((a) => /"embellecida"/.test(a.tags));
+    if (embellecidas.length) pool = embellecidas;
   }
   const chosen = pool[Math.floor(Math.random() * pool.length)];
   return chosen.id;

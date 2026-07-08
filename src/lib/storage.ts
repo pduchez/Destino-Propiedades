@@ -13,7 +13,12 @@ import crypto from "node:crypto";
 const UPLOAD_DIR = path.join(process.cwd(), "uploads");
 
 function driver(): "local" | "blob" {
-  return process.env.STORAGE_DRIVER === "blob" ? "blob" : "local";
+  // Explícito, o automático si hay un Blob store conectado (Vercel setea
+  // BLOB_READ_WRITE_TOKEN). En Vercel el FS es efímero, así que si hay Blob
+  // disponible se usa para que las imágenes generadas persistan.
+  if (process.env.STORAGE_DRIVER === "blob") return "blob";
+  if (process.env.STORAGE_DRIVER === "local") return "local";
+  return process.env.BLOB_READ_WRITE_TOKEN ? "blob" : "local";
 }
 
 function safeExt(originalName: string, mimeType: string): string {

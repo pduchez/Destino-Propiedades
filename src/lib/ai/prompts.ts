@@ -88,6 +88,19 @@ export function buildSystemPrompt(brand: BrandContext): string {
     );
   }
 
+  // Espíritu del "Embellecedor": las imágenes que acompañan pueden ser versiones
+  // aspiracionales (embelledidas con IA) de los lotes reales. El copy debe
+  // aprovechar eso con honestidad — invitar a IMAGINAR el potencial— sin prometer
+  // ni afirmar que ya existe lo que se muestra.
+  lines.push(
+    `### ESPÍRITU DEL EMBELLECEDOR (imágenes aspiracionales):`,
+    `Algunas imágenes son versiones "embellecidas" con IA que muestran cómo PODRÍA verse el lote o proyecto ya desarrollado. Es una técnica de marketing legítima y transparente (cada imagen lleva un sello de "imagen ilustrativa referencial").`,
+    `- Cuando el copy acompañe una imagen así, invita a VISUALIZAR e IMAGINAR el potencial ("imagina tu casa frente al mar", "así podría verse tu inversión") — con mesura y aspiracional.`,
+    `- NUNCA afirmes que la construcción, jardines o acabados ya existen si son ilustrativos. No prometas amenidades no confirmadas en los datos.`,
+    `- El tono es "proyecta el sueño con los pies en la tierra": aspiracional pero honesto.`,
+    ``,
+  );
+
   lines.push(
     `Reglas de redacción:`,
     `- No inventes precios, fechas de entrega ni características que no aparezcan en los datos del proyecto.`,

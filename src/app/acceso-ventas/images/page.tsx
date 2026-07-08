@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/client";
+import EmbellecerModal from "@/components/EmbellecerModal";
 
 interface Project {
   id: string;
@@ -25,6 +26,7 @@ export default function ImagesPage() {
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState("");
   const [filter, setFilter] = useState("all");
+  const [embellecer, setEmbellecer] = useState<Asset | null>(null);
   // Agregar por URL pública
   const [urlInput, setUrlInput] = useState("");
   const [urlTags, setUrlTags] = useState("");
@@ -208,11 +210,23 @@ export default function ImagesPage() {
               <img src={a.url} alt={a.originalName} className="h-36 w-full rounded object-cover" />
             )}
             <div className="mt-2 px-1">
-              <p className="truncate text-xs text-slate-500">{projName(a.projectId)}</p>
+              <div className="flex items-center justify-between gap-1">
+                <p className="truncate text-xs text-slate-500">{projName(a.projectId)}</p>
+                {tagList(a.tags).includes("embellecida") && (
+                  <span className="shrink-0 rounded bg-emerald-100 px-1 text-[10px] font-semibold text-emerald-700">✨ embellecida</span>
+                )}
+              </div>
               <p className="truncate text-xs text-slate-400">{tagList(a.tags).join(", ")}</p>
-              <button className="mt-1 text-xs text-red-600 hover:underline" onClick={() => remove(a.id)}>
-                Eliminar
-              </button>
+              <div className="mt-1 flex items-center gap-2">
+                {a.mimeType.startsWith("image/") && !tagList(a.tags).includes("embellecida") && (
+                  <button className="text-xs font-semibold text-brand hover:underline" onClick={() => setEmbellecer(a)}>
+                    ✨ Embellecer
+                  </button>
+                )}
+                <button className="text-xs text-red-600 hover:underline" onClick={() => remove(a.id)}>
+                  Eliminar
+                </button>
+              </div>
             </div>
           </div>
         ))}
@@ -220,6 +234,15 @@ export default function ImagesPage() {
           <p className="col-span-full text-sm text-slate-500">No hay imágenes en este filtro.</p>
         )}
       </div>
+
+      {embellecer && (
+        <EmbellecerModal
+          assetId={embellecer.id}
+          beforeUrl={embellecer.url}
+          onClose={() => setEmbellecer(null)}
+          onDone={load}
+        />
+      )}
     </div>
   );
 }
