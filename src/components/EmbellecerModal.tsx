@@ -35,6 +35,18 @@ export default function EmbellecerModal({
   const [result, setResult] = useState<Result | null>(null);
   const [cfg, setCfg] = useState<{ falReady: boolean; storageReady: boolean } | null>(null);
 
+  // Detecta si se está usando una URL de PREVIEW (con hash) en vez de la de
+  // producción. Los previews traen variables de entorno de un build viejo.
+  const [isPreview, setIsPreview] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const h = window.location.hostname;
+      // Producción = destino-portal.vercel.app (o dominio propio). Preview =
+      // destino-portal-<hash>-....vercel.app
+      setIsPreview(/^destino-portal-.+\.vercel\.app$/.test(h));
+    }
+  }, []);
+
   useEffect(() => {
     api<{ falReady: boolean; storageReady: boolean }>("/api/embellecer")
       .then(setCfg)
@@ -69,6 +81,16 @@ export default function EmbellecerModal({
             con un sello legal discreto al pie. La imagen original no se toca.
           </p>
         </div>
+
+        {isPreview && (
+          <div className="rounded bg-red-50 p-3 text-sm text-red-700 ring-1 ring-red-200">
+            ⚠️ Estás en una URL de <strong>preview</strong> (con código en la dirección), que usa
+            configuración vieja. Abre la de <strong>producción</strong>:{" "}
+            <a className="font-semibold underline" href="https://destino-portal.vercel.app/acceso-ventas/images">
+              destino-portal.vercel.app
+            </a>
+          </div>
+        )}
 
         {cfg && (!cfg.falReady || !cfg.storageReady) && (
           <div className="rounded bg-amber-50 p-2 text-xs text-amber-800 ring-1 ring-amber-200">
