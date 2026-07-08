@@ -92,12 +92,9 @@ export default function EmbellecerModal({
           </div>
         )}
 
-        {cfg && (!cfg.falReady || !cfg.storageReady) && (
+        {cfg && !cfg.falReady && (
           <div className="rounded bg-amber-50 p-2 text-xs text-amber-800 ring-1 ring-amber-200">
-            {!cfg.falReady && <div>⚠️ Falta <code>FAL_KEY</code> en Vercel.</div>}
-            {!cfg.storageReady && (
-              <div>⚠️ Falta conectar <strong>Vercel Blob</strong> (Storage → Create → Blob) para guardar la imagen generada.</div>
-            )}
+            ⚠️ Falta <code>FAL_KEY</code> en Vercel.
           </div>
         )}
 

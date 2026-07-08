@@ -31,6 +31,16 @@ model User {
   activities Activity[]
 }
 
+/// Imagen generada (embellecida) almacenada directamente en la base de datos.
+/// Evita depender de un almacenamiento externo (Vercel Blob). Se sirve pública
+/// vía /api/img/<id>. Volumen pequeño (unas decenas de imágenes).
+model StoredImage {
+  id        String   @id @default(cuid())
+  mimeType  String   @default("image/jpeg")
+  bytes     Bytes
+  createdAt DateTime @default(now())
+}
+
 /// Programación de reportes automáticos (director). Dos tipos:
 ///  - director_summary: resumen enviado al móvil del director.
 ///  - seller_portfolio: reporte diario a CADA vendedor con su cartera.
