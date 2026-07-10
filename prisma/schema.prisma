@@ -321,6 +321,59 @@ model StrategyReview {
   createdAt       DateTime @default(now())
 }
 
+/// Reserva/bloqueo de un lote individual desde el "Asistente de Cierre".
+/// Evita que dos vendedores avancen el mismo lote a la vez y comunica el
+/// estado al CRM. Se crea/actualiza al INICIAR el llenado de la carta de
+/// reservación. `leadId` enlaza con el prospecto en el embudo del CRM.
+model LoteReserva {
+  id             String    @id @default(cuid())
+  /// Identificador del lote en el catálogo del Asistente (ej. "VL-F-45"). Único.
+  loteId         String    @unique
+  proyectoId     String    @default("")
+  proyectoNombre String    @default("")
+  poligono       String    @default("")
+  numero         Int       @default(0)
+  /// libre | reservado | vendido
+  estado         String    @default("reservado")
+  prospecto      String    @default("")
+  /// Vendedor (User) que hizo la reserva.
+  reservedById   String?
+  /// Lead del CRM asociado a esta reserva (mismo prospecto/lote).
+  leadId         String?
+  /// Monto de reservación recibido (USD), si se registró.
+  montoReserva   Float     @default(0)
+  /// Comentarios relevantes del vendedor al cerrar (viajan a la carta y al CRM).
+  comentarios    String    @default("")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+/// Pregunta frecuente del Asistente de Cierre (módulo "Financiamiento").
+/// Editable por Director1 desde la app (sin tocar código) y sincronizada a
+/// todos los usuarios. Se siembra con el set base la primera vez.
+model FaqCierre {
+  id        String   @id @default(cuid())
+  pregunta  String
+  respuesta String   @default("")
+  orden     Int      @default(0)
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Copia electrónica de una Carta Compromiso firmada (PDF aplanado) para poder
+/// enviarla al cliente por WhatsApp con un enlace estable. Se sirve pública por
+/// id (cuid no adivinable) vía /api/asistente/carta/<id>.
+model CartaDoc {
+  id        String   @id @default(cuid())
+  loteId    String   @default("")
+  leadId    String?
+  prospecto String   @default("")
+  mimeType  String   @default("application/pdf")
+  pdf       Bytes
+  createdAt DateTime @default(now())
+}
+
 /// Configuración de automatización de ARS (singleton, id = "default").
 /// Controla los loops autónomos: generación diaria, investigación quincenal de
 /// tendencias, autoactualización de la instrucción y chequeo mensual de ventas.
