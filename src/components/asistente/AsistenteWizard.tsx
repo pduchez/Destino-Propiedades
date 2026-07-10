@@ -50,6 +50,7 @@ export default function AsistenteWizard() {
   const [step, setStep] = useState(0);
 
   const [handoff, setHandoff] = useState<Handoff>({
+    leadId: "",
     nombreProspecto: "",
     codigoPais: "503",
     telefono: "",
@@ -166,6 +167,7 @@ export default function AsistenteWizard() {
         numero: Number(lote.numero) || 0,
         precio: lote.precioContado,
         prospecto: handoff.nombreProspecto,
+        leadId: handoff.leadId || undefined,
         telefono: telefonoCliente,
         calificacion: handoff.calificacion || "",
         perfil: handoff.perfil || "",

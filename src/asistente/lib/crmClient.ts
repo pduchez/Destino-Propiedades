@@ -19,6 +19,9 @@ export interface BloqueoPayload {
   numero: number;
   precio: number;
   prospecto: string;
+  /** Lead existente del CRM (bot de WhatsApp). Si viene, se enlaza a ese lead
+   *  en vez de crear uno nuevo. Vacío = walk-in capturado a mano. */
+  leadId?: string;
   telefono?: string;
   calificacion?: string;
   perfil?: string;

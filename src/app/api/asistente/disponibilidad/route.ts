@@ -78,6 +78,7 @@ export const POST = crmRoute(async (req: Request) => {
   if (!loteId) return jsonResp({ loteId: "", estado: "desconocido", modo: "crm" });
 
   const prospecto = String(b.prospecto || "").trim();
+  const leadIdInput = String(b.leadId || "").trim();
   const telefono = String(b.telefono || "").trim();
   const proyectoId = String(b.proyectoId || "");
   const proyectoNombre = String(b.proyectoNombre || "");
@@ -104,8 +105,46 @@ export const POST = crmRoute(async (req: Request) => {
       });
     }
 
-    // Reutiliza el lead de una reserva previa del mismo vendedor; si no, crea.
+    // Determina el lead a enlazar, en este orden de preferencia:
+    //  1. El de una reserva previa del mismo lote.
+    //  2. El prospecto EXISTENTE del CRM que el vendedor jaló (bot de WhatsApp):
+    //     no se crea uno nuevo; se actualiza y se le anexa la actividad de cierre.
+    //  3. Solo si no hay ninguno, se crea un lead nuevo (walk-in).
     let leadId = existing?.leadId || null;
+
+    if (!leadId && leadIdInput) {
+      const lead = await prisma.lead.findUnique({ where: { id: leadIdInput } });
+      // El vendedor solo puede enlazar sus propios leads (el director, cualquiera).
+      if (lead && (user.role === "admin" || lead.assignedToId === user.id)) {
+        leadId = lead.id;
+        await prisma.lead.update({
+          where: { id: lead.id },
+          data: {
+            stage: "negociacion",
+            handledBy: "seller",
+            lastContactAt: new Date(),
+            // Completa datos si el lead venía incompleto; no pisa lo ya guardado.
+            phone: lead.phone || telefono,
+            projectSlug: lead.projectSlug || proyectoId,
+            projectName: lead.projectName || proyectoNombre,
+            value: lead.value || precio,
+            assignedToId: lead.assignedToId || user.id,
+          },
+        });
+        await prisma.activity.create({
+          data: {
+            leadId: lead.id,
+            userId: user.id,
+            type: "visita",
+            body:
+              `Cierre en curso desde el Asistente de Cierre: reserva de lote ` +
+              `${loteId} (Pol. ${poligono}, Lote ${numero}). Precio de contado ` +
+              `$${precio.toLocaleString("en-US")}.`,
+          },
+        });
+      }
+    }
+
     if (!leadId) {
       const org = await ensureDefaultOrg();
       const lead = await prisma.lead.create({

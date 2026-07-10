@@ -2,7 +2,7 @@
 
 // Cliente del frontend del Asistente hacia las APIs internas del portal.
 
-import type { CatalogoProyecto } from "@/asistente/lib/types";
+import type { CatalogoProyecto, LeadCRM } from "@/asistente/lib/types";
 
 export interface FaqRow {
   id: string;
@@ -10,6 +10,21 @@ export interface FaqRow {
   respuesta: string;
   orden: number;
   activo: boolean;
+}
+
+/** Busca prospectos del CRM del vendedor (contactos del bot de WhatsApp).
+ *  Sin `q`, devuelve los más recientes para elegir de un toque. */
+export async function buscarLeads(q: string): Promise<LeadCRM[]> {
+  try {
+    const r = await fetch(`/api/asistente/leads?q=${encodeURIComponent(q)}`, {
+      cache: "no-store",
+    });
+    if (!r.ok) return [];
+    const d = await r.json();
+    return (d.leads as LeadCRM[]) || [];
+  } catch {
+    return [];
+  }
 }
 
 export async function fetchProyectos(): Promise<CatalogoProyecto[]> {

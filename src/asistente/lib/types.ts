@@ -13,6 +13,9 @@ export type NivelCalificacion =
   | "Caliente - listo para cita";
 
 export interface Handoff {
+  /** Id del lead del CRM cuando el prospecto se jala del CRM (bot de WhatsApp).
+   *  Vacío = cliente nuevo capturado a mano (walk-in). */
+  leadId: string;
   nombreProspecto: string;
   codigoPais: string; // código de país del WhatsApp (ej. "503", "502")
   telefono: string; // WhatsApp del cliente (ficha inicial → CRM → envío de carta)
@@ -20,6 +23,26 @@ export interface Handoff {
   proyectoId: string;
   calificacion: NivelCalificacion | "";
   notas: string;
+}
+
+/** Prospecto existente del CRM, servido por /api/asistente/leads para el
+ *  buscador de la Ficha de Handoff (contacto creado por el bot de WhatsApp). */
+export interface LeadCRM {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  projectSlug: string;
+  projectName: string;
+  stage: string;
+  temperature: string; // frio | tibio | caliente
+  source: string;
+  notes: string;
+  lastContactAt: string | null;
+  nextActionAt: string | null;
+  nextActionNote: string;
+  activityCount: number;
+  lastActivity: { body: string; type: string; createdAt: string } | null;
 }
 
 /** Proyecto del catálogo servido por /api/asistente/proyectos (BD + lotes). */
