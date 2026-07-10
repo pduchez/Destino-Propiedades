@@ -8,7 +8,7 @@ import type { Cotizacion } from "./calc";
 import type { Lote, Proyecto } from "@/asistente/data/proyectos";
 import { money, fechaLarga } from "./format";
 import { WHATSAPP_DP, CALL_CENTER } from "@/asistente/config/contacto";
-import { DP_MARK_PNG, SEAL_NAVY_PNG, SEAL_WHITE_PNG } from "./brand";
+import { DP_MARK_PNG, SEAL_NAVY_PNG } from "./brand";
 
 export interface CartaPdfData {
   proyecto: Proyecto;
@@ -46,12 +46,11 @@ export function generarCartaPdf(d: CartaPdfData): jsPDF {
   doc.setFillColor(DORADO);
   doc.rect(0, 98, W, 3, "F");
   try {
-    doc.addImage(DP_MARK_PNG, "PNG", M, 26, 44, 44);
-    doc.addImage(SEAL_WHITE_PNG, "PNG", M + 50, 26, 44, 44);
+    doc.addImage(DP_MARK_PNG, "PNG", M, 24, 46, 46);
   } catch {
     /* si una imagen falla, el resto de la carta se genera igual */
   }
-  const TX = M + 104;
+  const TX = M + 58;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
   doc.setTextColor("#ffffff");
