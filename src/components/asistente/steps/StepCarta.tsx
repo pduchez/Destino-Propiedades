@@ -25,11 +25,9 @@ import { SignatureField } from "../SignaturePad";
 import { generarCartaPdf, nombreArchivoCarta, CartaPdfData } from "@/asistente/lib/pdf";
 import { guardarCarta } from "@/asistente/lib/api";
 
-/** Normaliza a número WhatsApp de El Salvador (agrega 503 a los de 8 dígitos). */
+/** Número WhatsApp en formato internacional (ya incluye el código de país). */
 function waNumero(t: string): string {
-  const d = (t || "").replace(/\D/g, "");
-  if (!d) return "";
-  return d.length === 8 ? `503${d}` : d;
+  return (t || "").replace(/\D/g, "");
 }
 
 export function StepCarta({
@@ -38,6 +36,7 @@ export function StepCarta({
   cotizacion,
   nombreCliente,
   telefonoCliente,
+  ejecutivo,
   value,
   onChange,
   modoBloqueo,
@@ -48,6 +47,7 @@ export function StepCarta({
   cotizacion: Cotizacion;
   nombreCliente: string;
   telefonoCliente: string;
+  ejecutivo?: string;
   value: Carta;
   onChange: (c: Carta) => void;
   modoBloqueo: "crm" | "autonomo" | "desconocido";
@@ -88,6 +88,7 @@ export function StepCarta({
       lote,
       cotizacion,
       nombreCliente,
+      ejecutivo,
       dui: value.dui,
       fecha: value.fecha,
       montoReservacion: value.montoReservacion,

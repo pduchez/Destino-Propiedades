@@ -51,6 +51,7 @@ export default function AsistenteWizard() {
 
   const [handoff, setHandoff] = useState<Handoff>({
     nombreProspecto: "",
+    codigoPais: "503",
     telefono: "",
     perfil: "",
     proyectoId: "",
@@ -123,6 +124,11 @@ export default function AsistenteWizard() {
 
   const proyecto = proyectos.find((p) => p.id === handoff.proyectoId);
   const lote = seleccion.lote;
+  // WhatsApp del cliente en formato internacional (código de país + número).
+  const telefonoCliente = (handoff.codigoPais + (handoff.telefono || "")).replace(
+    /\D/g,
+    ""
+  );
   const cotizacion = useMemo(
     () =>
       lote && seleccion.anos
@@ -160,7 +166,7 @@ export default function AsistenteWizard() {
         numero: Number(lote.numero) || 0,
         precio: lote.precioContado,
         prospecto: handoff.nombreProspecto,
-        telefono: handoff.telefono,
+        telefono: telefonoCliente,
         calificacion: handoff.calificacion || "",
         perfil: handoff.perfil || "",
         notas: handoff.notas || "",
@@ -283,7 +289,8 @@ export default function AsistenteWizard() {
             lote={lote}
             cotizacion={cotizacion}
             nombreCliente={handoff.nombreProspecto}
-            telefonoCliente={handoff.telefono}
+            telefonoCliente={telefonoCliente}
+            ejecutivo={ejecutivo}
             value={carta}
             onChange={setCarta}
             modoBloqueo={modoBloqueo}

@@ -14,6 +14,7 @@ export type NivelCalificacion =
 
 export interface Handoff {
   nombreProspecto: string;
+  codigoPais: string; // código de país del WhatsApp (ej. "503", "502")
   telefono: string; // WhatsApp del cliente (ficha inicial → CRM → envío de carta)
   perfil: PerfilComprador | "";
   proyectoId: string;

@@ -21,6 +21,19 @@ const CALIFICACIONES: NivelCalificacion[] = [
   "Caliente - listo para cita",
 ];
 
+/** Códigos de país (WhatsApp). El Salvador primero por ser el más común. */
+const PAISES: { codigo: string; label: string }[] = [
+  { codigo: "503", label: "🇸🇻 +503 El Salvador" },
+  { codigo: "502", label: "🇬🇹 +502 Guatemala" },
+  { codigo: "504", label: "🇭🇳 +504 Honduras" },
+  { codigo: "505", label: "🇳🇮 +505 Nicaragua" },
+  { codigo: "506", label: "🇨🇷 +506 Costa Rica" },
+  { codigo: "507", label: "🇵🇦 +507 Panamá" },
+  { codigo: "1", label: "🇺🇸 +1 EE. UU. / Canadá" },
+  { codigo: "52", label: "🇲🇽 +52 México" },
+  { codigo: "34", label: "🇪🇸 +34 España" },
+];
+
 export function StepHandoff({
   value,
   onChange,
@@ -55,12 +68,24 @@ export function StepHandoff({
 
       <div>
         <Label>WhatsApp del cliente</Label>
-        <TextField
-          value={value.telefono}
-          onChange={(v) => set("telefono", v)}
-          placeholder="Ej. 7000-0000"
-          inputMode="numeric"
-        />
+        <div className="grid grid-cols-[minmax(0,1.15fr)_1fr] gap-2">
+          <Select
+            value={value.codigoPais}
+            onChange={(v) => set("codigoPais", v)}
+          >
+            {PAISES.map((p) => (
+              <option key={p.codigo} value={p.codigo}>
+                {p.label}
+              </option>
+            ))}
+          </Select>
+          <TextField
+            value={value.telefono}
+            onChange={(v) => set("telefono", v)}
+            placeholder="7000-0000"
+            inputMode="numeric"
+          />
+        </div>
         <p className="mt-1 text-xs text-marino-500">
           Se usa para enviarle la carta al final y queda en su ficha del CRM.
         </p>
