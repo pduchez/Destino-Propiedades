@@ -126,10 +126,28 @@ export default function AsistenteWizard() {
   const cotizacion = useMemo(
     () =>
       lote && seleccion.anos
-        ? cotizar(lote.precioContado, seleccion.porcentajePrima, seleccion.anos)
+        ? cotizar(
+            lote.precioContado,
+            seleccion.porcentajePrima,
+            seleccion.anos,
+            proyecto?.tasaAnual
+          )
         : null,
-    [lote, seleccion.anos, seleccion.porcentajePrima]
+    [lote, seleccion.anos, seleccion.porcentajePrima, proyecto?.tasaAnual]
   );
+
+  // Al cambiar de proyecto, reinicia la selección y la prima al mínimo del
+  // proyecto (cada proyecto tiene su propia tasa y prima mínima).
+  useEffect(() => {
+    setSeleccion({
+      poligono: "",
+      loteId: "",
+      lote: undefined,
+      anos: null,
+      porcentajePrima: proyecto?.primaMinima ?? PRIMA_MINIMA,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handoff.proyectoId]);
 
   // Bloqueo del lote + registro en el CRM al INICIAR el llenado del documento.
   useEffect(() => {

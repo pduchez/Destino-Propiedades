@@ -1,68 +1,108 @@
 // ============================================================================
-//  CONFIGURACIÓN COMERCIAL — ÚNICO LUGAR PARA EDITAR CONDICIONES
+//  CONFIGURACIÓN COMERCIAL — TASA Y PRIMA POR PROYECTO
 // ============================================================================
 //
-//  Este archivo concentra TODOS los parámetros que definen las condiciones
-//  comerciales (tasa, tabla de factores, prima mínima, plazos autorizados).
-//
-//  >>> SI LA TASA SE CORRIGE A 17% (u otra), SE CAMBIA SOLO ACÁ. <<<
+//  Cada proyecto define su propia TASA anual y su PRIMA mínima (según su PPDS /
+//  lista de precios del desarrollador). La tabla de factores de amortización se
+//  GENERA automáticamente para esa tasa, así que no hay que escribir factores a
+//  mano por proyecto.
 //
 //  La cuota mensual se calcula como:
-//        cuota = monto_a_financiar × FACTOR[plazo]
+//        cuota = monto_a_financiar × factor(tasa, meses)
 //
-//  El "factor" es el factor de amortización (pago nivelado) para la tasa y el
-//  plazo dados. Cambiar la tabla acá recalcula toda la app automáticamente.
+//  El factor es el factor de amortización de pago nivelado:
+//        factor = i / (1 − (1 + i)^(−n)),  con i = tasa_anual / 12,  n = meses.
+//
+//  Esta fórmula reproduce EXACTO la tabla del 16% provista originalmente (1–5
+//  años idénticos; 10–20 difieren <0.0001 por redondeo de la tabla base). Para
+//  esos plazos del 16% se respeta la tabla exacta del cliente vía override.
 // ----------------------------------------------------------------------------
 
-/** Tasa de interés anual vigente (solo informativa/para textos). */
+/** Valores por defecto (si un proyecto no especifica los suyos). */
 export const TASA_ANUAL = 0.16; // 16%
 export const TASA_ANUAL_LABEL = "16% anual";
-
-/** Prima mínima autorizada. El vendedor NUNCA puede bajar de este valor. */
 export const PRIMA_MINIMA = 0.2; // 20%
 
-/** Opciones de prima ofrecidas al cliente (dropdown cerrado, desde 20%). */
-export const OPCIONES_PRIMA: number[] = [0.2, 0.25, 0.3, 0.4, 0.5];
-
-/** Plazo máximo autorizado en años (solo informativo/para textos). */
+/** Plazo máximo autorizado en años (informativo). */
 export const PLAZO_MAXIMO_ANOS = 20;
 
 /** Días máximos para completar la prima después de la reserva. */
 export const DIAS_LIMITE_COMPLEMENTO = 8;
 
-// ----------------------------------------------------------------------------
-//  TABLA DE FACTORES — tasa 16% anual
-//
-//  NOTA: la tabla base disponible es de 17%; esta es la tabla de factores
-//  derivada con el mismo método para 16%. Son los factores EXACTOS a usar.
-//  Para volver a 17%, reemplazá los valores de "factor" por los de esa tabla.
-// ----------------------------------------------------------------------------
+/** Años autorizados (plazos que puede elegir el vendedor). */
+export const PLAZOS_ANOS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20];
+
 export interface PlazoFactor {
   anos: number;
   meses: number;
   factor: number;
 }
 
-export const TABLA_FACTORES: PlazoFactor[] = [
-  { anos: 1, meses: 12, factor: 0.09073 },
-  { anos: 2, meses: 24, factor: 0.04896 },
-  { anos: 3, meses: 36, factor: 0.03516 },
-  { anos: 4, meses: 48, factor: 0.02835 },
-  { anos: 5, meses: 60, factor: 0.02432 },
-  { anos: 6, meses: 72, factor: 0.02169 },
-  { anos: 7, meses: 84, factor: 0.01986 },
-  { anos: 8, meses: 96, factor: 0.01852 },
-  { anos: 9, meses: 108, factor: 0.01751 },
-  { anos: 10, meses: 120, factor: 0.01673 },
-  { anos: 11, meses: 132, factor: 0.01611 },
-  { anos: 12, meses: 144, factor: 0.01561 },
-  { anos: 13, meses: 156, factor: 0.01521 },
-  { anos: 14, meses: 168, factor: 0.01488 },
-  { anos: 15, meses: 180, factor: 0.01461 },
-  { anos: 20, meses: 240, factor: 0.01380 },
-];
+// ----------------------------------------------------------------------------
+//  Tabla EXACTA del 16% provista por el cliente (override para esa tasa).
+// ----------------------------------------------------------------------------
+const FACTORES_16_EXACTOS: Record<number, number> = {
+  12: 0.09073,
+  24: 0.04896,
+  36: 0.03516,
+  48: 0.02835,
+  60: 0.02432,
+  72: 0.02169,
+  84: 0.01986,
+  96: 0.01852,
+  108: 0.01751,
+  120: 0.01673,
+  132: 0.01611,
+  144: 0.01561,
+  156: 0.01521,
+  168: 0.01488,
+  180: 0.01461,
+  240: 0.0138,
+};
 
-/** Devuelve la fila de la tabla para un plazo (años) dado. */
-export function getPlazo(anos: number): PlazoFactor | undefined {
-  return TABLA_FACTORES.find((p) => p.anos === anos);
+/** Factor de amortización (pago nivelado) para una tasa anual y n meses. */
+export function factorAmortizacion(tasaAnual: number, meses: number): number {
+  const i = tasaAnual / 12;
+  if (i === 0) return 1 / meses;
+  return i / (1 - Math.pow(1 + i, -meses));
 }
+
+/** Factor a usar: tabla exacta del 16% si aplica, si no la fórmula (5 dec.). */
+export function getFactor(tasaAnual: number, meses: number): number {
+  if (Math.abs(tasaAnual - 0.16) < 1e-9 && FACTORES_16_EXACTOS[meses] != null) {
+    return FACTORES_16_EXACTOS[meses];
+  }
+  return Math.round(factorAmortizacion(tasaAnual, meses) * 1e5) / 1e5;
+}
+
+/** Tabla de factores completa para una tasa dada. */
+export function tablaFactores(tasaAnual: number = TASA_ANUAL): PlazoFactor[] {
+  return PLAZOS_ANOS.map((anos) => {
+    const meses = anos * 12;
+    return { anos, meses, factor: getFactor(tasaAnual, meses) };
+  });
+}
+
+/** Devuelve el plazo (años/meses) para un número de años. */
+export function getPlazo(
+  anos: number
+): { anos: number; meses: number } | undefined {
+  if (!PLAZOS_ANOS.includes(anos)) return undefined;
+  return { anos, meses: anos * 12 };
+}
+
+// ----------------------------------------------------------------------------
+//  Opciones de prima (dropdown cerrado) desde la prima mínima hacia arriba.
+// ----------------------------------------------------------------------------
+const ESCALERA_PRIMA = [0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5];
+
+/** Opciones de prima ofrecidas: la mínima del proyecto y los escalones ≥ ella. */
+export function opcionesPrima(primaMinima: number = PRIMA_MINIMA): number[] {
+  const set = new Set<number>([primaMinima]);
+  for (const p of ESCALERA_PRIMA) if (p >= primaMinima) set.add(p);
+  return Array.from(set).sort((a, b) => a - b);
+}
+
+// --- Compatibilidad hacia atrás (default 16% / prima 20%) -------------------
+export const TABLA_FACTORES: PlazoFactor[] = tablaFactores(TASA_ANUAL);
+export const OPCIONES_PRIMA: number[] = opcionesPrima(PRIMA_MINIMA);

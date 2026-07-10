@@ -28,6 +28,10 @@ export interface CatalogoProyecto {
   lotificacion: string;
   ubicacion: string;
   tieneCatalogo: boolean;
+  /** Tasa anual del proyecto (ej. 0.15). */
+  tasaAnual: number;
+  /** Prima mínima del proyecto (ej. 0.10). */
+  primaMinima: number;
   lotes: Lote[];
 }
 

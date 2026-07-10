@@ -18,6 +18,7 @@ import { prisma } from "@/lib/db";
 import { requireUser, crmRoute } from "@/lib/crmServer";
 import { PROYECTOS } from "@/asistente/data/proyectos";
 import type { Lote } from "@/asistente/data/proyectos";
+import { TASA_ANUAL, PRIMA_MINIMA } from "@/asistente/config/factores";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,8 @@ export interface CatalogoProyecto {
   lotificacion: string;
   ubicacion: string;
   tieneCatalogo: boolean; // ¿tiene lotes/precios cargados?
+  tasaAnual: number;
+  primaMinima: number;
   lotes: Lote[];
 }
 
@@ -61,6 +64,8 @@ export const GET = crmRoute(async () => {
       lotificacion: local?.lotificacion || p.name,
       ubicacion: p.location || local?.ubicacion || "",
       tieneCatalogo: Boolean(local && local.lotes.length),
+      tasaAnual: local?.tasaAnual ?? TASA_ANUAL,
+      primaMinima: local?.primaMinima ?? PRIMA_MINIMA,
       lotes: local?.lotes ?? [],
     });
   }
@@ -75,6 +80,8 @@ export const GET = crmRoute(async () => {
       lotificacion: p.lotificacion,
       ubicacion: p.ubicacion,
       tieneCatalogo: p.lotes.length > 0,
+      tasaAnual: p.tasaAnual,
+      primaMinima: p.primaMinima,
       lotes: p.lotes,
     });
   }

@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { TABLA_FACTORES, OPCIONES_PRIMA } from "@/asistente/config/factores";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  PLAZOS_ANOS,
+  opcionesPrima,
+} from "@/asistente/config/factores";
 import { cotizar } from "@/asistente/lib/calc";
 import { money, v2, pct } from "@/asistente/lib/format";
 import { Label, Select, Card, ResultRow, Banner, Button } from "../ui";
@@ -16,6 +19,10 @@ export function StepCalculadora({
   value: SeleccionLote;
   onChange: (s: SeleccionLote) => void;
 }) {
+  const tasa = proyecto?.tasaAnual ?? 0.16;
+  const primaMin = proyecto?.primaMinima ?? 0.2;
+  const primaOpts = useMemo(() => opcionesPrima(primaMin), [primaMin]);
+
   const poligonos = useMemo(() => {
     if (!proyecto) return [];
     return Array.from(new Set(proyecto.lotes.map((l) => l.poligono))).sort();
@@ -28,11 +35,19 @@ export function StepCalculadora({
   }, [proyecto, value.poligono]);
   const lote = value.lote;
 
+  // Ajusta la prima al mínimo del proyecto si la actual no es válida para él.
+  useEffect(() => {
+    if (!primaOpts.includes(value.porcentajePrima)) {
+      onChange({ ...value, porcentajePrima: primaMin });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [primaMin]);
+
   // Cotización en tiempo real (se recalcula con cada cambio de dropdown).
   const cot = useMemo(() => {
     if (!lote || !value.anos) return null;
-    return cotizar(lote.precioContado, value.porcentajePrima, value.anos);
-  }, [lote, value.anos, value.porcentajePrima]);
+    return cotizar(lote.precioContado, value.porcentajePrima, value.anos, tasa);
+  }, [lote, value.anos, value.porcentajePrima, tasa]);
 
   // ---- Comparador (hasta 3 plazos lado a lado) ----
   const [comparar, setComparar] = useState(false);
@@ -68,6 +83,16 @@ export function StepCalculadora({
 
   return (
     <div className="space-y-5">
+      {/* Condiciones del proyecto */}
+      <div className="flex items-center justify-between rounded-xl bg-marino-50 px-3.5 py-2 text-xs text-marino-600">
+        <span>
+          Tasa <b className="text-marino-800">{pct(tasa)} anual</b>
+        </span>
+        <span>
+          Prima mínima <b className="text-marino-800">{pct(primaMin)}</b>
+        </span>
+      </div>
+
       {/* --- Selección Polígono -> Lote --- */}
       <div>
         <Label>Polígono</Label>
@@ -121,9 +146,9 @@ export function StepCalculadora({
             placeholder="Años"
             disabled={!lote}
           >
-            {TABLA_FACTORES.map((p) => (
-              <option key={p.anos} value={p.anos}>
-                {p.anos} {p.anos === 1 ? "año" : "años"}
+            {PLAZOS_ANOS.map((a) => (
+              <option key={a} value={a}>
+                {a} {a === 1 ? "año" : "años"}
               </option>
             ))}
           </Select>
@@ -135,7 +160,7 @@ export function StepCalculadora({
             onChange={setPrima}
             disabled={!lote}
           >
-            {OPCIONES_PRIMA.map((p) => (
+            {primaOpts.map((p) => (
               <option key={p} value={p}>
                 {pct(p)}
               </option>
@@ -185,6 +210,7 @@ export function StepCalculadora({
               <Comparador
                 precio={lote.precioContado}
                 prima={value.porcentajePrima}
+                tasa={tasa}
                 combos={combos}
                 setCombos={setCombos}
               />
@@ -200,15 +226,17 @@ export function StepCalculadora({
 function Comparador({
   precio,
   prima,
+  tasa,
   combos,
   setCombos,
 }: {
   precio: number;
   prima: number;
+  tasa: number;
   combos: number[];
   setCombos: (c: number[]) => void;
 }) {
-  const cots = combos.map((a) => cotizar(precio, prima, a));
+  const cots = combos.map((a) => cotizar(precio, prima, a, tasa));
 
   function setCombo(i: number, a: string) {
     const next = [...combos];
@@ -225,9 +253,9 @@ function Comparador({
         {combos.map((a, i) => (
           <div key={i}>
             <Select value={String(a)} onChange={(v) => setCombo(i, v)}>
-              {TABLA_FACTORES.map((p) => (
-                <option key={p.anos} value={p.anos}>
-                  {p.anos}a
+              {PLAZOS_ANOS.map((p) => (
+                <option key={p} value={p}>
+                  {p}a
                 </option>
               ))}
             </Select>

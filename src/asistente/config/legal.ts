@@ -7,7 +7,7 @@
 //  "PENDIENTE DE CONFIRMAR" y listo — no se toca la lógica de la app.
 // ----------------------------------------------------------------------------
 
-import { TASA_ANUAL_LABEL, PRIMA_MINIMA, PLAZO_MAXIMO_ANOS } from "./factores";
+import { PLAZO_MAXIMO_ANOS } from "./factores";
 
 // ----------------------------------------------------------------------------
 //  MÓDULO 2 — ESTADO LEGAL DE FINCA MATRIZ (por proyecto)
@@ -96,9 +96,7 @@ export const FAQS: FaqItem[] = [
   },
   {
     pregunta: "¿Cuáles son las condiciones del financiamiento?",
-    respuesta: `Tasa ${TASA_ANUAL_LABEL}. Prima mínima ${Math.round(
-      PRIMA_MINIMA * 100
-    )}%. Plazo máximo ${PLAZO_MAXIMO_ANOS} años.`,
+    respuesta: `La tasa de interés y la prima mínima dependen de cada proyecto (se muestran en la calculadora al cotizar). Plazo máximo ${PLAZO_MAXIMO_ANOS} años.`,
     pendienteConfirmar: false,
   },
 ];
