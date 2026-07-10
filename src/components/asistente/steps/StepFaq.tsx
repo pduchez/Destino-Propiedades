@@ -2,23 +2,51 @@
 
 import React, { useState } from "react";
 import { FAQS } from "@/asistente/config/legal";
-import { Banner } from "../ui";
+import type { FaqRow } from "@/asistente/lib/api";
 
-export function StepFaq() {
+export function StepFaq({
+  faqs,
+  isAdmin,
+}: {
+  faqs: FaqRow[];
+  isAdmin?: boolean;
+}) {
   const [abierto, setAbierto] = useState<number | null>(0);
+
+  // Si aún no cargaron desde la BD, se muestra el set base.
+  const items =
+    faqs && faqs.length
+      ? faqs.filter((f) => f.activo)
+      : FAQS.map((f, i) => ({
+          id: `seed-${i}`,
+          pregunta: f.pregunta,
+          respuesta: f.respuesta,
+          orden: i,
+          activo: true,
+        }));
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-marino-600">
-        Respuestas oficiales para las dudas frecuentes del cliente.
-      </p>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-sm text-marino-600">
+          Respuestas oficiales para las dudas frecuentes del cliente.
+        </p>
+        {isAdmin && (
+          <a
+            href="/asistente/faqs"
+            className="shrink-0 rounded-lg bg-marino-50 px-3 py-1.5 text-xs font-semibold text-marino-700 transition hover:bg-marino-100"
+          >
+            ✎ Administrar
+          </a>
+        )}
+      </div>
 
       <div className="space-y-2">
-        {FAQS.map((f, i) => {
+        {items.map((f, i) => {
           const open = abierto === i;
           return (
             <div
-              key={i}
+              key={f.id}
               className="overflow-hidden rounded-xl border border-marino-100 bg-white"
             >
               <button
@@ -33,12 +61,8 @@ export function StepFaq() {
                 </span>
               </button>
               {open && (
-                <div className="border-t border-marino-50 px-4 py-3 text-sm text-marino-700">
-                  {f.pendienteConfirmar ? (
-                    <Banner tone="warn">{f.respuesta}</Banner>
-                  ) : (
-                    <p>{f.respuesta}</p>
-                  )}
+                <div className="whitespace-pre-wrap border-t border-marino-50 px-4 py-3 text-sm text-marino-700">
+                  {f.respuesta || "—"}
                 </div>
               )}
             </div>

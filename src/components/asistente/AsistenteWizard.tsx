@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { getProyecto } from "@/asistente/data/proyectos";
 import {
   PRIMA_MINIMA,
   DIAS_LIMITE_COMPLEMENTO,
@@ -9,6 +8,7 @@ import {
 import { cotizar } from "@/asistente/lib/calc";
 import { toDateInput, addDays } from "@/asistente/lib/format";
 import { bloquearLote } from "@/asistente/lib/crmClient";
+import { fetchProyectos, fetchFaqs, type FaqRow } from "@/asistente/lib/api";
 import { Button } from "@/components/asistente/ui";
 import {
   StepHandoff,
@@ -21,22 +21,37 @@ import {
 import { StepLegal } from "@/components/asistente/steps/StepLegal";
 import { StepFaq } from "@/components/asistente/steps/StepFaq";
 import { StepCarta } from "@/components/asistente/steps/StepCarta";
-import type { Handoff, SeleccionLote, Carta } from "@/asistente/lib/types";
+import type {
+  Handoff,
+  SeleccionLote,
+  Carta,
+  CatalogoProyecto,
+} from "@/asistente/lib/types";
 
-const STEPS = [
-  { title: "Ficha de Handoff", subtitle: "Datos del lead" },
-  { title: "Lote y Cuotas", subtitle: "Calculadora" },
-  { title: "Estado Legal", subtitle: "Finca matriz" },
-  { title: "Financiamiento", subtitle: "Preguntas frecuentes" },
-  { title: "Carta de Reservación", subtitle: "Documento y firma" },
-];
+type StepKey = "handoff" | "calc" | "legal" | "faq" | "carta";
+
+const STEP_META: Record<StepKey, { title: string; subtitle: string }> = {
+  handoff: { title: "Ficha de Handoff", subtitle: "Datos del lead" },
+  calc: { title: "Lote y Cuotas", subtitle: "Calculadora" },
+  legal: { title: "Estado Legal", subtitle: "Finca matriz (Director)" },
+  faq: { title: "Financiamiento", subtitle: "Preguntas frecuentes" },
+  carta: { title: "Carta de Reservación", subtitle: "Documento y firma" },
+};
 
 export default function AsistenteWizard() {
-  const [step, setStep] = useState(0);
   const [ejecutivo, setEjecutivo] = useState<string>("");
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [roleReady, setRoleReady] = useState(false);
+
+  const [proyectos, setProyectos] = useState<CatalogoProyecto[]>([]);
+  const [cargandoProy, setCargandoProy] = useState(true);
+  const [faqs, setFaqs] = useState<FaqRow[]>([]);
+
+  const [step, setStep] = useState(0);
 
   const [handoff, setHandoff] = useState<Handoff>({
     nombreProspecto: "",
+    telefono: "",
     perfil: "",
     proyectoId: "",
     calificacion: "",
@@ -56,6 +71,7 @@ export default function AsistenteWizard() {
     dui: "",
     montoReservacion: 0,
     fechaLimiteComplemento: "",
+    comentarios: "",
     firmaClienteDataUrl: null,
     firmaEjecutivoDataUrl: null,
   });
@@ -65,7 +81,7 @@ export default function AsistenteWizard() {
   >("desconocido");
   const [avisoBloqueo, setAvisoBloqueo] = useState<string>("");
 
-  // Fechas por defecto + usuario logueado (cliente, para evitar desfase de SSR).
+  // Carga inicial: usuario/rol, fechas por defecto, catálogo y FAQ.
   useEffect(() => {
     const hoy = toDateInput(new Date());
     setCarta((c) => ({
@@ -77,12 +93,35 @@ export default function AsistenteWizard() {
     fetch("/api/me", { cache: "no-store" })
       .then((r) => r.json())
       .then((d) => {
-        if (d?.authenticated) setEjecutivo(d.username || "");
+        if (d?.authenticated) {
+          setEjecutivo(d.username || "");
+          setIsAdmin(d.role === "admin");
+        }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setRoleReady(true));
+    fetchProyectos()
+      .then(setProyectos)
+      .finally(() => setCargandoProy(false));
+    fetchFaqs().then(setFaqs);
   }, []);
 
-  const proyecto = getProyecto(handoff.proyectoId);
+  // Pasos según rol: el Estado Legal es exclusivo del Director (admin).
+  const stepKeys: StepKey[] = useMemo(
+    () =>
+      isAdmin
+        ? ["handoff", "calc", "legal", "faq", "carta"]
+        : ["handoff", "calc", "faq", "carta"],
+    [isAdmin]
+  );
+  // Si cambia la lista de pasos, mantené el índice dentro de rango.
+  useEffect(() => {
+    setStep((s) => Math.min(s, stepKeys.length - 1));
+  }, [stepKeys.length]);
+
+  const currentKey = stepKeys[step];
+
+  const proyecto = proyectos.find((p) => p.id === handoff.proyectoId);
   const lote = seleccion.lote;
   const cotizacion = useMemo(
     () =>
@@ -94,7 +133,7 @@ export default function AsistenteWizard() {
 
   // Bloqueo del lote + registro en el CRM al INICIAR el llenado del documento.
   useEffect(() => {
-    if (step === 4 && lote) {
+    if (currentKey === "carta" && lote) {
       bloquearLote({
         loteId: lote.id,
         proyectoId: handoff.proyectoId,
@@ -103,6 +142,7 @@ export default function AsistenteWizard() {
         numero: lote.numero,
         precio: lote.precioContado,
         prospecto: handoff.nombreProspecto,
+        telefono: handoff.telefono,
         calificacion: handoff.calificacion || "",
         perfil: handoff.perfil || "",
         notas: handoff.notas || "",
@@ -112,22 +152,27 @@ export default function AsistenteWizard() {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, lote?.id]);
+  }, [currentKey, lote?.id]);
 
   const canAdvance = useMemo(() => {
-    if (step === 0) return handoffCompleto(handoff);
-    if (step === 1) return calculadoraCompleta(seleccion);
+    if (currentKey === "handoff") return handoffCompleto(handoff);
+    if (currentKey === "calc") return calculadoraCompleta(seleccion);
     return true;
-  }, [step, handoff, seleccion]);
+  }, [currentKey, handoff, seleccion]);
 
-  const esUltimo = step === STEPS.length - 1;
+  const esUltimo = step === stepKeys.length - 1;
 
   function next() {
-    if (step < STEPS.length - 1 && canAdvance) setStep(step + 1);
+    if (step < stepKeys.length - 1 && canAdvance) setStep(step + 1);
   }
   function back() {
     if (step > 0) setStep(step - 1);
   }
+  function irAlCrm() {
+    window.location.href = "/crm";
+  }
+
+  const meta = STEP_META[currentKey];
 
   return (
     <div className="mx-auto flex min-h-[100dvh] max-w-md flex-col">
@@ -140,11 +185,19 @@ export default function AsistenteWizard() {
           >
             ← Menú
           </a>
-          {ejecutivo && (
-            <span className="text-[11px] text-marino-100/70">
-              Ejecutivo: <span className="font-semibold text-white">{ejecutivo}</span>
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={irAlCrm}
+              className="rounded-lg bg-white/10 px-2.5 py-1 text-xs font-semibold text-white transition hover:bg-white/20"
+            >
+              Ir al CRM
+            </button>
+            {ejecutivo && (
+              <span className="text-[11px] text-marino-100/70">
+                {ejecutivo}
+              </span>
+            )}
+          </div>
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -156,22 +209,19 @@ export default function AsistenteWizard() {
                 Asistente de Cierre
               </div>
               <div className="text-[11px] text-marino-100/70">
-                Paso {step + 1} de {STEPS.length}
+                Paso {step + 1} de {stepKeys.length}
               </div>
             </div>
           </div>
           <div className="text-right">
             <div className="text-xs font-semibold text-dorado-400">
-              {STEPS[step].title}
+              {meta.title}
             </div>
-            <div className="text-[11px] text-marino-100/70">
-              {STEPS[step].subtitle}
-            </div>
+            <div className="text-[11px] text-marino-100/70">{meta.subtitle}</div>
           </div>
         </div>
-        {/* Progreso */}
         <div className="mt-3 flex gap-1">
-          {STEPS.map((_, i) => (
+          {stepKeys.map((_, i) => (
             <div
               key={i}
               className={`h-1.5 flex-1 rounded-full ${
@@ -184,30 +234,38 @@ export default function AsistenteWizard() {
 
       {/* Contenido */}
       <main className="flex-1 overflow-y-auto px-4 py-5">
-        <h1 className="mb-4 text-lg font-bold text-marino-800">
-          {STEPS[step].title}
-        </h1>
+        <h1 className="mb-4 text-lg font-bold text-marino-800">{meta.title}</h1>
 
-        {step === 0 && <StepHandoff value={handoff} onChange={setHandoff} />}
+        {currentKey === "handoff" && (
+          <StepHandoff
+            value={handoff}
+            onChange={setHandoff}
+            proyectos={proyectos}
+            cargando={cargandoProy}
+          />
+        )}
 
-        {step === 1 && handoff.proyectoId && (
+        {currentKey === "calc" && (
           <StepCalculadora
-            proyectoId={handoff.proyectoId}
+            proyecto={proyecto}
             value={seleccion}
             onChange={setSeleccion}
           />
         )}
 
-        {step === 2 && <StepLegal proyectoId={handoff.proyectoId} />}
+        {currentKey === "legal" && (
+          <StepLegal proyectoId={handoff.proyectoId} />
+        )}
 
-        {step === 3 && <StepFaq />}
+        {currentKey === "faq" && <StepFaq faqs={faqs} isAdmin={isAdmin} />}
 
-        {step === 4 && proyecto && lote && cotizacion && (
+        {currentKey === "carta" && proyecto && lote && cotizacion && (
           <StepCarta
             proyecto={proyecto}
             lote={lote}
             cotizacion={cotizacion}
             nombreCliente={handoff.nombreProspecto}
+            telefonoCliente={handoff.telefono}
             value={carta}
             onChange={setCarta}
             modoBloqueo={modoBloqueo}
@@ -215,7 +273,7 @@ export default function AsistenteWizard() {
           />
         )}
 
-        {step === 4 && (!lote || !cotizacion) && (
+        {currentKey === "carta" && (!lote || !cotizacion) && (
           <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
             Falta seleccionar lote, plazo y prima en el paso “Lote y Cuotas”.
           </div>
@@ -240,11 +298,16 @@ export default function AsistenteWizard() {
             </div>
           )}
           {esUltimo && (
-            <div className="flex-1">
-              <Button variant="secondary" onClick={() => setStep(0)}>
-                Nuevo cliente
-              </Button>
-            </div>
+            <>
+              <div className="flex-1">
+                <Button variant="secondary" onClick={() => setStep(0)}>
+                  Nuevo cliente
+                </Button>
+              </div>
+              <div className="flex-1">
+                <Button onClick={irAlCrm}>Ir al CRM</Button>
+              </div>
+            </>
           )}
         </div>
       </footer>

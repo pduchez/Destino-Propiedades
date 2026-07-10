@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import { PROYECTOS } from "@/asistente/data/proyectos";
-import { Label, Select, TextField, TextArea } from "../ui";
+import { Label, Select, TextField, TextArea, Banner } from "../ui";
 import type {
   Handoff,
   PerfilComprador,
   NivelCalificacion,
+  CatalogoProyecto,
 } from "@/asistente/lib/types";
 
 const PERFILES: PerfilComprador[] = [
@@ -24,12 +24,18 @@ const CALIFICACIONES: NivelCalificacion[] = [
 export function StepHandoff({
   value,
   onChange,
+  proyectos,
+  cargando,
 }: {
   value: Handoff;
   onChange: (h: Handoff) => void;
+  proyectos: CatalogoProyecto[];
+  cargando?: boolean;
 }) {
   const set = <K extends keyof Handoff>(k: K, v: Handoff[K]) =>
     onChange({ ...value, [k]: v });
+
+  const proyectoSel = proyectos.find((p) => p.id === value.proyectoId);
 
   return (
     <div className="space-y-5">
@@ -45,6 +51,19 @@ export function StepHandoff({
           onChange={(v) => set("nombreProspecto", v)}
           placeholder="Ej. José Martínez"
         />
+      </div>
+
+      <div>
+        <Label>WhatsApp del cliente</Label>
+        <TextField
+          value={value.telefono}
+          onChange={(v) => set("telefono", v)}
+          placeholder="Ej. 7000-0000"
+          inputMode="numeric"
+        />
+        <p className="mt-1 text-xs text-marino-500">
+          Se usa para enviarle la carta al final y queda en su ficha del CRM.
+        </p>
       </div>
 
       <div>
@@ -67,14 +86,25 @@ export function StepHandoff({
         <Select
           value={value.proyectoId}
           onChange={(v) => set("proyectoId", v)}
-          placeholder="Seleccione un proyecto"
+          placeholder={cargando ? "Cargando proyectos…" : "Seleccione un proyecto"}
+          disabled={cargando || proyectos.length === 0}
         >
-          {PROYECTOS.map((p) => (
+          {proyectos.map((p) => (
             <option key={p.id} value={p.id}>
               {p.nombre}
+              {p.tieneCatalogo ? "" : " — (sin lotes cargados)"}
             </option>
           ))}
         </Select>
+        {proyectoSel && !proyectoSel.tieneCatalogo && (
+          <div className="mt-2">
+            <Banner tone="warn">
+              Este proyecto aún no tiene lotes ni precios cargados. Podés
+              registrar la ficha del lead, pero la cotización y la carta no
+              están disponibles todavía.
+            </Banner>
+          </div>
+        )}
       </div>
 
       <div>

@@ -342,8 +342,36 @@ model LoteReserva {
   leadId         String?
   /// Monto de reservación recibido (USD), si se registró.
   montoReserva   Float     @default(0)
+  /// Comentarios relevantes del vendedor al cerrar (viajan a la carta y al CRM).
+  comentarios    String    @default("")
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+}
+
+/// Pregunta frecuente del Asistente de Cierre (módulo "Financiamiento").
+/// Editable por Director1 desde la app (sin tocar código) y sincronizada a
+/// todos los usuarios. Se siembra con el set base la primera vez.
+model FaqCierre {
+  id        String   @id @default(cuid())
+  pregunta  String
+  respuesta String   @default("")
+  orden     Int      @default(0)
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Copia electrónica de una Carta Compromiso firmada (PDF aplanado) para poder
+/// enviarla al cliente por WhatsApp con un enlace estable. Se sirve pública por
+/// id (cuid no adivinable) vía /api/asistente/carta/<id>.
+model CartaDoc {
+  id        String   @id @default(cuid())
+  loteId    String   @default("")
+  leadId    String?
+  prospecto String   @default("")
+  mimeType  String   @default("application/pdf")
+  pdf       Bytes
+  createdAt DateTime @default(now())
 }
 
 /// Configuración de automatización de ARS (singleton, id = "default").

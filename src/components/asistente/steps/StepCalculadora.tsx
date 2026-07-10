@@ -1,27 +1,31 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { getLote, getLotes, getPoligonos } from "@/asistente/data/proyectos";
 import { TABLA_FACTORES, OPCIONES_PRIMA } from "@/asistente/config/factores";
 import { cotizar } from "@/asistente/lib/calc";
 import { money, v2, pct } from "@/asistente/lib/format";
 import { Label, Select, Card, ResultRow, Banner, Button } from "../ui";
-import type { SeleccionLote } from "@/asistente/lib/types";
+import type { SeleccionLote, CatalogoProyecto } from "@/asistente/lib/types";
 
 export function StepCalculadora({
-  proyectoId,
+  proyecto,
   value,
   onChange,
 }: {
-  proyectoId: string;
+  proyecto?: CatalogoProyecto;
   value: SeleccionLote;
   onChange: (s: SeleccionLote) => void;
 }) {
-  const poligonos = useMemo(() => getPoligonos(proyectoId), [proyectoId]);
-  const lotes = useMemo(
-    () => (value.poligono ? getLotes(proyectoId, value.poligono) : []),
-    [proyectoId, value.poligono]
-  );
+  const poligonos = useMemo(() => {
+    if (!proyecto) return [];
+    return Array.from(new Set(proyecto.lotes.map((l) => l.poligono))).sort();
+  }, [proyecto]);
+  const lotes = useMemo(() => {
+    if (!proyecto || !value.poligono) return [];
+    return proyecto.lotes
+      .filter((l) => l.poligono === value.poligono)
+      .sort((a, b) => a.numero - b.numero);
+  }, [proyecto, value.poligono]);
   const lote = value.lote;
 
   // Cotización en tiempo real (se recalcula con cada cambio de dropdown).
@@ -38,13 +42,28 @@ export function StepCalculadora({
     onChange({ ...value, poligono: p, loteId: "", lote: undefined });
   }
   function setLoteId(id: string) {
-    onChange({ ...value, loteId: id, lote: getLote(proyectoId, id) });
+    const l = proyecto?.lotes.find((x) => x.id === id);
+    onChange({ ...value, loteId: id, lote: l });
   }
   function setAnos(a: string) {
     onChange({ ...value, anos: a ? Number(a) : null });
   }
   function setPrima(p: string) {
     onChange({ ...value, porcentajePrima: Number(p) });
+  }
+
+  if (!proyecto || !proyecto.tieneCatalogo) {
+    return (
+      <Banner tone="warn">
+        <div className="font-semibold">Lotes pendientes de cargar</div>
+        <div className="mt-1">
+          El proyecto seleccionado aún no tiene lotes ni precios documentados en
+          el sistema, así que todavía no se puede cotizar ni generar la carta.
+          Elegí otro proyecto o volvé cuando el desarrollador cargue la
+          información.
+        </div>
+      </Banner>
+    );
   }
 
   return (

@@ -19,6 +19,7 @@ export interface BloqueoPayload {
   numero: number;
   precio: number;
   prospecto: string;
+  telefono?: string;
   calificacion?: string;
   perfil?: string;
   notas?: string;

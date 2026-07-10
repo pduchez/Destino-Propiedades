@@ -78,6 +78,7 @@ export const POST = crmRoute(async (req: Request) => {
   if (!loteId) return jsonResp({ loteId: "", estado: "desconocido", modo: "crm" });
 
   const prospecto = String(b.prospecto || "").trim();
+  const telefono = String(b.telefono || "").trim();
   const proyectoId = String(b.proyectoId || "");
   const proyectoNombre = String(b.proyectoNombre || "");
   const poligono = String(b.poligono || "");
@@ -111,6 +112,7 @@ export const POST = crmRoute(async (req: Request) => {
         data: {
           orgId: org.id,
           name: prospecto || "Prospecto (Asistente de Cierre)",
+          phone: telefono,
           source: "walk_in",
           projectSlug: proyectoId,
           projectName: proyectoNombre,

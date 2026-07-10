@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import type { Proyecto, Lote } from "@/asistente/data/proyectos";
+import type { Lote } from "@/asistente/data/proyectos";
 import type { Cotizacion } from "@/asistente/lib/calc";
-import type { Carta } from "@/asistente/lib/types";
+import type { Carta, CatalogoProyecto } from "@/asistente/lib/types";
 import { DIAS_LIMITE_COMPLEMENTO } from "@/asistente/config/factores";
 import {
   money,
@@ -15,6 +15,7 @@ import {
 import {
   Label,
   TextField,
+  TextArea,
   Card,
   ResultRow,
   Banner,
@@ -22,29 +23,40 @@ import {
 } from "../ui";
 import { SignatureField } from "../SignaturePad";
 import { generarCartaPdf, nombreArchivoCarta, CartaPdfData } from "@/asistente/lib/pdf";
+import { guardarCarta } from "@/asistente/lib/api";
 
-const WHATSAPP_NEGOCIO = "50364375417"; // WhatsApp central del negocio
+/** Normaliza a número WhatsApp de El Salvador (agrega 503 a los de 8 dígitos). */
+function waNumero(t: string): string {
+  const d = (t || "").replace(/\D/g, "");
+  if (!d) return "";
+  return d.length === 8 ? `503${d}` : d;
+}
 
 export function StepCarta({
   proyecto,
   lote,
   cotizacion,
   nombreCliente,
+  telefonoCliente,
   value,
   onChange,
   modoBloqueo,
   avisoBloqueo,
 }: {
-  proyecto: Proyecto;
+  proyecto: CatalogoProyecto;
   lote: Lote;
   cotizacion: Cotizacion;
   nombreCliente: string;
+  telefonoCliente: string;
   value: Carta;
   onChange: (c: Carta) => void;
   modoBloqueo: "crm" | "autonomo" | "desconocido";
   avisoBloqueo?: string;
 }) {
   const [generado, setGenerado] = useState(false);
+  const [cartaUrl, setCartaUrl] = useState("");
+  const [pdfBlobUrl, setPdfBlobUrl] = useState("");
+  const [subiendo, setSubiendo] = useState(false);
 
   const set = <K extends keyof Carta>(k: K, v: Carta[K]) =>
     onChange({ ...value, [k]: v });
@@ -81,39 +93,68 @@ export function StepCarta({
       montoReservacion: value.montoReservacion,
       complementoPrima: complemento,
       fechaLimiteComplemento: value.fechaLimiteComplemento,
+      comentarios: value.comentarios,
       firmaClienteDataUrl: value.firmaClienteDataUrl,
       firmaEjecutivoDataUrl: value.firmaEjecutivoDataUrl,
     };
   }
 
-  function descargarPdf() {
+  async function generarPdf() {
     const data = buildPdfData();
     const doc = generarCartaPdf(data);
+    // Descarga local para el vendedor.
     doc.save(nombreArchivoCarta(data));
+    // Vista previa (blob) inmediata.
+    try {
+      setPdfBlobUrl(String(doc.output("bloburl")));
+    } catch {
+      /* algunos navegadores no soportan bloburl */
+    }
     setGenerado(true);
+    // Copia electrónica en el servidor (enlace para WhatsApp + registro en CRM).
+    setSubiendo(true);
+    try {
+      const base64 = doc.output("datauristring");
+      const res = await guardarCarta({
+        loteId: lote.id,
+        prospecto: nombreCliente,
+        comentarios: value.comentarios,
+        montoReserva: value.montoReservacion,
+        pdfBase64: base64,
+      });
+      if (res?.url) setCartaUrl(res.url);
+    } catch {
+      /* si falla la subida, el vendedor igual tiene el PDF descargado */
+    } finally {
+      setSubiendo(false);
+    }
+  }
+
+  function verCarta() {
+    const target = cartaUrl || pdfBlobUrl;
+    if (target) window.open(target, "_blank");
   }
 
   function mensajeCierre(): string {
+    const link = cartaUrl ? `\n\nVea su carta aquí: ${cartaUrl}` : "";
     return (
       `Estimado/a ${nombreCliente}, adjunto su Carta Compromiso de Reservación ` +
       `del Lote ${lote.numero}, Polígono ${lote.poligono} — ${proyecto.lotificacion}. ` +
       `Reservación recibida: ${money(value.montoReservacion)}. ` +
       `Complemento de prima: ${money(complemento)} antes del ${fechaLarga(
         value.fechaLimiteComplemento
-      )}.`
+      )}.` +
+      link
     );
   }
 
-  function enviarWhatsApp() {
-    // El PDF no se puede adjuntar client-side; generamos, descargamos y
-    // abrimos WhatsApp con el mensaje pre-armado para que el vendedor adjunte.
-    if (!generado) descargarPdf();
-    const url = `https://wa.me/?text=${encodeURIComponent(mensajeCierre())}`;
-    window.open(url, "_blank");
+  function enviarWhatsAppCliente() {
+    const num = waNumero(telefonoCliente);
+    const base = num ? `https://wa.me/${num}` : "https://wa.me/";
+    window.open(`${base}?text=${encodeURIComponent(mensajeCierre())}`, "_blank");
   }
 
   function enviarEmail() {
-    if (!generado) descargarPdf();
     const subject = `Carta Compromiso de Reservación — Lote ${lote.numero} Pol. ${lote.poligono}`;
     const url = `mailto:?subject=${encodeURIComponent(
       subject
@@ -230,6 +271,20 @@ export function StepCarta({
         )}
       </div>
 
+      {/* Comentarios del vendedor (opcional) → carta, PDF y CRM */}
+      <div>
+        <Label>Comentarios del vendedor (opcional)</Label>
+        <TextArea
+          value={value.comentarios}
+          onChange={(v) => set("comentarios", v)}
+          placeholder="Observaciones relevantes del cierre (acuerdos, condiciones especiales, etc.)"
+          rows={3}
+        />
+        <p className="mt-1 text-xs text-marino-500">
+          Quedan en la ficha de cierre, en el PDF y en el CRM.
+        </p>
+      </div>
+
       {/* Firmas — primero cliente, luego ejecutivo */}
       <div className="space-y-4 pt-2">
         <SignatureField
@@ -250,7 +305,7 @@ export function StepCarta({
 
       {/* Generar documento */}
       <div className="space-y-3 pt-2">
-        <Button variant="gold" onClick={descargarPdf} disabled={!puedeGenerar}>
+        <Button variant="gold" onClick={generarPdf} disabled={!puedeGenerar}>
           Generar carta (PDF)
         </Button>
         {!puedeGenerar && (
@@ -263,16 +318,32 @@ export function StepCarta({
         {generado && (
           <>
             <Banner tone="ok">
-              Documento generado y descargado. Ya podés enviarlo al cliente.
+              Carta generada y firmada.{" "}
+              {subiendo
+                ? "Preparando el enlace para el cliente…"
+                : cartaUrl
+                ? "Ya podés verla y enviarla al cliente."
+                : "Se descargó una copia; podés enviarla al cliente."}
             </Banner>
+
+            <Button variant="secondary" onClick={verCarta}>
+              Ver carta firmada
+            </Button>
+
             <div className="grid grid-cols-2 gap-3">
-              <Button variant="primary" onClick={enviarWhatsApp}>
+              <Button variant="primary" onClick={enviarWhatsAppCliente}>
                 Enviar por WhatsApp
               </Button>
               <Button variant="secondary" onClick={enviarEmail}>
                 Enviar por Email
               </Button>
             </div>
+            {!waNumero(telefonoCliente) && (
+              <p className="text-center text-xs text-amber-700">
+                No hay WhatsApp del cliente en su ficha: se abrirá WhatsApp para
+                que elijas el contacto.
+              </p>
+            )}
           </>
         )}
       </div>

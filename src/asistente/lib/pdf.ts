@@ -16,6 +16,7 @@ export interface CartaPdfData {
   montoReservacion: number;
   complementoPrima: number;
   fechaLimiteComplemento: string; // ISO
+  comentarios?: string;
   firmaClienteDataUrl: string | null;
   firmaEjecutivoDataUrl: string | null;
 }
@@ -108,6 +109,23 @@ export function generarCartaPdf(d: CartaPdfData): jsPDF {
   });
 
   y += 10;
+
+  // --- Comentarios del vendedor (si los hay) ---
+  const comentarios = (d.comentarios || "").trim();
+  if (comentarios) {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9.5);
+    doc.setTextColor(MARINO);
+    doc.text("Comentarios:", M, y);
+    y += 14;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(GRIS);
+    const comLines = doc.splitTextToSize(comentarios, W - M * 2);
+    doc.text(comLines, M, y);
+    y += comLines.length * 12 + 8;
+  }
+
   doc.setFontSize(8.5);
   doc.setTextColor(GRIS);
   const nota =
