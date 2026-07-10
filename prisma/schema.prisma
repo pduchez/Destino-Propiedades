@@ -321,6 +321,31 @@ model StrategyReview {
   createdAt       DateTime @default(now())
 }
 
+/// Reserva/bloqueo de un lote individual desde el "Asistente de Cierre".
+/// Evita que dos vendedores avancen el mismo lote a la vez y comunica el
+/// estado al CRM. Se crea/actualiza al INICIAR el llenado de la carta de
+/// reservación. `leadId` enlaza con el prospecto en el embudo del CRM.
+model LoteReserva {
+  id             String    @id @default(cuid())
+  /// Identificador del lote en el catálogo del Asistente (ej. "VL-F-45"). Único.
+  loteId         String    @unique
+  proyectoId     String    @default("")
+  proyectoNombre String    @default("")
+  poligono       String    @default("")
+  numero         Int       @default(0)
+  /// libre | reservado | vendido
+  estado         String    @default("reservado")
+  prospecto      String    @default("")
+  /// Vendedor (User) que hizo la reserva.
+  reservedById   String?
+  /// Lead del CRM asociado a esta reserva (mismo prospecto/lote).
+  leadId         String?
+  /// Monto de reservación recibido (USD), si se registró.
+  montoReserva   Float     @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
 /// Configuración de automatización de ARS (singleton, id = "default").
 /// Controla los loops autónomos: generación diaria, investigación quincenal de
 /// tendencias, autoactualización de la instrucción y chequeo mensual de ventas.

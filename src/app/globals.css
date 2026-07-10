@@ -50,3 +50,6 @@ body {
   font-weight: 700; letter-spacing: -0.02em; line-height: 1.05;
 }
 .acento { color: var(--sand, #c9a463); }
+
+/* Asistente de Cierre: el canvas de firma no debe hacer scroll al firmar. */
+.signature-canvas { touch-action: none; }

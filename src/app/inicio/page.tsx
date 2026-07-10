@@ -11,6 +11,7 @@ interface Me {
 
 export default function InicioPage() {
   const [state, setState] = useState<"checking" | "chooser" | "login">("checking");
+  const [role, setRole] = useState<"admin" | "sales">("sales");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,8 +19,9 @@ export default function InicioPage() {
 
   async function route(me: Me) {
     if (!me.authenticated) return setState("login");
-    if (me.role === "admin") return setState("chooser");
-    window.location.href = "/crm"; // ventas: directo a su CRM
+    // Ambos roles llegan al selector de módulos (con opciones según su rol).
+    setRole(me.role === "admin" ? "admin" : "sales");
+    setState("chooser");
   }
 
   useEffect(() => {
@@ -35,8 +37,8 @@ export default function InicioPage() {
         method: "POST",
         body: JSON.stringify({ username, password }),
       });
-      if (res.role === "admin") setState("chooser");
-      else window.location.href = "/crm";
+      setRole(res.role === "admin" ? "admin" : "sales");
+      setState("chooser");
     } catch (e) {
       setError((e as Error).message || "Usuario o contraseña incorrectos");
       setBusy(false);
@@ -70,12 +72,18 @@ export default function InicioPage() {
     );
   }
 
-  // Chooser (sólo Director1 / admin)
+  // Selector de módulos. Director1 (admin): CRM + ARS + Asistente de Cierre.
+  // Ventas1..5 (sales): CRM + Asistente de Cierre.
+  const isAdmin = role === "admin";
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 p-6">
       <h1 className="mb-1 text-2xl font-bold text-slate-900">¿Qué quieres hacer?</h1>
       <p className="mb-8 text-slate-500">Elige un módulo para continuar</p>
-      <div className="grid w-full max-w-2xl gap-6 sm:grid-cols-2">
+      <div
+        className={`grid w-full gap-6 ${
+          isAdmin ? "max-w-3xl sm:grid-cols-3" : "max-w-2xl sm:grid-cols-2"
+        }`}
+      >
         <a
           href="/crm"
           className="card flex flex-col items-center gap-3 py-10 text-center transition hover:ring-2 hover:ring-brand"
@@ -84,14 +92,26 @@ export default function InicioPage() {
           <span className="text-xl font-bold text-slate-900">CRM</span>
           <span className="text-sm text-slate-500">Gestión de ventas, leads y reportes</span>
         </a>
+
         <a
-          href="/acceso-ventas"
+          href="/asistente"
           className="card flex flex-col items-center gap-3 py-10 text-center transition hover:ring-2 hover:ring-brand"
         >
-          <span className="text-6xl">🤖</span>
-          <span className="text-xl font-bold text-slate-900">ARS</span>
-          <span className="text-sm text-slate-500">Agente de Redes Sociales</span>
+          <span className="text-6xl">🤝</span>
+          <span className="text-xl font-bold text-slate-900">Asistente de Cierre</span>
+          <span className="text-sm text-slate-500">Cotiza, reserva y firma en la cita</span>
         </a>
+
+        {isAdmin && (
+          <a
+            href="/acceso-ventas"
+            className="card flex flex-col items-center gap-3 py-10 text-center transition hover:ring-2 hover:ring-brand"
+          >
+            <span className="text-6xl">🤖</span>
+            <span className="text-xl font-bold text-slate-900">ARS</span>
+            <span className="text-sm text-slate-500">Agente de Redes Sociales</span>
+          </a>
+        )}
       </div>
       <button
         onClick={async () => {
