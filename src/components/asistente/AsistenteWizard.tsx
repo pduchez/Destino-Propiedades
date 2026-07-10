@@ -157,7 +157,7 @@ export default function AsistenteWizard() {
         proyectoId: handoff.proyectoId,
         proyectoNombre: proyecto?.nombre || "",
         poligono: lote.poligono,
-        numero: lote.numero,
+        numero: Number(lote.numero) || 0,
         precio: lote.precioContado,
         prospecto: handoff.nombreProspecto,
         telefono: handoff.telefono,

@@ -29,9 +29,11 @@ export function StepCalculadora({
   }, [proyecto]);
   const lotes = useMemo(() => {
     if (!proyecto || !value.poligono) return [];
+    const numInt = (n: number | string) =>
+      typeof n === "number" ? n : Number(/\d+/.exec(String(n))?.[0] || 0);
     return proyecto.lotes
       .filter((l) => l.poligono === value.poligono)
-      .sort((a, b) => a.numero - b.numero);
+      .sort((a, b) => numInt(a.numero) - numInt(b.numero));
   }, [proyecto, value.poligono]);
   const lote = value.lote;
 
@@ -119,7 +121,8 @@ export function StepCalculadora({
         >
           {lotes.map((l) => (
             <option key={l.id} value={l.id}>
-              Lote {l.numero} — {v2(l.areaV2)}
+              Lote {l.numero}
+              {l.pasaje ? ` · Pasaje ${l.pasaje}` : ""} — {v2(l.areaV2)}
             </option>
           ))}
         </Select>
