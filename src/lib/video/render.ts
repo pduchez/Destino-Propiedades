@@ -47,11 +47,16 @@ export async function generateVideoForProject(
   const project = await prisma.project.findUnique({ where: { id: projectId } });
   if (!project) throw Object.assign(new Error("Proyecto no encontrado"), { status: 404 });
 
-  // Fotos reales del proyecto (solo imágenes).
+  // Fotos reales del proyecto (solo imágenes). Se priorizan las EMBELLECIDAS
+  // (mejoradas por IA): son las más aspiracionales y dan mejor primera impresión.
   const assets = await prisma.asset.findMany({ where: { projectId } });
-  const photos = assets
-    .filter((a) => IMG.test(a.mimeType))
-    .map((a) => ({ url: a.url, alt: parseArray(a.tags).join(", ") || a.originalName || "" }));
+  const images = assets.filter((a) => IMG.test(a.mimeType));
+  const isEmbellecida = (a: (typeof images)[number]) => /"embellecida"/.test(a.tags);
+  images.sort((a, b) => Number(isEmbellecida(b)) - Number(isEmbellecida(a)));
+  const photos = images.map((a) => ({
+    url: a.url,
+    alt: parseArray(a.tags).join(", ") || a.originalName || "",
+  }));
 
   if (photos.length < MIN_PHOTOS) {
     throw Object.assign(

@@ -1,78 +1,97 @@
 /**
  * Construye la especificación "movie" de JSON2Video a partir del guion y las
- * FOTOS REALES del proyecto. Vertical 9:16, cada escena = una foto real con
- * texto en pantalla; escena final con el cierre/CTA; música opcional (sin voz).
+ * FOTOS REALES del proyecto. Vertical 9:16 con acabado cuidado:
+ *  - resize "cover": la foto (apaisada) LLENA el marco vertical, sin barras.
+ *  - Ken Burns: paneo + zoom suave, alternando dirección por escena.
+ *  - transiciones (fade) entre escenas.
+ *  - texto legible (sombra + franja translúcida), no un recuadro tosco.
+ *  - música opcional (env JSON2VIDEO_MUSIC_URL). Sin voz.
  *
- * Nota: los nombres de campos siguen la estructura documentada de JSON2Video
- * (movie → scenes → elements; text/image/audio). Si en el primer render real
- * algún campo necesita ajuste, el error queda guardado en el RenderJob.
+ * Campos según la documentación de JSON2Video (image: resize/pan/zoom;
+ * scene: transition; text: settings). Si el primer render real necesita un
+ * ajuste, el error queda guardado en el RenderJob.
  */
 import type { MovieSpec } from "@/lib/video/json2video";
 import type { Storyboard } from "@/lib/video/storyboard";
 
 export interface BuildMovieOptions {
   photos: string[]; // URLs de fotos reales (por índice)
-  webhookUrl?: string; // JSON2Video llama aquí al terminar
-  musicUrl?: string; // pista libre opcional (env JSON2VIDEO_MUSIC_URL)
-  sceneSeconds?: number; // duración por escena
+  webhookUrl?: string;
+  musicUrl?: string;
+  sceneSeconds?: number;
 }
 
 const WIDTH = 1080;
 const HEIGHT = 1920; // 9:16
 
-function textElement(text: string, seconds: number): Record<string, unknown> {
-  return {
-    type: "text",
-    text,
-    start: 0,
-    duration: seconds,
-    position: "bottom-center",
-    settings: {
-      "font-family": "Oswald",
-      "font-size": "68px",
-      "font-weight": "700",
-      color: "#ffffff",
-      "text-align": "center",
-      "background-color": "#0f2b44cc",
-      padding: "18px 26px",
-      "line-height": "1.15",
-    },
-  };
-}
+// Direcciones de paneo que se alternan para dar dinamismo (Ken Burns).
+const PANS = ["right", "left", "top", "bottom", "top-right", "bottom-left"];
 
-function imageElement(src: string, seconds: number): Record<string, unknown> {
+function imageElement(src: string, seconds: number, i: number): Record<string, unknown> {
   return {
     type: "image",
     src,
     duration: seconds,
-    position: "center-center",
-    zoom: 2, // efecto de acercamiento suave (Ken Burns)
+    // La foto apaisada llena el marco vertical (recorte al centro), sin barras.
+    resize: "cover",
+    // Movimiento suave: zoom leve + paneo alternado por escena.
+    zoom: 2,
+    pan: PANS[i % PANS.length],
   };
 }
 
-/** Ensambla la película. Devuelve el objeto listo para POST /v2/movies. */
-export function buildMovie(storyboard: Storyboard, opts: BuildMovieOptions): MovieSpec {
-  const seconds = opts.sceneSeconds ?? 3.2;
+function textElement(text: string, seconds: number): Record<string, unknown> {
+  return {
+    type: "text",
+    text,
+    start: 0.2,
+    duration: seconds - 0.2,
+    position: "bottom-center",
+    // Aparición/salida suave.
+    fade: { in: 0.3, out: 0.3 },
+    settings: {
+      "font-family": "Oswald",
+      "font-size": "62px",
+      "font-weight": "700",
+      color: "#ffffff",
+      "text-align": "center",
+      "text-shadow": "0 3px 10px rgba(0,0,0,0.85)",
+      "background-color": "rgba(15,43,68,0.55)",
+      "border-radius": "14px",
+      padding: "16px 24px",
+      "line-height": "1.15",
+      "max-width": "88%",
+    },
+  };
+}
 
-  const scenes: Record<string, unknown>[] = storyboard.scenes.map((s) => {
+/** Ensambla la película con acabado profesional. */
+export function buildMovie(storyboard: Storyboard, opts: BuildMovieOptions): MovieSpec {
+  const seconds = opts.sceneSeconds ?? 3.4;
+
+  const scenes: Record<string, unknown>[] = storyboard.scenes.map((s, i) => {
     const src = opts.photos[s.photoIndex] ?? opts.photos[0];
-    const elements: Record<string, unknown>[] = [imageElement(src, seconds)];
+    const elements: Record<string, unknown>[] = [imageElement(src, seconds, i)];
     if (s.onScreenText) elements.push(textElement(s.onScreenText, seconds));
-    return { duration: seconds, elements };
+    return {
+      duration: seconds,
+      transition: { style: "fade", duration: 0.4 },
+      elements,
+    };
   });
 
   // Escena final (tarjeta de cierre con CTA a WhatsApp) sobre la última foto.
   const lastPhoto = opts.photos[opts.photos.length - 1] ?? opts.photos[0];
   scenes.push({
-    duration: seconds + 0.6,
+    duration: seconds + 0.8,
+    transition: { style: "fade", duration: 0.4 },
     elements: [
-      imageElement(lastPhoto, seconds + 0.6),
-      textElement(storyboard.endCardText, seconds + 0.6),
+      imageElement(lastPhoto, seconds + 0.8, scenes.length),
+      textElement(storyboard.endCardText, seconds + 0.8),
     ],
   });
 
   const movie: MovieSpec = {
-    // "custom" habilita dimensiones propias (9:16 vertical) en JSON2Video.
     resolution: "custom",
     width: WIDTH,
     height: HEIGHT,
@@ -81,13 +100,11 @@ export function buildMovie(storyboard: Storyboard, opts: BuildMovieOptions): Mov
   };
 
   // Música de fondo (opcional): pista libre por URL. Sin voz.
-  const globalElements: Record<string, unknown>[] = [];
   if (opts.musicUrl) {
-    globalElements.push({ type: "audio", src: opts.musicUrl, volume: 0.35 });
+    movie.elements = [{ type: "audio", src: opts.musicUrl, volume: 0.35, "fade-out": 2 }];
   }
-  if (globalElements.length) movie.elements = globalElements;
 
-  // Entrega por webhook cuando el render termine (si tenemos URL pública).
+  // Entrega por webhook al terminar (si hay URL pública).
   if (opts.webhookUrl) {
     movie.exports = [{ destinations: [{ type: "webhook", endpoint: opts.webhookUrl }] }];
   }
