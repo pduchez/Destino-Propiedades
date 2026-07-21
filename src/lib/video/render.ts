@@ -17,10 +17,12 @@ import {
 } from "@/lib/video/reelTemplates";
 import { submitMovie, getMovieStatus, isVideoConfigured } from "@/lib/video/json2video";
 
-/** Medios mínimos (fotos o clips) para un reel decente. */
-export const MIN_MEDIA = 3;
+/**
+ * Un reel se hace con CLIPS DE VIDEO reales. Animar una foto plana (zoom/paneo)
+ * se ve falso y barato: NO lo hacemos. Mínimo de clips limpios para un reel.
+ */
+export const MIN_CLIPS = 2;
 const VIDEO = /^video\//;
-const IMG = /^image\//;
 
 function baseUrl(): string {
   return (process.env.PUBLIC_BASE_URL || "").replace(/\/+$/, "");
@@ -54,21 +56,20 @@ export async function generateVideoForProject(
   const project = await prisma.project.findUnique({ where: { id: projectId } });
   if (!project) throw Object.assign(new Error("Proyecto no encontrado"), { status: 404 });
 
-  // Medios reales: clips de video (excepto 360 crudos) + fotos (embellecidas primero).
+  // SOLO clips de video reales (excepto 360 crudos, que van distorsionados).
+  // Nada de fotos: un reel no se hace animando imágenes planas.
   const assets = await prisma.asset.findMany({ where: { projectId } });
   const videos = assets.filter((a) => VIDEO.test(a.mimeType) && !/"360"/.test(a.tags));
-  const images = assets.filter((a) => IMG.test(a.mimeType));
-  images.sort((a, b) => Number(/"embellecida"/.test(b.tags)) - Number(/"embellecida"/.test(a.tags)));
-
-  // Lista ordenada: video primero (luce mejor), luego fotos.
-  const mediaList: { url: string; kind: MediaKind }[] = [
-    ...videos.map((a) => ({ url: a.url, kind: "video" as MediaKind })),
-    ...images.map((a) => ({ url: a.url, kind: "image" as MediaKind })),
-  ];
-  if (mediaList.length < MIN_MEDIA) {
+  const mediaList: { url: string; kind: MediaKind }[] = videos.map((a) => ({
+    url: a.url,
+    kind: "video" as MediaKind,
+  }));
+  if (mediaList.length < MIN_CLIPS) {
     throw Object.assign(
       new Error(
-        `Este proyecto tiene ${mediaList.length} medio(s); se necesitan al menos ${MIN_MEDIA} (fotos o clips de dron planos). Sube más en Stock de imágenes.`,
+        `Un reel se arma con CLIPS DE VIDEO reales (dron), no con fotos: animar una imagen plana se ve falso. ` +
+          `Este proyecto tiene ${mediaList.length} clip(s) limpio(s) y se necesitan al menos ${MIN_CLIPS}. ` +
+          `Sube clips de dron en Stock de imágenes, o genera posts estáticos (que sí funcionan con fotos).`,
       ),
       { status: 400 },
     );

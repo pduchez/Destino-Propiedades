@@ -319,9 +319,11 @@ export default function GeneratePage() {
           <div>
             <h2 className="font-semibold text-slate-900">🎬 Reel de video (JSON2Video)</h2>
             <p className="text-sm text-slate-500">
-              Arma UN reel vertical 9:16 con las <strong>fotos reales</strong> del proyecto +
-              texto en pantalla + música (sin voz), y crea un borrador por red con caption
-              adaptado. Requiere al menos 4 fotos del proyecto.
+              Arma UN reel vertical 9:16 con los <strong>clips de video reales</strong> (dron)
+              del proyecto + texto en pantalla + música (sin voz), y crea un borrador por red.
+              <strong> Requiere clips de video limpios</strong> (sin texto ni marca de agua): un
+              reel no se hace animando fotos planas. Si aún no hay clips, generá posts estáticos
+              arriba (esos sí funcionan con fotos).
             </p>
           </div>
           {videoConfigured !== null && (
