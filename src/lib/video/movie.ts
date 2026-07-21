@@ -16,9 +16,20 @@ import type { Storyboard } from "@/lib/video/storyboard";
 
 export interface BuildMovieOptions {
   photos: string[]; // URLs de fotos reales (por índice)
+  clips?: string[]; // URLs de VIDEO (dron). Si hay, se usan en vez de fotos.
   webhookUrl?: string;
   musicUrl?: string;
   sceneSeconds?: number;
+}
+
+function videoElement(src: string, seconds: number): Record<string, unknown> {
+  return {
+    type: "video",
+    src,
+    duration: seconds, // recorta el clip a la duración de la escena
+    resize: "cover", // llena el marco vertical 9:16
+    volume: 0, // sin audio del clip: manda la música de fondo
+  };
 }
 
 const WIDTH = 1080;
@@ -69,9 +80,15 @@ function textElement(text: string, seconds: number): Record<string, unknown> {
 export function buildMovie(storyboard: Storyboard, opts: BuildMovieOptions): MovieSpec {
   const seconds = opts.sceneSeconds ?? 3.4;
 
+  // Si hay clips de VIDEO (dron), se usan; si no, fotos con Ken Burns.
+  const usingClips = (opts.clips?.length ?? 0) > 0;
+  const sources = usingClips ? (opts.clips as string[]) : opts.photos;
+  const visual = (src: string, dur: number, i: number) =>
+    usingClips ? videoElement(src, dur) : imageElement(src, dur, i);
+
   const scenes: Record<string, unknown>[] = storyboard.scenes.map((s, i) => {
-    const src = opts.photos[s.photoIndex] ?? opts.photos[0];
-    const elements: Record<string, unknown>[] = [imageElement(src, seconds, i)];
+    const src = sources[s.photoIndex] ?? sources[i % sources.length] ?? sources[0];
+    const elements: Record<string, unknown>[] = [visual(src, seconds, i)];
     if (s.onScreenText) elements.push(textElement(s.onScreenText, seconds));
     return {
       duration: seconds,
@@ -80,13 +97,13 @@ export function buildMovie(storyboard: Storyboard, opts: BuildMovieOptions): Mov
     };
   });
 
-  // Escena final (tarjeta de cierre con CTA a WhatsApp) sobre la última foto.
-  const lastPhoto = opts.photos[opts.photos.length - 1] ?? opts.photos[0];
+  // Escena final (tarjeta de cierre con CTA a WhatsApp) sobre el último visual.
+  const last = sources[sources.length - 1] ?? sources[0];
   scenes.push({
     duration: seconds + 0.8,
     transition: { style: "fade", duration: 0.4 },
     elements: [
-      imageElement(lastPhoto, seconds + 0.8, scenes.length),
+      visual(last, seconds + 0.8, scenes.length),
       textElement(storyboard.endCardText, seconds + 0.8),
     ],
   });

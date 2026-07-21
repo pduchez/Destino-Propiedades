@@ -47,9 +47,9 @@ export async function generateVideoForProject(
   const project = await prisma.project.findUnique({ where: { id: projectId } });
   if (!project) throw Object.assign(new Error("Proyecto no encontrado"), { status: 404 });
 
-  // Fotos reales del proyecto (solo imágenes). Se priorizan las EMBELLECIDAS
-  // (mejoradas por IA): son las más aspiracionales y dan mejor primera impresión.
   const assets = await prisma.asset.findMany({ where: { projectId } });
+
+  // Fotos (imágenes), priorizando las EMBELLECIDAS (mejoradas por IA).
   const images = assets.filter((a) => IMG.test(a.mimeType));
   const isEmbellecida = (a: (typeof images)[number]) => /"embellecida"/.test(a.tags);
   images.sort((a, b) => Number(isEmbellecida(b)) - Number(isEmbellecida(a)));
@@ -58,14 +58,24 @@ export async function generateVideoForProject(
     alt: parseArray(a.tags).join(", ") || a.originalName || "",
   }));
 
-  if (photos.length < MIN_PHOTOS) {
+  // Clips de VIDEO (dron). Se EXCLUYEN los 360 crudos (equirectangular): en un
+  // reel plano se ven deformados. Deben etiquetarse "360" para omitirse.
+  const clips = assets
+    .filter((a) => a.mimeType.startsWith("video/") && !/"360"/.test(a.tags))
+    .map((a) => ({ url: a.url, alt: parseArray(a.tags).join(", ") || a.originalName || "" }));
+
+  const usingVideo = clips.length >= 1;
+  if (!usingVideo && photos.length < MIN_PHOTOS) {
     throw Object.assign(
       new Error(
-        `Este proyecto tiene ${photos.length} foto(s); se necesitan al menos ${MIN_PHOTOS} para un reel. Sube más fotos reales en Stock de imágenes.`,
+        `Este proyecto tiene ${photos.length} foto(s) y ningún clip de video utilizable; se necesitan al menos ${MIN_PHOTOS} fotos, o un clip de dron (plano, no 360). Sube material en Stock de imágenes.`,
       ),
       { status: 400 },
     );
   }
+
+  // Conjunto visual del reel: video si existe (se ve mucho mejor), si no, fotos.
+  const visuals = usingVideo ? clips.slice(0, 6) : photos.slice(0, 8);
 
   const networks = ((networksIn && networksIn.filter(isNetwork)) as Network[] | undefined)?.length
     ? (networksIn!.filter(isNetwork) as Network[])
@@ -90,7 +100,7 @@ export async function generateVideoForProject(
   const storyboard = await generateStoryboard({
     brand: { brandName: brand?.brandName ?? "Destino Propiedades" },
     project: projectCtx,
-    photos,
+    photos: visuals,
     networks,
   });
 
@@ -99,7 +109,8 @@ export async function generateVideoForProject(
     : undefined;
 
   const movie = buildMovie(storyboard, {
-    photos: photos.map((p) => p.url),
+    photos: usingVideo ? [] : visuals.map((v) => v.url),
+    clips: usingVideo ? visuals.map((v) => v.url) : undefined,
     webhookUrl,
     musicUrl: process.env.JSON2VIDEO_MUSIC_URL || undefined,
   });
