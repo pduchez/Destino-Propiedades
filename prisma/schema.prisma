@@ -279,12 +279,31 @@ model Post {
   externalUrl String?
   error       String?
   model       String?   @default("") // modelo de IA usado
+  renderJobId String?   // trabajo de render de video (JSON2Video), si el post lleva video
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   project  Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
   campaign Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
   metric   PostMetric?
+}
+
+/// Trabajo de render de video (JSON2Video). El render es ASÍNCRONO: se envía la
+/// especificación (movie), queda "rendering", y al terminar (webhook o sondeo)
+/// se crea un Asset de video y se adjunta a los posts asociados.
+model RenderJob {
+  id         String   @id @default(cuid())
+  projectId  String?
+  provider   String   @default("json2video")
+  status     String   @default("rendering") // rendering | done | failed
+  externalId String?  // id del "project"/movie en JSON2Video
+  networks   String   @default("[]") // JSON array de redes destino
+  postIds    String   @default("[]") // JSON array de Post.id que esperan el video
+  spec       String   @default("") // JSON del movie enviado (para depurar)
+  videoUrl   String?  // URL del MP4 final
+  error      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 /// Métricas de impacto de un post publicado (al estilo Meta Business).

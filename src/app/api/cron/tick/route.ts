@@ -11,6 +11,7 @@
 import { json, errorJson } from "@/lib/api";
 import { isAdminRequest } from "@/lib/auth";
 import { runTick } from "@/lib/automation";
+import { settlePendingRenders } from "@/lib/video/render";
 
 function cronAuthorized(req: Request): boolean {
   const secret = (process.env.CRON_SECRET || "").trim();
@@ -25,7 +26,9 @@ async function handle(req: Request) {
   const url = new URL(req.url);
   const force = url.searchParams.get("force") === "1";
   const result = await runTick(new Date(), force);
-  return json({ ok: true, at: new Date().toISOString(), result });
+  // Cierra renders de video que ya terminaron (respaldo del webhook).
+  const renders = await settlePendingRenders().catch(() => ({ settled: 0 }));
+  return json({ ok: true, at: new Date().toISOString(), result, renders });
 }
 
 export const GET = handle;

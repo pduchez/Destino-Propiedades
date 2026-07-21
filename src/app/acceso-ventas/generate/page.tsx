@@ -43,14 +43,57 @@ export default function GeneratePage() {
   const [result, setResult] = useState<{ created: number } | null>(null);
   const [error, setError] = useState("");
   const [aiStatus, setAiStatus] = useState<{ aiConfigured: boolean; model: string } | null>(null);
+  const [videoConfigured, setVideoConfigured] = useState<boolean | null>(null);
+  const [videoBusy, setVideoBusy] = useState(false);
+  const [videoMsg, setVideoMsg] = useState("");
 
   useEffect(() => {
     api<Project[]>("/api/projects").then(setProjects).catch(() => {});
     api<Campaign[]>("/api/campaigns").then(setCampaigns).catch(() => {});
-    api<{ aiConfigured: boolean; model: string }>("/api/status")
-      .then((s) => setAiStatus({ aiConfigured: s.aiConfigured, model: s.model }))
+    api<{ aiConfigured: boolean; model: string; videoConfigured: boolean }>("/api/status")
+      .then((s) => {
+        setAiStatus({ aiConfigured: s.aiConfigured, model: s.model });
+        setVideoConfigured(!!s.videoConfigured);
+      })
       .catch(() => {});
   }, []);
+
+  async function generateVideo() {
+    if (!projectId) {
+      setVideoMsg("Elige un proyecto: el reel se arma con sus fotos reales.");
+      return;
+    }
+    setVideoBusy(true);
+    setVideoMsg("Iniciando render del reel…");
+    try {
+      const r = await api<{ jobId: string; posts: number; usedAI: boolean }>("/api/video/generate", {
+        method: "POST",
+        body: JSON.stringify({ projectId, networks }),
+      });
+      setVideoMsg("🎬 Renderizando el video (suele tardar 1–2 min)…");
+      // Sondea el estado hasta que termine (máx ~3 min).
+      for (let i = 0; i < 30; i++) {
+        await new Promise((res) => setTimeout(res, 6000));
+        const s = await api<{ job: { status: string; error?: string | null } | null }>(
+          `/api/render/status?jobId=${r.jobId}`,
+        );
+        const st = s.job?.status;
+        if (st === "done") {
+          setVideoMsg(`✓ Video listo. Se crearon ${r.posts} borradores con el reel — revísalos en la cola.`);
+          break;
+        }
+        if (st === "failed") {
+          setVideoMsg(`El render falló: ${s.job?.error ?? "error desconocido"}.`);
+          break;
+        }
+        if (i === 29) setVideoMsg("El render sigue en proceso; revisa la cola en unos minutos.");
+      }
+    } catch (e) {
+      setVideoMsg((e as Error).message);
+    } finally {
+      setVideoBusy(false);
+    }
+  }
 
   // Carga las imágenes disponibles según el proyecto (proyecto + globales).
   useEffect(() => {
@@ -260,6 +303,44 @@ export default function GeneratePage() {
           </Link>
         </div>
       )}
+
+      {/* Reel de video (JSON2Video) */}
+      <div className="card space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 className="font-semibold text-slate-900">🎬 Reel de video (JSON2Video)</h2>
+            <p className="text-sm text-slate-500">
+              Arma UN reel vertical 9:16 con las <strong>fotos reales</strong> del proyecto +
+              texto en pantalla + música (sin voz), y crea un borrador por red con caption
+              adaptado. Requiere al menos 4 fotos del proyecto.
+            </p>
+          </div>
+          {videoConfigured !== null && (
+            <span
+              className={`badge ${
+                videoConfigured ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+              }`}
+            >
+              {videoConfigured ? "JSON2Video conectado" : "Falta JSON2VIDEO_API_KEY"}
+            </span>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            className="btn-primary"
+            disabled={videoBusy || networks.length === 0}
+            onClick={generateVideo}
+          >
+            {videoBusy ? "Renderizando…" : "🎬 Generar video del proyecto"}
+          </button>
+          {videoMsg && <span className="text-sm text-slate-600">{videoMsg}</span>}
+        </div>
+        {!projectId && (
+          <p className="text-xs text-slate-400">
+            Elige un proyecto arriba: el reel se construye con SUS fotos reales.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
