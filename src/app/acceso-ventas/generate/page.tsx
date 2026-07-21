@@ -46,10 +46,15 @@ export default function GeneratePage() {
   const [videoConfigured, setVideoConfigured] = useState<boolean | null>(null);
   const [videoBusy, setVideoBusy] = useState(false);
   const [videoMsg, setVideoMsg] = useState("");
+  const [templates, setTemplates] = useState<{ id: string; name: string; tagline: string }[]>([]);
+  const [templateId, setTemplateId] = useState("");
 
   useEffect(() => {
     api<Project[]>("/api/projects").then(setProjects).catch(() => {});
     api<Campaign[]>("/api/campaigns").then(setCampaigns).catch(() => {});
+    api<{ id: string; name: string; tagline: string }[]>("/api/video/templates")
+      .then(setTemplates)
+      .catch(() => {});
     api<{ aiConfigured: boolean; model: string; videoConfigured: boolean }>("/api/status")
       .then((s) => {
         setAiStatus({ aiConfigured: s.aiConfigured, model: s.model });
@@ -66,10 +71,13 @@ export default function GeneratePage() {
     setVideoBusy(true);
     setVideoMsg("Iniciando render del reel…");
     try {
-      const r = await api<{ jobId: string; posts: number; usedAI: boolean }>("/api/video/generate", {
-        method: "POST",
-        body: JSON.stringify({ projectId, networks }),
-      });
+      const r = await api<{ jobId: string; posts: number; usedAI: boolean; templateId: string }>(
+        "/api/video/generate",
+        {
+          method: "POST",
+          body: JSON.stringify({ projectId, networks, templateId: templateId || undefined }),
+        },
+      );
       setVideoMsg("🎬 Renderizando el video (suele tardar 1–2 min)…");
       // Sondea el estado hasta que termine (máx ~4 min).
       const MAX = 40;
@@ -326,6 +334,23 @@ export default function GeneratePage() {
             </span>
           )}
         </div>
+        {templates.length > 0 && (
+          <div>
+            <label className="label">Plantilla del reel (diseño profesional)</label>
+            <select
+              className="input"
+              value={templateId}
+              onChange={(e) => setTemplateId(e.target.value)}
+            >
+              <option value="">🎲 Al azar entre las 5</option>
+              {templates.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name} — {t.tagline}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <div className="flex flex-wrap items-center gap-3">
           <button
             className="btn-primary"

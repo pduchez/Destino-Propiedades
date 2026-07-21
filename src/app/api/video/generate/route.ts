@@ -7,9 +7,13 @@ import { json, errorJson, withAuth } from "@/lib/api";
 import { generateVideoForProject } from "@/lib/video/render";
 
 export const POST = withAuth(async (req) => {
-  const body = (await req.json().catch(() => ({}))) as { projectId?: string; networks?: string[] };
+  const body = (await req.json().catch(() => ({}))) as {
+    projectId?: string;
+    networks?: string[];
+    templateId?: string;
+  };
   if (!body.projectId) return errorJson("Falta projectId.");
-  const result = await generateVideoForProject(body.projectId, body.networks);
+  const result = await generateVideoForProject(body.projectId, body.networks, body.templateId);
   return json({ ok: true, ...result }, 201);
 });
 
