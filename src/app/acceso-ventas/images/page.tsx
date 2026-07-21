@@ -1,8 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { upload as blobUpload } from "@vercel/blob/client";
 import { api } from "@/lib/client";
 import EmbellecerModal from "@/components/EmbellecerModal";
+
+// Archivos > 4 MB o cualquier video van DIRECTO a Blob (evita el límite del
+// servidor). Los videos de dron son pesados: este es el camino correcto.
+const DIRECT_THRESHOLD = 4 * 1024 * 1024;
+const goesDirect = (f: File) => f.type.startsWith("video/") || f.size > DIRECT_THRESHOLD;
 
 interface Project {
   id: string;
@@ -50,11 +56,42 @@ export default function ImagesPage() {
     setUploading(true);
     setMsg("");
     try {
-      const fd = new FormData();
-      Array.from(files).forEach((f) => fd.append("file", f));
-      if (projectId) fd.append("projectId", projectId);
-      if (tags) fd.append("tags", tags);
-      await api("/api/assets", { method: "POST", body: fd });
+      const list = Array.from(files);
+      const light = list.filter((f) => !goesDirect(f));
+      const heavy = list.filter(goesDirect);
+
+      // Imágenes pequeñas: subida normal por el servidor.
+      if (light.length) {
+        const fd = new FormData();
+        light.forEach((f) => fd.append("file", f));
+        if (projectId) fd.append("projectId", projectId);
+        if (tags) fd.append("tags", tags);
+        await api("/api/assets", { method: "POST", body: fd });
+      }
+
+      // Videos / archivos pesados: subida DIRECTA del navegador a Blob.
+      for (const f of heavy) {
+        setMsg(`Subiendo ${f.name} (${(f.size / 1048576).toFixed(0)} MB) directo a Blob…`);
+        const blob = await blobUpload(f.name, f, {
+          access: "public",
+          handleUploadUrl: "/api/assets/blob-upload",
+          contentType: f.type || "video/mp4",
+        });
+        const extraTags = [tags, f.type.startsWith("video/") ? "dron,video" : ""]
+          .filter(Boolean)
+          .join(",");
+        await api("/api/assets", {
+          method: "POST",
+          body: JSON.stringify({
+            url: blob.url,
+            mimeType: f.type || "video/mp4",
+            projectId: projectId || null,
+            tags: extraTags,
+            originalName: f.name,
+          }),
+        });
+      }
+
       setFiles(null);
       setTags("");
       (document.getElementById("file-input") as HTMLInputElement).value = "";
@@ -115,8 +152,14 @@ export default function ImagesPage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-slate-900">Stock de imágenes</h1>
       <p className="text-slate-500">
-        El bot elige imágenes aleatorias de este stock para acompañar los posts.
-        Las imágenes globales sirven para cualquier proyecto. (TikTok usa video: sube .mp4/.mov)
+        El bot elige imágenes/clips de este stock para armar los posts y reels.
+        Las imágenes globales sirven para cualquier proyecto.
+      </p>
+      <p className="rounded-lg bg-sky-50 p-3 text-xs text-sky-800 ring-1 ring-sky-200">
+        🎥 <strong>Video de dron:</strong> súbelo aquí (los pesados van directo a Blob, sin
+        límite del servidor). Para reels usa <strong>clips planos (normales)</strong>. Un
+        video <strong>360°</strong> crudo se ve deformado en un reel; si subes uno, etiquétalo
+        <code> 360</code> y ARS lo omitirá del reel hasta tener una versión “reencuadrada” (plana).
       </p>
 
       <form onSubmit={upload} className="card space-y-4">

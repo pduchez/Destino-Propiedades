@@ -121,6 +121,19 @@ export default function AutomationPage() {
     }
   }
 
+  async function testVideo() {
+    setBusy("video");
+    setMsg("");
+    try {
+      const r = await api<{ ok: boolean; message: string }>("/api/video/test", { method: "POST" });
+      setMsg(r.message);
+    } catch (e) {
+      setMsg((e as Error).message);
+    } finally {
+      setBusy("");
+    }
+  }
+
   async function syncPortal() {
     setBusy("sync");
     setSyncMsg("Leyendo el portal…");
@@ -243,6 +256,9 @@ export default function AutomationPage() {
           </button>
           <button className="btn-secondary" disabled={busy === "run"} onClick={runNow}>
             {busy === "run" ? "Ejecutando…" : "▶️ Ejecutar ARS ahora"}
+          </button>
+          <button className="btn-secondary" disabled={busy === "video"} onClick={testVideo}>
+            {busy === "video" ? "Probando…" : "🎬 Probar conexión JSON2Video"}
           </button>
         </div>
         {syncMsg && <p className="text-sm text-slate-600">{syncMsg}</p>}

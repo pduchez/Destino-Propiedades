@@ -33,13 +33,15 @@ export const POST = withAuth(async (req) => {
       projectId?: string | null;
       tags?: unknown;
       originalName?: string;
+      mimeType?: string;
     };
     const externalUrl = String(body.url ?? "").trim();
     if (!/^https?:\/\//i.test(externalUrl)) {
       return errorJson("Proporciona una URL de imagen válida (http/https).");
     }
     const tags = toTags(body.tags);
-    const mime = guessMime(externalUrl);
+    const mime =
+      (typeof body.mimeType === "string" && body.mimeType) || guessMime(externalUrl);
     const asset = await prisma.asset.create({
       data: {
         projectId: body.projectId ? String(body.projectId) : null,

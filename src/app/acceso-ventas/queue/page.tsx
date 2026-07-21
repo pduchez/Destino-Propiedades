@@ -20,6 +20,7 @@ interface Post {
   externalUrl: string | null;
   error: string | null;
   model: string | null;
+  renderJobId?: string | null;
   project?: { name: string } | null;
   campaign?: { name: string } | null;
   assets: Asset[];
@@ -198,6 +199,12 @@ function PostCard({ post, onChange }: { post: Post; onChange: () => void }) {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={asset.url} alt="" className="h-44 w-full rounded-lg object-cover" />
           )}
+        </div>
+      )}
+
+      {!asset && post.renderJobId && (
+        <div className="flex h-24 w-full items-center justify-center rounded-lg bg-slate-100 text-sm text-slate-500">
+          🎬 Video en preparación… (recarga en 1–2 min)
         </div>
       )}
 

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { json, withAuth } from "@/lib/api";
 import { isAIConfigured } from "@/lib/ai/generate";
+import { isVideoConfigured } from "@/lib/video/json2video";
 
 export const GET = withAuth(async () => {
   const [projects, drafts, published, assets] = await Promise.all([
@@ -11,6 +12,7 @@ export const GET = withAuth(async () => {
   ]);
   return json({
     aiConfigured: isAIConfigured(),
+    videoConfigured: isVideoConfigured(),
     model: process.env.AI_MODEL || "claude-opus-4-8",
     counts: { projects, drafts, published, assets },
   });

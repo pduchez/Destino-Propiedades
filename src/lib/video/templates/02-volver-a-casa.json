@@ -1,0 +1,606 @@
+{
+  "comment": "Plantilla 2 — Volver a casa (emocional, pausada)",
+  "resolution": "custom",
+  "width": 1080,
+  "height": 1920,
+  "quality": "high",
+  "variables": {
+    "logo_url": "https://assets.destinopropiedades.com/branding/logo-cream.png",
+    "brand_name": "Destino Propiedades",
+    "project_name": "Condado del Golfo",
+    "location": "Conchagua, La Unión",
+    "hook": "El Salvador te está esperando",
+    "benefit_1": "A ½ km de La Unión",
+    "benefit_2": "Casa club y ciclovía",
+    "benefit_3": "Vista al Golfo de Fonseca",
+    "price_label": "Desde $24,693",
+    "cta": "Escríbenos por WhatsApp",
+    "accent_color": "#C9A463",
+    "media_1": "https://assets.destinopropiedades.com/condado-del-golfo/aerea-01.mp4",
+    "media_2": "https://assets.destinopropiedades.com/condado-del-golfo/aerea-02.mp4",
+    "media_3": "https://assets.destinopropiedades.com/condado-del-golfo/casa-club.mp4",
+    "media_4": "https://assets.destinopropiedades.com/condado-del-golfo/ciclovia.jpg",
+    "media_5": "https://assets.destinopropiedades.com/condado-del-golfo/golfo-fonseca.jpg",
+    "media_6": "https://assets.destinopropiedades.com/condado-del-golfo/entrada-obra.mp4",
+    "music_url": "https://assets.destinopropiedades.com/audio/cinematic-warm.mp3"
+  },
+  "elements": [
+    {
+      "type": "audio",
+      "src": "{{music_url}}",
+      "duration": -2,
+      "volume": 0.32,
+      "fade-out": 1.4
+    }
+  ],
+  "scenes": [
+    {
+      "comment": "Intro logo",
+      "duration": 1.5,
+      "background-color": "#0F2438",
+      "transition": {
+        "style": "fade",
+        "duration": 0.4
+      },
+      "elements": [
+        {
+          "type": "image",
+          "src": "{{logo_url}}",
+          "position": "center-center",
+          "y": -90,
+          "width": 500,
+          "fade-in": 0.4,
+          "fade-out": 0.3
+        },
+        {
+          "type": "text",
+          "text": "{{brand_name}}",
+          "style": "001",
+          "position": "custom",
+          "x": 90,
+          "y": 1080,
+          "width": 900,
+          "height": 120,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "46px",
+            "font-weight": "700",
+            "font-color": "#FAF7F2",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1.04",
+            "padding": "0 46px",
+            "letter-spacing": "0.22em",
+            "text-transform": "uppercase"
+          },
+          "fade-in": 0.5,
+          "fade-out": 0.3
+        }
+      ]
+    },
+    {
+      "comment": "Beat",
+      "duration": 3.2,
+      "transition": {
+        "style": "fade",
+        "duration": 0.8
+      },
+      "elements": [
+        {
+          "type": "image",
+          "src": "{{media_1}}",
+          "resize": "cover",
+          "comment": "Si el media es foto usar type:image; si es clip usar type:video",
+          "zoom": 2,
+          "pan": "top",
+          "pan-distance": 0.12,
+          "fade-in": 0.2
+        },
+        {
+          "type": "image",
+          "src": "{{logo_url}}",
+          "position": "custom",
+          "x": 70,
+          "y": 150,
+          "width": 210,
+          "fade-in": 0.3,
+          "comment": "Marca discreta esquina superior"
+        },
+        {
+          "type": "text",
+          "text": "{{project_name}}",
+          "style": "001",
+          "position": "custom",
+          "x": 60,
+          "y": 1208,
+          "width": 960,
+          "height": 92,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "40px",
+            "font-weight": "700",
+            "font-color": "{{accent_color}}",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1",
+            "padding": "0 46px",
+            "background-color": "#0F2438",
+            "letter-spacing": "0.18em",
+            "text-transform": "uppercase"
+          },
+          "fade-in": 0.35,
+          "fade-out": 0.3
+        },
+        {
+          "type": "text",
+          "text": "{{hook}}",
+          "style": "001",
+          "position": "custom",
+          "x": 60,
+          "y": 1300,
+          "width": 960,
+          "height": 250,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "80px",
+            "font-weight": "800",
+            "font-color": "#FAF7F2",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1.03",
+            "padding": "0 46px",
+            "background-color": "#0F2438"
+          },
+          "fade-in": 0.35,
+          "fade-out": 0.3
+        }
+      ]
+    },
+    {
+      "comment": "Beat",
+      "duration": 3.2,
+      "transition": {
+        "style": "fade",
+        "duration": 0.8
+      },
+      "elements": [
+        {
+          "type": "image",
+          "src": "{{media_2}}",
+          "resize": "cover",
+          "comment": "Si el media es foto usar type:image; si es clip usar type:video",
+          "zoom": 2,
+          "pan": "right",
+          "pan-distance": 0.12,
+          "fade-in": 0.2
+        },
+        {
+          "type": "image",
+          "src": "{{logo_url}}",
+          "position": "custom",
+          "x": 70,
+          "y": 150,
+          "width": 210,
+          "fade-in": 0.3,
+          "comment": "Marca discreta esquina superior"
+        },
+        {
+          "type": "text",
+          "text": "Tu nuevo comienzo",
+          "style": "001",
+          "position": "custom",
+          "x": 60,
+          "y": 1208,
+          "width": 960,
+          "height": 92,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "40px",
+            "font-weight": "700",
+            "font-color": "{{accent_color}}",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1",
+            "padding": "0 46px",
+            "background-color": "#0F2438",
+            "letter-spacing": "0.18em",
+            "text-transform": "uppercase"
+          },
+          "fade-in": 0.35,
+          "fade-out": 0.3
+        },
+        {
+          "type": "text",
+          "text": "{{benefit_1}}",
+          "style": "001",
+          "position": "custom",
+          "x": 60,
+          "y": 1300,
+          "width": 960,
+          "height": 250,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "80px",
+            "font-weight": "800",
+            "font-color": "#FAF7F2",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1.03",
+            "padding": "0 46px",
+            "background-color": "#0F2438"
+          },
+          "fade-in": 0.35,
+          "fade-out": 0.3
+        }
+      ]
+    },
+    {
+      "comment": "Beat",
+      "duration": 3,
+      "transition": {
+        "style": "fade",
+        "duration": 0.8
+      },
+      "elements": [
+        {
+          "type": "image",
+          "src": "{{media_3}}",
+          "resize": "cover",
+          "comment": "Si el media es foto usar type:image; si es clip usar type:video",
+          "zoom": 2,
+          "pan": "left",
+          "pan-distance": 0.12,
+          "fade-in": 0.2
+        },
+        {
+          "type": "image",
+          "src": "{{logo_url}}",
+          "position": "custom",
+          "x": 70,
+          "y": 150,
+          "width": 210,
+          "fade-in": 0.3,
+          "comment": "Marca discreta esquina superior"
+        },
+        {
+          "type": "text",
+          "text": "Para toda la familia",
+          "style": "001",
+          "position": "custom",
+          "x": 60,
+          "y": 1208,
+          "width": 960,
+          "height": 92,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "40px",
+            "font-weight": "700",
+            "font-color": "{{accent_color}}",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1",
+            "padding": "0 46px",
+            "background-color": "#0F2438",
+            "letter-spacing": "0.18em",
+            "text-transform": "uppercase"
+          },
+          "fade-in": 0.35,
+          "fade-out": 0.3
+        },
+        {
+          "type": "text",
+          "text": "{{benefit_2}}",
+          "style": "001",
+          "position": "custom",
+          "x": 60,
+          "y": 1300,
+          "width": 960,
+          "height": 250,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "80px",
+            "font-weight": "800",
+            "font-color": "#FAF7F2",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1.03",
+            "padding": "0 46px",
+            "background-color": "#0F2438"
+          },
+          "fade-in": 0.35,
+          "fade-out": 0.3
+        }
+      ]
+    },
+    {
+      "comment": "Beat",
+      "duration": 3,
+      "transition": {
+        "style": "fade",
+        "duration": 0.8
+      },
+      "elements": [
+        {
+          "type": "image",
+          "src": "{{media_4}}",
+          "resize": "cover",
+          "comment": "Si el media es foto usar type:image; si es clip usar type:video",
+          "zoom": 2,
+          "pan": "bottom",
+          "pan-distance": 0.12,
+          "fade-in": 0.2
+        },
+        {
+          "type": "image",
+          "src": "{{logo_url}}",
+          "position": "custom",
+          "x": 70,
+          "y": 150,
+          "width": 210,
+          "fade-in": 0.3,
+          "comment": "Marca discreta esquina superior"
+        },
+        {
+          "type": "text",
+          "text": "Un lugar para quedarse",
+          "style": "001",
+          "position": "custom",
+          "x": 60,
+          "y": 1208,
+          "width": 960,
+          "height": 92,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "40px",
+            "font-weight": "700",
+            "font-color": "{{accent_color}}",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1",
+            "padding": "0 46px",
+            "background-color": "#0F2438",
+            "letter-spacing": "0.18em",
+            "text-transform": "uppercase"
+          },
+          "fade-in": 0.35,
+          "fade-out": 0.3
+        },
+        {
+          "type": "text",
+          "text": "{{benefit_3}}",
+          "style": "001",
+          "position": "custom",
+          "x": 60,
+          "y": 1300,
+          "width": 960,
+          "height": 250,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "80px",
+            "font-weight": "800",
+            "font-color": "#FAF7F2",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1.03",
+            "padding": "0 46px",
+            "background-color": "#0F2438"
+          },
+          "fade-in": 0.35,
+          "fade-out": 0.3
+        }
+      ]
+    },
+    {
+      "comment": "Tarjeta de precio",
+      "duration": 2.8,
+      "transition": {
+        "style": "fade",
+        "duration": 0.8
+      },
+      "elements": [
+        {
+          "type": "image",
+          "src": "{{media_5}}",
+          "resize": "cover",
+          "comment": "Si el media es foto usar type:image; si es clip usar type:video",
+          "zoom": 2,
+          "pan": "top",
+          "pan-distance": 0.12,
+          "fade-in": 0.2
+        },
+        {
+          "type": "text",
+          "text": " ",
+          "style": "001",
+          "position": "custom",
+          "x": 0,
+          "y": 0,
+          "width": 1080,
+          "height": 1920,
+          "settings": {
+            "background-color": "rgba(15,36,56,0.55)"
+          },
+          "comment": "scrim navy limpio para legibilidad"
+        },
+        {
+          "type": "image",
+          "src": "{{logo_url}}",
+          "position": "custom",
+          "x": 70,
+          "y": 150,
+          "width": 210,
+          "fade-in": 0.3,
+          "comment": "Marca discreta esquina superior"
+        },
+        {
+          "type": "text",
+          "text": "{{project_name}}",
+          "style": "001",
+          "position": "custom",
+          "x": 60,
+          "y": 770,
+          "width": 960,
+          "height": 96,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "42px",
+            "font-weight": "700",
+            "font-color": "{{accent_color}}",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1.04",
+            "padding": "0 46px",
+            "letter-spacing": "0.2em",
+            "text-transform": "uppercase"
+          },
+          "fade-in": 0.35
+        },
+        {
+          "type": "text",
+          "text": "{{price_label}}",
+          "style": "001",
+          "position": "custom",
+          "x": 60,
+          "y": 870,
+          "width": 960,
+          "height": 250,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "128px",
+            "font-weight": "800",
+            "font-color": "#FAF7F2",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1.04",
+            "padding": "0 40px 24px",
+            "border-bottom": "10px solid {{accent_color}}"
+          },
+          "fade-in": 0.4
+        },
+        {
+          "type": "text",
+          "text": "por lote  ·  precio de entrada",
+          "style": "001",
+          "position": "custom",
+          "x": 60,
+          "y": 1170,
+          "width": 960,
+          "height": 80,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "38px",
+            "font-weight": "500",
+            "font-color": "#FAF7F2",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1.04",
+            "padding": "0 46px"
+          },
+          "fade-in": 0.5
+        }
+      ]
+    },
+    {
+      "comment": "Cierre CTA WhatsApp",
+      "duration": 2.6,
+      "background-color": "#0F2438",
+      "transition": {
+        "style": "fade",
+        "duration": 0.45
+      },
+      "elements": [
+        {
+          "type": "image",
+          "src": "{{logo_url}}",
+          "position": "custom",
+          "x": 340,
+          "y": 560,
+          "width": 400,
+          "fade-in": 0.4
+        },
+        {
+          "type": "text",
+          "text": "{{brand_name}}",
+          "style": "001",
+          "position": "custom",
+          "x": 90,
+          "y": 960,
+          "width": 900,
+          "height": 96,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "40px",
+            "font-weight": "700",
+            "font-color": "{{accent_color}}",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1.04",
+            "padding": "0 46px",
+            "letter-spacing": "0.22em",
+            "text-transform": "uppercase"
+          },
+          "fade-in": 0.5
+        },
+        {
+          "type": "text",
+          "text": "{{cta}}",
+          "style": "001",
+          "position": "custom",
+          "x": 130,
+          "y": 1120,
+          "width": 820,
+          "height": 150,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "56px",
+            "font-weight": "800",
+            "font-color": "#FFFFFF",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1.04",
+            "padding": "0 40px",
+            "background-color": "#25D366",
+            "border-radius": "80px"
+          },
+          "fade-in": 0.5
+        },
+        {
+          "type": "text",
+          "text": "Un asesor real, siempre a un mensaje de distancia.",
+          "style": "001",
+          "position": "custom",
+          "x": 120,
+          "y": 1320,
+          "width": 840,
+          "height": 120,
+          "settings": {
+            "font-family": "Outfit",
+            "font-size": "36px",
+            "font-weight": "500",
+            "font-color": "#FAF7F2",
+            "text-align": "center",
+            "vertical-position": "center",
+            "horizontal-position": "center",
+            "line-height": "1.3",
+            "padding": "0 46px"
+          },
+          "fade-in": 0.6
+        }
+      ]
+    }
+  ]
+}
