@@ -72,6 +72,8 @@ export function buildMovie(storyboard: Storyboard, opts: BuildMovieOptions): Mov
   });
 
   const movie: MovieSpec = {
+    // "custom" habilita dimensiones propias (9:16 vertical) en JSON2Video.
+    resolution: "custom",
     width: WIDTH,
     height: HEIGHT,
     quality: "high",

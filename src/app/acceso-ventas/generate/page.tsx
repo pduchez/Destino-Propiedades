@@ -71,8 +71,9 @@ export default function GeneratePage() {
         body: JSON.stringify({ projectId, networks }),
       });
       setVideoMsg("🎬 Renderizando el video (suele tardar 1–2 min)…");
-      // Sondea el estado hasta que termine (máx ~3 min).
-      for (let i = 0; i < 30; i++) {
+      // Sondea el estado hasta que termine (máx ~4 min).
+      const MAX = 40;
+      for (let i = 0; i < MAX; i++) {
         await new Promise((res) => setTimeout(res, 6000));
         const s = await api<{ job: { status: string; error?: string | null } | null }>(
           `/api/render/status?jobId=${r.jobId}`,
@@ -86,7 +87,7 @@ export default function GeneratePage() {
           setVideoMsg(`El render falló: ${s.job?.error ?? "error desconocido"}.`);
           break;
         }
-        if (i === 29) setVideoMsg("El render sigue en proceso; revisa la cola en unos minutos.");
+        if (i === MAX - 1) setVideoMsg("El render sigue en proceso; ábrelo en la cola en unos minutos (se adjunta solo).");
       }
     } catch (e) {
       setVideoMsg((e as Error).message);
